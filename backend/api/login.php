@@ -1,0 +1,71 @@
+<?php
+header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("content-type: application/json; charset=UTF-8");
+
+
+//retrieves the JSON data from the request body
+$json_data = file_get_contents("php://input");
+$data = json_decode($json_data, true);
+$username = $data['username'];
+$password = $data['password'];
+//the password variable is stored because when using get_result() its value becomes ""
+$input_password = $password;
+
+if (!isset($username) || !isset($password)) {
+    $response = [
+        "status" => "error",
+        "message" => "Username and password are required"
+    ];
+    echo json_encode($response);
+    exit();
+}
+require_once("../DBConnect.php");
+
+$stmt = $dbConnection->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->bind_param("s", $username);
+$stmt->execute();
+
+$result = $stmt->get_result();
+
+//checks if the user exists
+if ($result->num_rows < 1) {
+    $response = [
+        "status" => "error",
+        "message" => "User does not exist"
+    ];
+    echo json_encode($response);
+    exit();
+}
+//checks if password is correct
+$row = $result->fetch_assoc();
+$dbPass = $row['password'];
+$stmt->close();
+
+if (password_verify($input_password, $dbPass) === false) {
+    $response = [
+        "status" => "error",
+        "message" => "Incorrect password",
+
+    ];
+    echo json_encode($response);
+    exit();
+} else {
+    $response = [
+        "status" => "success",
+        "message" => "Login successful",
+        "username" => $username
+    ];
+}
+
+
+if (!isset($_SESSION))
+    session_start();
+
+$_SESSION['username'] = $username;
+
+
+//sends the response back to the client
+echo json_encode($response);
