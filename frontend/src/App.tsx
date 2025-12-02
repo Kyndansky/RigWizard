@@ -18,19 +18,27 @@ function App() {
   }, [])
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div>Loading...</div>
+    )
   }
+  if (!isAuthenticated) {
+    return (
+      <Navigate to="/login" />
+    )
+  }
+  
   return (
     <React.Fragment>
-      {!isAuthenticated ? (<Navigate to="/login" />) : (null)}
-
-      <NavBar onLogoutClickButton={
-        async () => {
-          await logout();
-          setIsAuthenticated(false);
-
+      <NavBar
+        onLogoutClickButton={
+          async () => {
+            await logout();
+            setIsAuthenticated(false);
+          }
         }
-      }></NavBar>
+        
+        />
     </React.Fragment>
   )
 }

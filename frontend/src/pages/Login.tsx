@@ -10,6 +10,8 @@ export function Login() {
     const [password, setPassword] = React.useState<string>("");
     const [errorMessage, setErrorMessage] = React.useState<string>("");
     const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
+
     useEffect(() => {
         (async () => {
             const authenticated = await getIsLoggedIn();
@@ -19,31 +21,39 @@ export function Login() {
     }, [])
 
     async function handleLogin() {
-        setErrorMessage("");
+
         const loggedIn = await login(username, password);
         setIsAuthenticated(loggedIn);
         if (!loggedIn)
             setErrorMessage("error");
+        else
+            setErrorMessage("");
     }
-    if(isLoading){
-        return (<div>Loading...</div>)
+    if (isLoading) {
+        return (
+            <div>Loading...</div>
+        )
     }
+    if (isAuthenticated === true) {
+        return (
+            <Navigate to={"/"} />
+        )
+    }
+
     return (
         <React.Fragment>
-            {isAuthenticated ?
-                (<Navigate to={"/"} />) :
-                (<CredentialsCard
-                    cardtitle="Login"
-                    buttonText="Log in"
-                    suggestionText="Are you new here?"
-                    suggestionLink="/register"
-                    suggestionLinkText="Register here"
-                    onbuttonclick={handleLogin}
-                    onUsernameChange={(e) => setUsername(e.target.value)}
-                    onPasswordChange={(e) => setPassword(e.target.value)}
-                    username={username}
-                    password={password}
-                />)}
+            <CredentialsCard
+                cardtitle="Login"
+                buttonText="Log in"
+                suggestionText="Are you new here?"
+                suggestionLink="/register"
+                suggestionLinkText="Register here"
+                onbuttonclick={handleLogin}
+                onUsernameChange={(e) => setUsername(e.target.value)}
+                onPasswordChange={(e) => setPassword(e.target.value)}
+                username={username}
+                password={password}
+            />
 
             <p>{errorMessage}</p>
 
