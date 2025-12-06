@@ -5,6 +5,7 @@ import { login } from "../misc/api_calls_functions";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import React, { useState } from "react";
+import { LoadingScreen } from "../components/LoadingScreen";
 
 export function Login() {
     //states regarding authentication taken from the AuthContextHandler
@@ -34,7 +35,8 @@ export function Login() {
     //if the user is logged in.
     if (isLoading) {
         return (
-            <div>Loading...</div>
+            <LoadingScreen />
+
         )
     }
 

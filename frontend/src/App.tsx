@@ -4,13 +4,14 @@ import { Navigate } from 'react-router-dom'
 import { logout } from './misc/api_calls_functions';
 import NavBar from './components/NavBar';
 import { useAuth } from './misc/AuthContextHandler';
+import { LoadingScreen } from './components/LoadingScreen';
 
 function App() {
   const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
 
   if (isLoading) {
     return (
-      <div>Loading...</div>
+      <LoadingScreen />
     )
   }
   if (!isAuthenticated) {
