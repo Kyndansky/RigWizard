@@ -4,11 +4,20 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("content-type: application/json; charset=UTF-8");
-
-if (isset($_SESSION))
-    session_destroy();
-
-//sends the response back to the client
+if (!isset($_SESSION)) {
+    echo json_encode([
+        "status" => "success",
+        "message" => "The user was not authenticated to begin with"
+    ]);
+}
+if (!isset($_SESSION["username"]) || !$_SESSION["username"] !== "") {
+    echo json_encode([
+        "status" => "success",
+        "message" => "The user was not authenticated to begin with"
+    ]);
+}
+session_start();
+session_destroy();
 echo json_encode([
     "status" => "success",
     "message" => "Logged out successfully"

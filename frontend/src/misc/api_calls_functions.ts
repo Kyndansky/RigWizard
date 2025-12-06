@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL,
-  withCredentials: true, // <-- DEVE ESSERE PRESENTE
+  withCredentials: true,
 });
 
 // Make a GET request to the backend API to check if the user is logged in
@@ -24,7 +24,7 @@ async function getIsLoggedIn(): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.log("erorr from php server:", error);
+    console.log("error from php server:", error);
     return false;
   }
 
@@ -40,7 +40,6 @@ async function logout(): Promise<boolean> {
         }
       }
     );
-
     const data = await response.data;
     console.log(data);
     if (data["status"] === "error") {
@@ -48,7 +47,7 @@ async function logout(): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.log("erorr from php server:", error);
+    console.log("error from php server:", error);
     return false;
   }
 }
@@ -74,7 +73,7 @@ async function register(username: string, password: string): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.log("erorr from php server:", error);
+    console.log("error from php server:", error);
     return false;
   }
 }
@@ -99,7 +98,7 @@ async function login(username: string, password: string): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.log("erorr from php server:", error);
+    console.log("error from php server:", error);
     return false;
   }
 }

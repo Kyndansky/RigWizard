@@ -1,5 +1,4 @@
 import React from 'react'
-
 import './App.css'
 import { Navigate } from 'react-router-dom'
 import { logout } from './misc/api_calls_functions';
@@ -25,11 +24,12 @@ function App() {
       <NavBar
         onLogoutClickButton={
           async () => {
-            await logout();
-            setIsAuthenticated(false);
+            const loggedOut = await logout();
+            if (loggedOut) {
+              setIsAuthenticated(false);
+            }
           }
         }
-
       />
     </React.Fragment>
   )

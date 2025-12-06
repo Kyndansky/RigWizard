@@ -3,7 +3,7 @@ import { CredentialsCard } from "../components/CredentialsCard";
 import { login } from "../misc/api_calls_functions";
 
 import { Navigate } from "react-router-dom";
-import { useAuth, type AuthInfo } from "../misc/AuthContextHandler";
+import { useAuth } from "../misc/AuthContextHandler";
 import React, { useState } from "react";
 
 export function Login() {
