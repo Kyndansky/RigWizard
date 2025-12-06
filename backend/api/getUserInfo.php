@@ -17,7 +17,8 @@ if (isset($_SESSION['username'])) {
 } else {
     $response = [
         "status" => "error",
-        "message" => "User is not logged in"
+        "message" => "User is not logged in",
+        "username"=>""
     ];
 }
 echo json_encode($response);

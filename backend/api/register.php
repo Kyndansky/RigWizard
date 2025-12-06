@@ -18,7 +18,8 @@ $input_password = $password;
 if (!isset($username) || !isset($password)) {
     $response = [
         "status" => "error",
-        "message" => "Username and password are required"
+        "message" => "Username and password are required",
+        "username"=>""
     ];
     exit();
 }
@@ -36,7 +37,8 @@ $userCount = $row[0];
 if ($userCount > 0) {
     $response = [
         "status" => "error",
-        "message" => "User already exists"
+        "message" => "User already exists",
+        "username"=>""
     ];
     echo json_encode($response);
     exit();

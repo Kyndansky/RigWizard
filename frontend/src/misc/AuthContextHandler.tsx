@@ -5,6 +5,7 @@ export interface AuthInfo{
     isAuthenticated:boolean;
     isLoading:boolean;
     setIsAuthenticated:(isAuthenticated:boolean)=>void;
+    username?:string
 }
 
 
@@ -17,16 +18,18 @@ const AuthContext = createContext<AuthInfo | undefined>(undefined);
 export function AuthProvider({children}:{children:ReactNode}){
     const [isAuthenticated,setIsAuthenticated]=useState(false);
     const [isLoading,setIsLoading]=useState(true);
+    const [username,setUsername]=useState<string>("");
 
     useEffect(()=>{
         (async ()=>{
-            const authenticated=await getIsLoggedIn();
-            setIsAuthenticated(authenticated);
+            const response=await getIsLoggedIn();
+            setIsAuthenticated(response.successful);
+            setUsername(response.username);
             setIsLoading(false);
         })();
     },[]);
 
-    const contextValue={isAuthenticated,isLoading,setIsAuthenticated};
+    const contextValue={isAuthenticated,isLoading,setIsAuthenticated,username};
 
     return(
         <AuthContext value={contextValue}>

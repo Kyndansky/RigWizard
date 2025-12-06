@@ -7,7 +7,7 @@ import { useAuth } from './misc/AuthContextHandler';
 import { LoadingScreen } from './components/LoadingScreen';
 
 function App() {
-  const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading, setIsAuthenticated,username } = useAuth();
 
   if (isLoading) {
     return (
@@ -23,6 +23,8 @@ function App() {
   return (
     <React.Fragment>
       <NavBar
+      username={username===''?undefined:username}
+      title="RigWizard"
         onLogoutClickButton={
           async () => {
             const loggedOut = await logout();

@@ -1,14 +1,22 @@
 import axios from "axios";
 
+interface Response {
+  successful: boolean
+  message: string
+}
+interface UserInfoResponse {
+  successful: boolean,
+  message: string,
+  username: string
+}
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL,
   withCredentials: true,
 });
 
 // Make a GET request to the backend API to check if the user is logged in
-async function getIsLoggedIn(): Promise<boolean> {
+async function getIsLoggedIn(): Promise<UserInfoResponse> {
   try {
-
     const response = await api.get('getUserInfo.php',
       {
         headers: {
@@ -18,19 +26,22 @@ async function getIsLoggedIn(): Promise<boolean> {
     );
 
     const data = await response.data;
-
-    if (data["status"] === "error") {
-      return false;
-    }
-    return true;
+    const result: UserInfoResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      username: data["username"]
+    };
+    return result;
   } catch (error) {
     console.log("error from php server:", error);
-    return false;
+    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    return result;
   }
 
 }
 
-async function logout(): Promise<boolean> {
+async function logout(): Promise<Response> {
   try {
 
     const response = await api.get('logout.php',
@@ -41,19 +52,22 @@ async function logout(): Promise<boolean> {
       }
     );
     const data = await response.data;
-    console.log(data);
-    if (data["status"] === "error") {
-      return false;
-    }
-    return true;
+    const result: Response =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+    };
+    return result;
   } catch (error) {
     console.log("error from php server:", error);
-    return false;
+    const result: Response = { successful: false, message: "server error" };
+    return result;
+
   }
 }
 
 
-async function register(username: string, password: string): Promise<boolean> {
+async function register(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
     const response = await api.post(
@@ -65,20 +79,24 @@ async function register(username: string, password: string): Promise<boolean> {
         },
       }
     );
-
     const data = await response.data;
-    console.log(data);
-    if (data["status"] === "error") {
-      return false;
-    }
-    return true;
+
+    const result: UserInfoResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      username: data["username"]
+    };
+    return result;
+
   } catch (error) {
     console.log("error from php server:", error);
-    return false;
+    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    return result;
   }
 }
 
-async function login(username: string, password: string): Promise<boolean> {
+async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
     const response = await api.post(
@@ -90,16 +108,20 @@ async function login(username: string, password: string): Promise<boolean> {
         },
       }
     );
-
     const data = await response.data;
-    console.log(data);
-    if (data["status"] === "error") {
-      return false;
-    }
-    return true;
+
+    const result: UserInfoResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      username: data["username"]
+    };
+    return result;
+
   } catch (error) {
     console.log("error from php server:", error);
-    return false;
+    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    return result;
   }
 }
 
