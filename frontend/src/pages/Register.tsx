@@ -1,31 +1,30 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { CredentialsCard } from "../components/CredentialsCard";
 import { Navigate } from "react-router-dom";
-import { getIsLoggedIn, register } from "../api_calls_functions";
+import {  register } from "../misc/api_calls_functions";
+import { useAuth } from "../misc/AuthContextHandler";
 
 export function Register() {
-    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+    const {isAuthenticated,isLoading,setIsAuthenticated}=useAuth();
     const [username, setUsername] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
     const [errorMessage, setErrorMessage] = React.useState<string>("");
-    useEffect(() => {
-        (async () => {
-            const authenticated = await getIsLoggedIn();
-            setIsAuthenticated(authenticated);
-        })();
-
-    }, [])
 
     async function handleRegister() {
-        setErrorMessage("");
-        if(await register(username,password)){
-            window.location.href = '/';
+        const attemptSuccessful=await register(username,password);
+        if(attemptSuccessful){
+            setIsAuthenticated(true);
         }
         else{
             setErrorMessage("error");
         }
 
     }
+
+    if(isLoading){
+        return <div>Loading...</div>
+    }
+
     return (
         <React.Fragment>
             {isAuthenticated ?

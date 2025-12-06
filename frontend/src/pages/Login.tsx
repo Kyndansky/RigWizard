@@ -1,45 +1,51 @@
-import React, { useEffect } from "react";
+
 import { CredentialsCard } from "../components/CredentialsCard";
-import { getIsLoggedIn, login } from "../api_calls_functions";
+import { login } from "../misc/api_calls_functions";
 
 import { Navigate } from "react-router-dom";
+import { useAuth, type AuthInfo } from "../misc/AuthContextHandler";
+import React, { useState } from "react";
 
 export function Login() {
-    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
-    const [username, setUsername] = React.useState<string>("");
-    const [password, setPassword] = React.useState<string>("");
-    const [errorMessage, setErrorMessage] = React.useState<string>("");
-    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+    //states regarding authentication taken from the AuthContextHandler
+    const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+    //local states
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
 
 
-    useEffect(() => {
-        (async () => {
-            const authenticated = await getIsLoggedIn();
-            setIsAuthenticated(authenticated);
-            setIsLoading(false);
-        })();
-    }, [])
-
+    //checks if the users is already logged in, if so, sets the isAuthenticated state to true
     async function handleLogin() {
 
         const loggedIn = await login(username, password);
-        setIsAuthenticated(loggedIn);
-        if (!loggedIn)
-            setErrorMessage("error");
-        else
+
+        if (loggedIn) {
+            setIsAuthenticated(true);
             setErrorMessage("");
+        }
+
+        else {
+            setErrorMessage("error");
+        }
     }
+
+    //returns loading if the frontend still doesn't know (which means it hasn't received info from the backend yet)
+    //if the user is logged in.
     if (isLoading) {
         return (
             <div>Loading...</div>
         )
     }
+
+    //if the user is authenticated redirects to the homepage
     if (isAuthenticated === true) {
         return (
             <Navigate to={"/"} />
         )
     }
 
+    //if the user is not authenticated displays the actual login page
     return (
         <React.Fragment>
             <CredentialsCard

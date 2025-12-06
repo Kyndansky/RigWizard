@@ -14,8 +14,8 @@ function ChoiceCard(props: ChoiceCardProps) {
                 <h2 className="card-title">{props.title}</h2>
                 <p>{props.description}</p>
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">{props.buttonLabel1}</button>
-                    <button className="btn btn-secondary">{props.buttonLabel2}</button>
+                    <button className="btn btn-primary">{props.button1Text}</button>
+                    <button className="btn btn-secondary">{props.button2Text}</button>
                 </div>
             </div>
         </div>

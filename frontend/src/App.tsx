@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import './App.css'
 import { Navigate } from 'react-router-dom'
-import { getIsLoggedIn, logout } from './api_calls_functions';
+import { logout } from './misc/api_calls_functions';
 import NavBar from './components/NavBar';
+import { useAuth } from './misc/AuthContextHandler';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  useEffect(() => {
-    (async () => {
-      const authenticated = await getIsLoggedIn();
-      setIsAuthenticated(authenticated);
-      setIsLoading(false);
-    })();
-
-  }, [])
+  const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
 
   if (isLoading) {
     return (
@@ -27,7 +19,7 @@ function App() {
       <Navigate to="/login" />
     )
   }
-  
+
   return (
     <React.Fragment>
       <NavBar
@@ -37,8 +29,8 @@ function App() {
             setIsAuthenticated(false);
           }
         }
-        
-        />
+
+      />
     </React.Fragment>
   )
 }
