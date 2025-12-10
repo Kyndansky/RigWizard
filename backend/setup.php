@@ -160,4 +160,3 @@ if ($conn->multi_query($sql_script) === TRUE) {
 }
 
 $conn->close();
-?>
