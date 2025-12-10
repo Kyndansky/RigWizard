@@ -41,7 +41,7 @@ if ($userCount > 0) {
 }
 $stmtCheck->close();
 //inserts the new user into the database
-$stmt = $dbConnection->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+$stmt = $dbConnection->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
 $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
 $stmt->execute();

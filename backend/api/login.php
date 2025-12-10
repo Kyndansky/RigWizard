@@ -37,7 +37,7 @@ if ($result->num_rows < 1) {
 }
 //checks if password is correct
 $row = $result->fetch_assoc();
-$dbPass = $row['password'];
+$dbPass = $row['password_hash'];
 $stmt->close();
 
 if (password_verify($input_password, $dbPass) === false) {
