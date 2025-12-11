@@ -16,12 +16,12 @@ export function GameInfoCard(props: GameInfoCardProps) {
           </figure>
 
           <div className="card-body ">
-            <h2 className="card-title">{props.name}</h2>
-            <p>{props.description}</p>
+            <h2 className="card-title text-primary-content">{props.name}</h2>
+            <p className="text-primary-content">{props.description}</p>
             <div className="card-actions justify-end">
               {/* Basically puts every tag around a div that displays it (map is used to cycle all elements in an array and return another value, in this case an html div) */}
               {limitedTags.map((tag, index) => (
-                <div key={index} className="badge badge-outline">{tag}</div>
+                <div key={index} className="badge badge-outline border-secondary text-secondary">{tag}</div>
               ))}
             </div>
           </div>

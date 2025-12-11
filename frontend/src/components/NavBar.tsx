@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 interface NavBarProps {
     username?: string;
@@ -8,6 +8,7 @@ interface NavBarProps {
 
 
 export function NavBar(props: NavBarProps) {
+    const [theme,setTheme]=useState<"light"|"dark">("dark");
     return (
         <React.Fragment>
             <div className="navbar bg-base-100 shadow-sm">
@@ -18,7 +19,7 @@ export function NavBar(props: NavBarProps) {
                 {/*Theme button section*/}
                 <label className="swap swap-rotate ">
                     {/* this hidden checkbox controls the state */}
-                    <input type="checkbox" className="theme-controller" value="synthwave" />
+                    <input type="checkbox" className="theme-controller" value={theme} onClick={()=>{theme==="dark"?setTheme("light"):setTheme("dark")}}/>
 
                     {/* sun icon */}
                     <svg
