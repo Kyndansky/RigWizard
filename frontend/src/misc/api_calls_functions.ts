@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Game } from "./interfaces";
 
 interface Response {
   successful: boolean
@@ -8,6 +9,12 @@ interface UserInfoResponse {
   successful: boolean,
   message: string,
   username: string
+}
+
+interface GameCollectionResponse {
+  successful: boolean,
+  message: string,
+  games:Game[],
 }
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL,
@@ -124,5 +131,75 @@ async function login(username: string, password: string): Promise<UserInfoRespon
     return result;
   }
 }
+
+//fetches some games from the backend (the exact games depend on the page number)
+//for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
+export async function getGames(pageNumber:number): Promise<GameCollectionResponse> {
+  // try {
+  //   const response = await api.get('getGames.php',
+  //     {
+  //       params:{
+  //         pageNumber:pageNumber
+  //       },
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   );
+
+  //   const data = await response.data;
+  //   const result: GameCollectionResponse =
+  //   {
+  //     successful: data["status"] === "success" ? true : false,
+  //     message: data["message"],
+  //     games:data["games"],
+  //   };
+  //   return result;
+  // } catch (error) {
+  //   console.log("error from php server:", error);
+  //   const result: GameCollectionResponse = { successful: false, message: "server error", games:[] };
+  //   return result;
+  // }
+
+  const response:GameCollectionResponse={
+    successful:true,
+    message:"",
+    games:gameTestArray
+  }
+  return response;
+}
+
+const gameTestArray:Game[]=[
+  {
+    name:"Hollow Knight: Silksong",
+    description:"Very cool game",
+    imgPath:"http://localhost/progetti/imgHostateTest/silksong.jpg",
+    tags:["Action","Platformer","Indie","2D","Metroidvania"]
+  },
+  {
+    name:"Hollow Knight",
+    description:"Another very cool game",
+    imgPath:"http://localhost/progetti/imgHostateTest/hollowKnight.jpg",
+    tags:["Action","Platformer","Indie","2D","Metroidvania"]
+  },
+  {
+    name:"Celeste",
+    description:"Another very cool game",
+    imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
+    tags:["Platformer","Indie","2D"]
+  },
+  {
+    name:"Celeste",
+    description:"Another very cool game",
+    imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
+    tags:["Platformer","Indie","2D"]
+  },
+  {
+    name:"Celeste",
+    description:"Another very cool game",
+    imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
+    tags:["Platformer","Indie","2D"]
+  },
+]
 
 export { getIsLoggedIn, logout, register, login };

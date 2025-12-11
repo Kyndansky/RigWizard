@@ -1,9 +1,9 @@
 import React from "react";
 
-export function ComponentsSideBar() {
+export function ComponentsList() {
     return (
         <React.Fragment>
-            <ul className="menu bg-base-200 rounded-box w-60 my-auto">
+            <ul className="menu w-auto">
                 <li>
                     <details open>
                         <summary>Computer</summary>
