@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Navigate } from "react-router-dom";
-import { getGames, logout } from "./misc/api_calls_functions";
+import { getGames, getTags, logout } from "./misc/api_calls_functions";
 import NavBar from "./components/NavBar";
 import { useAuth } from "./misc/AuthContextHandler";
 import { LoadingScreen } from "./components/LoadingScreen";
@@ -10,14 +10,16 @@ import { GameInfoCard } from "./components/GameInfoCard";
 import type { Game } from "./misc/interfaces";
 
 function App() {
-  const [games, setGames] = useState<Game[] | null>(null);
+  const [games, setGames] = useState<Game[] | undefined>(undefined);
+  const [tags, setTags] = useState<string[] | undefined>(undefined);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [searchText,setSearchText]=useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const { isAuthenticated, isLoading, setIsAuthenticated, username } =
-    useAuth();
+  const { isAuthenticated, isLoading, setIsAuthenticated, username } = useAuth();
 
   async function fetchGames() {
-    const fetchedGamesResponse = await getGames(pageNumber);
+    const fetchedGamesResponse = await getGames(/*pageNumber*/);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
     }
@@ -26,9 +28,20 @@ function App() {
     }
   }
 
+  async function fetchTags() {
+    const fetchedTagsResponse = await getTags();
+    if (fetchedTagsResponse.successful) {
+      setTags(fetchedTagsResponse.tags);
+    }
+    else {
+      setErrorMessage(fetchedTagsResponse.message);
+    }
+  }
+
   useEffect(() => {
     (async () => {
       await fetchGames();
+      await fetchTags();
     })();
   }, []);
 
@@ -58,12 +71,31 @@ function App() {
 
           {/* Left sidebar that shows the pc components */}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
-            <h2 className="text-lg font-bold">Left sidebar</h2>
+            <h2 className="text-lg font-bold">Your pc specs</h2>
             <ComponentsList></ComponentsList>
           </aside>
 
-          <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 overflow-y-auto h-full">
+          <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">
             <h1 className="text-xl font-bold">Your library</h1>
+            <div className="flex items-center my-5 w-full">
+              <label className="input grow">
+                <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                  </g>
+                </svg>
+                <input type="search" required placeholder="Search game title here" value={searchText} onChange={(e)=>{
+                  setSearchText(e.target.value);
+                }}/>
+              </label>
+            </div>
 
             {errorMessage !== "" ? (
               <div role="alert" className="alert alert-error">
@@ -74,7 +106,10 @@ function App() {
               </div>
             ) : (
               <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-7 mt-4">
-                {games?.map((game, index) => (
+                {/* filters games by only displaying those that have the same tags that are selected and whose title contain what is in the searchbar*/}
+                {games?.filter(game => {
+                  return selectedTags.every(tag => game.tags.includes(tag)) && game.name.toLowerCase().includes(searchText.toLowerCase());
+                }).map((game, index) => (
                   <GameInfoCard key={index}
                     name={game.name}
                     description={game.description}
@@ -90,8 +125,30 @@ function App() {
 
           {/*Filters sidebar*/}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
-            <h2 className="text-lg font-bold">Right sidebar</h2>
+            <h2 className="text-lg font-bold">Tag Filters</h2>
+            <form>
+              {tags?.map((tag, index) => (
+                <input key={index} className="btn m-1" type="checkbox" name="tags" aria-label={tag} onClick={() => {
+                  //give a function to setSelectedTags, so that it knows that the value returned by that function is used to set the tags, as if a value was passed directly
+                  //in this case we check if selectedTags contained the tag clicked: if it did, the tag gets removed, otherwise it gets added 
+                  setSelectedTags(prevTags => {
+                    const isSelected = prevTags.includes(tag);
 
+                    if (!isSelected) {
+                      return [...prevTags, tag];
+                    }
+                    else {
+                      return prevTags.filter(el => el !== tag);
+                    }
+
+                  })
+                }} />
+              ))}
+
+              <input className="btn btn-square" type="reset" value="x" onClick={() => {
+                setSelectedTags([]);
+              }} />
+            </form>
           </aside>
 
         </div>

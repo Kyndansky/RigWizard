@@ -5,16 +5,16 @@ interface Response {
   successful: boolean
   message: string
 }
-interface UserInfoResponse {
-  successful: boolean,
-  message: string,
+interface UserInfoResponse extends Response{
   username: string
 }
 
-interface GameCollectionResponse {
-  successful: boolean,
-  message: string,
+interface GameCollectionResponse extends Response{
   games:Game[],
+}
+
+interface TagCollectionResponse extends Response{
+  tags:string[],
 }
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL,
@@ -22,7 +22,7 @@ const api = axios.create({
 });
 
 // Make a GET request to the backend API to check if the user is logged in
-async function getIsLoggedIn(): Promise<UserInfoResponse> {
+export async function getIsLoggedIn(): Promise<UserInfoResponse> {
   try {
     const response = await api.get('getUserInfo.php',
       {
@@ -48,7 +48,7 @@ async function getIsLoggedIn(): Promise<UserInfoResponse> {
 
 }
 
-async function logout(): Promise<Response> {
+export async function logout(): Promise<Response> {
   try {
 
     const response = await api.get('logout.php',
@@ -74,7 +74,7 @@ async function logout(): Promise<Response> {
 }
 
 
-async function register(username: string, password: string): Promise<UserInfoResponse> {
+export async function register(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
     const response = await api.post(
@@ -103,7 +103,7 @@ async function register(username: string, password: string): Promise<UserInfoRes
   }
 }
 
-async function login(username: string, password: string): Promise<UserInfoResponse> {
+export async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
     const response = await api.post(
@@ -134,7 +134,7 @@ async function login(username: string, password: string): Promise<UserInfoRespon
 
 //fetches some games from the backend (the exact games depend on the page number)
 //for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
-export async function getGames(pageNumber:number): Promise<GameCollectionResponse> {
+export async function getGames(/*pageNumber:number*/): Promise<GameCollectionResponse> {
   // try {
   //   const response = await api.get('getGames.php',
   //     {
@@ -202,4 +202,39 @@ const gameTestArray:Game[]=[
   },
 ]
 
-export { getIsLoggedIn, logout, register, login };
+//fetches all possible tags from the backend
+//for now i hardcoded an array of test tags since the backend file that returns the games needs to be changed
+export async function getTags(): Promise<TagCollectionResponse> {
+  // try {
+  //   const response = await api.get('gettags.php',
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   );
+
+  //   const data = await response.data;
+  //   const result: TagCollectionResponse =
+  //   {
+  //     successful: data["status"] === "success" ? true : false,
+  //     message: data["message"],
+  //     tags:data["tags"],
+  //   };
+  //   return result;
+  // } catch (error) {
+  //   console.log("error from php server:", error);
+  //   const result: TagCollectionResponse = { successful: false, message: "server error", tags:[] };
+  //   return result;
+  // }
+
+  const response:TagCollectionResponse={
+    successful:true,
+    message:"",
+    tags:tags
+  }
+  return response;
+}
+
+
+const tags:string[]=["Indie","Action","Platformer","2D","3D","Shooter","Roguelike"]
