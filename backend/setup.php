@@ -1,73 +1,70 @@
 <?php
 
-// Impostazioni di Connessione al Database XAMPP
-$servername = "localhost";
-$username = "root"; // L'utente di default di XAMPP/MySQL
-$password = "";     // La password di default è vuota
-$dbname = "rigwizard"; // Il database che vogliamo creare/gestire
+require_once "../DBConnect.php";
+require_once "cors.php";
 
-// Contenuto dello script SQL completo
+// Complete SQL Script Content
 $sql_script = "
--- 1. Setup Iniziale
+-- Initial Setup
 DROP DATABASE IF EXISTS `rigwizard`;
 CREATE DATABASE `rigwizard`
     DEFAULT CHARACTER SET utf8mb4
     DEFAULT COLLATE utf8mb4_general_ci;
 USE `rigwizard`;
 
--- 2. Tabelle Componenti Hardware
+-- Hardware Component Tables
 
--- motherboard
+-- Motherboard
 CREATE TABLE `motherboard` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `manufacturer` VARCHAR(100) NOT NULL,
     `model_name` VARCHAR(100) NOT NULL UNIQUE,
     `chipset` VARCHAR(50),
     `socket_type` VARCHAR(50),
-    `punteggio` DECIMAL(3, 1) DEFAULT 0.0,
+    `score` DECIMAL(3, 1) DEFAULT 0.0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- ram (memoria)
+-- RAM (Memory)
 CREATE TABLE `ram` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `marca` VARCHAR(100) NOT NULL,
+    `brand` VARCHAR(100) NOT NULL,
     `model_name` VARCHAR(100) NOT NULL UNIQUE,
-    `quantita_gb` INT(11) NOT NULL,
-    `frequenza_mhz` INT(11) NOT NULL,
-    `tipo_memoria` VARCHAR(10) NOT NULL,
-    `punteggio` DECIMAL(3, 1) DEFAULT 0.0,
+    `quantity_gb` INT(11) NOT NULL,
+    `frequency_mhz` INT(11) NOT NULL,
+    `memory_type` VARCHAR(10) NOT NULL,
+    `score` DECIMAL(3, 1) DEFAULT 0.0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- processore (cpu)
-CREATE TABLE `processore` (
+-- Processor (CPU)
+CREATE TABLE `processor` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `manufacturer` VARCHAR(100) NOT NULL,
     `model_name` VARCHAR(100) NOT NULL UNIQUE,
-    `frequenza_ghz` DECIMAL(3, 2) NOT NULL,
-    `core` INT(11) NOT NULL,
+    `frequency_ghz` DECIMAL(3, 2) NOT NULL,
+    `cores` INT(11) NOT NULL,
     `socket_type` VARCHAR(50),
-    `punteggio` DECIMAL(3, 1) DEFAULT 0.0,
+    `score` DECIMAL(3, 1) DEFAULT 0.0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- scheda video (gpu)
-CREATE TABLE `scheda_video` (
+-- Graphics Card (GPU)
+CREATE TABLE `gpu` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `manufacturer` VARCHAR(100) NOT NULL,
     `model_name` VARCHAR(100) NOT NULL UNIQUE,
     `vram_gb` INT(11),
-    `punteggio` DECIMAL(3, 1) DEFAULT 0.0,
+    `score` DECIMAL(3, 1) DEFAULT 0.0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 3. Tabella PC (Configurazione Hardware)
--- Collega i singoli componenti hardware
+-- PC Table (Hardware Configuration)
+-- Links individual hardware components
 
 CREATE TABLE `pc` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `nome_configurazione` VARCHAR(150),
+    `config_name` VARCHAR(150),
     `id_ram` INT(11) NOT NULL,
     `id_motherboard` INT(11) NOT NULL,
     `id_cpu` INT(11) NOT NULL,
@@ -75,88 +72,68 @@ CREATE TABLE `pc` (
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id_ram`) REFERENCES `ram`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     FOREIGN KEY (`id_motherboard`) REFERENCES `motherboard`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`id_cpu`) REFERENCES `processore`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (`id_gpu`) REFERENCES `scheda_video`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    FOREIGN KEY (`id_cpu`) REFERENCES `processor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (`id_gpu`) REFERENCES `gpu`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 4. Tabella Utenti
+-- Users Table
 
 CREATE TABLE `users` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(50) NOT NULL UNIQUE,
     `email` VARCHAR(150) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
-    `id_pc_principale` INT(11) DEFAULT NULL,
-    `data_registrazione` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `id_main_pc` INT(11) DEFAULT NULL,
+    `registration_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`id_pc_principale`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (`id_main_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 5. Tabelle Giochi e Relazioni
+-- Games and Relationships Tables
 
--- giochi
-CREATE TABLE `giochi` (
-    `id_gioco` INT(11) NOT NULL AUTO_INCREMENT,
-    `titolo` VARCHAR(255) NOT NULL,
-    `anno_uscita` YEAR(4) NOT NULL,
+-- Games
+CREATE TABLE `games` (
+    `id_game` INT(11) NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `release_year` YEAR(4) NOT NULL,
     `publisher` VARCHAR(150),
-    `prezzo` DECIMAL(6, 2) DEFAULT 0.00,
-    `descrizione` TEXT,
-    `id_pc_minimo` INT(11),
-    `id_pc_consigliato` INT(11),
-    `creatore` VARCHAR(150),
-    PRIMARY KEY (`id_gioco`),
-    FOREIGN KEY (`id_pc_minimo`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (`id_pc_consigliato`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+    `price` DECIMAL(6, 2) DEFAULT 0.00,
+    `description` TEXT,
+    `id_min_pc` INT(11),
+    `id_recommended_pc` INT(11),
+    `creator` VARCHAR(150),
+    PRIMARY KEY (`id_game`),
+    FOREIGN KEY (`id_min_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (`id_recommended_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- recensioni
-CREATE TABLE `recensioni` (
+-- Reviews
+CREATE TABLE `reviews` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `id_gioco` INT(11) NOT NULL,
+    `id_game` INT(11) NOT NULL,
     `id_user` INT(11) NOT NULL,
-    `punteggio` TINYINT(1) CHECK (`punteggio` BETWEEN 1 AND 10),
-    `commento` TEXT,
-    `data_recensione` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `score` TINYINT(1) CHECK (`score` BETWEEN 1 AND 10),
+    `comment` TEXT,
+    `review_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_recensione` (`id_gioco`, `id_user`),
-    FOREIGN KEY (`id_gioco`) REFERENCES `giochi`(`id_gioco`) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE KEY `unique_review` (`id_game`, `id_user`),
+    FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`id_user`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- tag
+-- Tags
 CREATE TABLE `tag` (
     `id_tag` INT(11) NOT NULL AUTO_INCREMENT,
-    `nome` VARCHAR(50) NOT NULL UNIQUE,
+    `name` VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (`id_tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- tag_giochi (Tabella ponte Many-to-Many tra giochi e tag)
-CREATE TABLE `tag_giochi` (
-    `id_gioco` INT(11) NOT NULL,
+-- Game_Tags (Many-to-Many Bridge Table)
+CREATE TABLE `game_tags` (
+    `id_game` INT(11) NOT NULL,
     `id_tag` INT(11) NOT NULL,
-    PRIMARY KEY (`id_gioco`, `id_tag`),
-    FOREIGN KEY (`id_gioco`) REFERENCES `giochi`(`id_gioco`) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (`id_game`, `id_tag`),
+    FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`id_tag`) REFERENCES `tag`(`id_tag`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 ";
-
-// 1. Crea la connessione al server MySQL (senza specificare il DB)
-$conn = new mysqli($servername, $username, $password);
-
-// Verifica la connessione
-if ($conn->connect_error) {
-    die("<h1> Connessione fallita: " . $conn->connect_error . "</h1>");
-}
-
-// 2. Esegue lo script SQL
-// NOTA: mysqli::multi_query() è usato perché ci sono più istruzioni SQL separate da ';'.
-if ($conn->multi_query($sql_script) === TRUE) {
-    echo "<h1>Setup del Database '$dbname' completato con successo!</h1>";
-    echo "Tutte le tabelle e le relazioni sono state create.";
-} else {
-    echo "<h1>Errore durante il setup del database: " . $conn->error . "</h1>";
-    echo "<p>Controlla che MySQL sia attivo in XAMPP.</p>";
-}
-
-$conn->close();
