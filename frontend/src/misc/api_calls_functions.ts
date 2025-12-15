@@ -39,6 +39,7 @@ export async function getIsLoggedIn(): Promise<UserInfoResponse> {
       message: data["message"],
       username: data["username"]
     };
+    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -123,6 +124,7 @@ export async function login(username: string, password: string): Promise<UserInf
       message: data["message"],
       username: data["username"]
     };
+    console.log(result);
     return result;
 
   } catch (error) {

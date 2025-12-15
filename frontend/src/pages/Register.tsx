@@ -43,6 +43,7 @@ export function Register() {
                     onPasswordChange={(e) => setPassword(e.target.value)}
                     username={username}
                     password={password}
+                    errorMessage={errorMessage}
                 />)}
             <p>{errorMessage}</p>
         </React.Fragment>
