@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../misc/AuthContextHandler";
 interface NavBarProps {
     username?: string;
     title: string;
@@ -8,6 +9,7 @@ interface NavBarProps {
 
 
 export function NavBar(props: NavBarProps) {
+    const {username}=useAuth();
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
@@ -44,7 +46,7 @@ export function NavBar(props: NavBarProps) {
                 <div className="flex gap-2">
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
-                            <span>{props.username}</span>
+                            <span>{username}</span>
                             <div className="btn-circle avatar">
                                 <div className="w-10 rounded-full">
                                     <img

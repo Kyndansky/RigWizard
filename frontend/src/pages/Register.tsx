@@ -15,6 +15,7 @@ export function Register() {
         const registerResponse = await register(username, password);
         if (registerResponse.successful===true) {
             setIsAuthenticated(true);
+            setUsername(registerResponse.username);
         }
         else {
             setErrorMessage(registerResponse.message||"error");

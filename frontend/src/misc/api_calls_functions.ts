@@ -10,6 +10,7 @@ interface UserInfoResponse extends Response{
 }
 
 interface GameCollectionResponse extends Response{
+  totalNumberOfGames:number
   games:Game[],
 }
 
@@ -135,7 +136,7 @@ export async function login(username: string, password: string): Promise<UserInf
   }
 }
 
-//fetches some games from the backend (the exact games depend on the page number)
+//fetches some games from the store
 //for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
 export async function getGames(/*pageNumber:number*/): Promise<GameCollectionResponse> {
   // try {
@@ -167,9 +168,40 @@ export async function getGames(/*pageNumber:number*/): Promise<GameCollectionRes
   const response:GameCollectionResponse={
     successful:true,
     message:"",
-    games:gameTestArray
+    games:gameTestArray,
+    totalNumberOfGames:gameTestArray.length
   }
   return response;
+}
+//fetches some games from the current user's library
+//for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
+export async function getLibraryGames(pageNumber:number): Promise<GameCollectionResponse> {
+  try {
+    const response = await api.get('getLibraryGames.php',
+      {
+        params:{
+          pageNumber:pageNumber
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: GameCollectionResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      games:data["games"],
+      totalNumberOfGames:Number(["totalNumGames"])
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameCollectionResponse = { successful: false, message: "server error", games:[], totalNumberOfGames:0};
+    return result;
+  }
 }
 
 const gameTestArray:Game[]=[

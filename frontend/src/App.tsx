@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Navigate } from "react-router-dom";
-import { getGames, getTags, logout } from "./misc/api_calls_functions";
+import { getLibraryGames, getTags, logout } from "./misc/api_calls_functions";
 import NavBar from "./components/NavBar";
 import { useAuth } from "./misc/AuthContextHandler";
 import { LoadingScreen } from "./components/LoadingScreen";
@@ -13,13 +13,13 @@ function App() {
   const [games, setGames] = useState<Game[] | undefined>(undefined);
   const [tags, setTags] = useState<string[] | undefined>(undefined);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [searchText,setSearchText]=useState<string>("");
+  const [searchText, setSearchText] = useState<string>("");
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { isAuthenticated, isLoading, setIsAuthenticated, username } = useAuth();
 
   async function fetchGames() {
-    const fetchedGamesResponse = await getGames(/*pageNumber*/);
+    const fetchedGamesResponse = await getLibraryGames(pageNumber);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
     }
@@ -91,12 +91,13 @@ function App() {
                     <path d="m21 21-4.3-4.3"></path>
                   </g>
                 </svg>
-                <input type="search" required placeholder="Search game title here" value={searchText} onChange={(e)=>{
+                <input type="search" required placeholder="Search game title here" value={searchText} onChange={(e) => {
                   setSearchText(e.target.value);
-                }}/>
+                }} />
               </label>
             </div>
 
+            {/* showing error if there is any */}
             {errorMessage !== "" ? (
               <div role="alert" className="alert alert-error">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
@@ -105,6 +106,7 @@ function App() {
                 <span>{errorMessage}</span>
               </div>
             ) : (
+
               <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-7 mt-4">
                 {/* filters games by only displaying those that have the same tags that are selected and whose title contain what is in the searchbar*/}
                 {games?.filter(game => {
@@ -117,10 +119,28 @@ function App() {
                     imageUrl={game.imgPath}
                   />
                 ))}
-              </div>
-            )}
-            {/*grid containing games to display*/}
 
+              </div>
+
+            )}
+            {/* section for changing page (to load more games) */}
+            <div className="flex items-center w-full mt-4">
+              <div className="join mx-auto">
+                <button className="join-item btn" onClick={() => {
+                  if (pageNumber > 1) {
+                    setPageNumber(pageNumber - 1);
+                    fetchGames();
+                  }
+
+                }}>&lt;</button>
+                <button className="join-item btn-active bg-primary px-4">{pageNumber}</button>
+                <button className="join-item btn" onClick={() => {
+                  setPageNumber(pageNumber + 1);
+                  fetchGames();
+                }}>&gt;</button>
+
+              </div>
+            </div>
           </main>
 
           {/*Filters sidebar*/}
