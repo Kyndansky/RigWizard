@@ -12,12 +12,12 @@ export function Register() {
     const [errorMessage, setErrorMessage] = React.useState<string>("");
 
     async function handleRegister() {
-        const attemptSuccessful = await register(username, password);
-        if (attemptSuccessful) {
+        const registerResponse = await register(username, password);
+        if (registerResponse.successful===true) {
             setIsAuthenticated(true);
         }
         else {
-            setErrorMessage("error");
+            setErrorMessage(registerResponse.message||"error");
         }
 
     }

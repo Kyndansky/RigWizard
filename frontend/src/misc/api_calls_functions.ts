@@ -95,6 +95,7 @@ export async function register(username: string, password: string): Promise<User
       message: data["message"],
       username: data["username"]
     };
+    console.log(result);
     return result;
 
   } catch (error) {

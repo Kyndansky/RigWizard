@@ -1,9 +1,7 @@
 <?php
-require_once "../DBConnect.php";
-require_once "cors.php";
 
-// SQL SCRIPT: DATA POPULATION (DML)
-$sql_data = "
+// this script adds example data into the database
+$sql_script = "
 USE `rigwizard`;
 
 -- RAM
@@ -72,3 +70,35 @@ INSERT INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ( 2, 2, 10, 'Semplice e infinito. Un classico senza tempo.'),
 ( 3, 1, 10, 'La migliore storia e il miglior open-world mai creati.');
 ";
+
+
+//connecting to mysql (without connecting to the database (because it hasn't been created yet))
+$dbConnection = new mysqli("localhost", "root", "");
+if ($dbConnection->connect_error) {
+    die("<h1> Connessione fallita: " . $dbConnection->connect_error . "</h1>");
+}
+
+if ($dbConnection->multi_query($sql_script)) {
+
+    $success_message = "SQL script executed successfully. Database 'rigwizard' created and tables populated.";
+    $error_occurred = false;
+
+    do {
+        // Check for errors that occurred during the execution of the statement
+        if ($dbConnection->errno) {
+            echo "Error executing SQL script. Failed statement: " . $dbConnection->error . "\n";
+            $error_occurred = true;
+            break;
+        }
+
+    } while ($dbConnection->more_results() && $dbConnection->next_result());
+
+    if (!$error_occurred) {
+        echo $success_message;
+    }
+
+} else {
+    echo "Error (during multi query): " . $dbConnection->error;
+}
+
+$dbConnection->close();
