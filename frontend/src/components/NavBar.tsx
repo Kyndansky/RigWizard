@@ -8,7 +8,7 @@ interface NavBarProps {
 
 
 export function NavBar(props: NavBarProps) {
-    const [theme,setTheme]=useState<"light"|"dark">("dark");
+    const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
             <div className="navbar bg-base-100 shadow-sm">
@@ -19,7 +19,7 @@ export function NavBar(props: NavBarProps) {
                 {/*Theme button section*/}
                 <label className="swap swap-rotate ">
                     {/* this hidden checkbox controls the state */}
-                    <input type="checkbox" className="theme-controller" value={theme} onClick={()=>{theme==="dark"?setTheme("light"):setTheme("dark")}}/>
+                    <input type="checkbox" className="theme-controller" value={theme} onClick={() => { theme === "dark" ? setTheme("light") : setTheme("dark") }} />
 
                     {/* sun icon */}
                     <svg
@@ -44,7 +44,7 @@ export function NavBar(props: NavBarProps) {
                 <div className="flex gap-2">
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
-                            {props.username && <span>{props.username}</span>}
+                            <span>{props.username}</span>
                             <div className="btn-circle avatar">
                                 <div className="w-10 rounded-full">
                                     <img

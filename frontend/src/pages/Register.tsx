@@ -45,7 +45,6 @@ export function Register() {
                     password={password}
                     errorMessage={errorMessage}
                 />)}
-            <p>{errorMessage}</p>
         </React.Fragment>
     )
 }

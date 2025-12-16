@@ -54,8 +54,6 @@ export function Login() {
         password={password}
         errorMessage={errorMessage}
       />
-
-      <p>{errorMessage}</p>
     </React.Fragment>
   );
 }

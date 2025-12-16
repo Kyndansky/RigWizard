@@ -55,18 +55,15 @@ $stmtCheck->close();
 $stmt = $dbConnection->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
 $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
-$stmt->execute();
-$response = [
+$response=[
     "status" => "success",
-    "message" => "User registered successfully",
-    "username" => $username
+        "message" => "User registered successfully",
+        "username" => $username,
 ];
-$stmt->close();
-
-if (!isset($_SESSION))
+if(!isset($_SESSION)){
     session_start();
-
-$_SESSION['username'] = $username;
-
-//sends the response back to the client
+}
+$_SESSION["username"]=$username;
 echo json_encode($response);
+$stmt->close();
+$dbConnection->close();

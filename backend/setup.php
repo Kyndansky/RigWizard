@@ -78,7 +78,6 @@ CREATE TABLE `pc` (
 CREATE TABLE `users` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(50) NOT NULL UNIQUE,
-    `email` VARCHAR(150) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `id_main_pc` INT(11) DEFAULT NULL,
     `registration_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -62,6 +62,5 @@ if (!isset($_SESSION))
 
 $_SESSION['username'] = $username;
 
-
 //sends the response back to the client
 echo json_encode($response);
