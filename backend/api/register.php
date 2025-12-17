@@ -55,6 +55,7 @@ $stmtCheck->close();
 $stmt = $dbConnection->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
 $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
+$stmt->execute();
 $response=[
     "status" => "success",
         "message" => "User registered successfully",

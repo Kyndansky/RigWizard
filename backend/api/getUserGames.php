@@ -58,7 +58,9 @@ if ($result_tags) {
 $response = [
     'total_games' => $total_games,
     'games' => $games_list,
-    'tags' => $tags_list
+    'tags' => $tags_list,
+    'message' => 'User games retrieved successfully',
+    'status' => 'success'
 ];
 
 echo json_encode($response, JSON_PRETTY_PRINT);
