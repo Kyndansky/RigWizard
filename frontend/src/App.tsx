@@ -26,10 +26,10 @@ function App() {
     const fetchedGamesResponse = await getLibraryGames(pageNumber);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
-      const roundedPageNumber = Math.round(
+      const roundedPageNumber = Math.ceil(
         fetchedGamesResponse.totalNumberOfGames / 20
       );
-      if (roundedPageNumber >= 0) {
+      if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
       }
     } else {
@@ -154,22 +154,39 @@ function App() {
             )}
             {/* section for changing page (to load more games) */}
             <div className="flex items-center w-full mt-4">
+              {/* button for switching to first page */}
               <div className="join mx-auto">
                 <button
-                  className="join-item btn"
+                  className="join-item btn px-4"
                   onClick={() => {
-                    if (pageNumber > 1) {
-                      setPageNumber(pageNumber - 1);
+                    if (pageNumber !== 1) {
+                      setPageNumber(1);
                       fetchGames();
                     }
                   }}
                 >
-                  &lt;
+                  {"<<"}
                 </button>
+                {/* button for switching to previous page */}
+                {pageNumber>1 && (
+                  <button className="join-item btn px-4" onClick={()=>{
+                    setPageNumber(pageNumber-1);
+                    fetchGames();
+                  }}>{pageNumber-1}</button>
+                )}
+                {/* current page button */}
                 <button className="join-item btn-active bg-primary px-4">
                   {pageNumber}
                 </button>
-                {maxPageNumber && pageNumber!==maxPageNumber &&(
+                {/* button for switching to next page */}
+                {maxPageNumber && pageNumber<maxPageNumber && (
+                  <button className="join-item btn px-4" onClick={()=>{
+                    setPageNumber(pageNumber+1);
+                    fetchGames();
+                  }}>{pageNumber+1}</button>
+                )}
+                {/* button for switching to last page number */}
+                {maxPageNumber && pageNumber!==maxPageNumber && pageNumber+1!=maxPageNumber &&(
                   <button
                     className="join-item btn"
                     onClick={() => {
@@ -181,13 +198,15 @@ function App() {
                   </button>
                 )}
                 <button
-                  className="join-item btn"
+                  className="join-item btn px-4"
                   onClick={() => {
-                    setPageNumber(pageNumber + 1);
-                    fetchGames();
+                    if (maxPageNumber && pageNumber !== maxPageNumber) {
+                      setPageNumber(maxPageNumber);
+                      fetchGames();
+                    }
                   }}
                 >
-                  &gt;
+                  {">>"}
                 </button>
               </div>
             </div>

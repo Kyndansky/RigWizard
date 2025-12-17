@@ -10,7 +10,7 @@ export function GameInfoCard(props: GameInfoCardProps) {
   return (
     <React.Fragment>
       <div className="hover-3d">
-        <div className="card bg-base-100 w-auto shadow-sm">
+        <div className="card bg-base-100 w-auto shadow-sm md:max-h-40 sm:max-h-30 xl:max-h-100">
           <figure className="h-60 ">
             <img src={props.imageUrl} alt="Game image" className="w-full h-full"/>
           </figure>

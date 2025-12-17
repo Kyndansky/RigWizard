@@ -248,28 +248,30 @@ const gameTestArray:Game[]=[
 //fetches all possible tags from the backend
 //for now i hardcoded an array of test tags since the backend file that returns the games needs to be changed
 export async function getTags(): Promise<TagCollectionResponse> {
-  // try {
-  //   const response = await api.get('gettags.php',
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  //   );
+  try {
+    const response = await api.get('gettags.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-  //   const data = await response.data;
-  //   const result: TagCollectionResponse =
-  //   {
-  //     successful: data["status"] === "success" ? true : false,
-  //     message: data["message"],
-  //     tags:data["tags"],
-  //   };
-  //   return result;
-  // } catch (error) {
-  //   console.log("error from php server:", error);
-  //   const result: TagCollectionResponse = { successful: false, message: "server error", tags:[] };
-  //   return result;
-  // }
+    const data = await response.data;
+    console.log(data);
+    const result: TagCollectionResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      tags:data.tags||[],
+    };
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: TagCollectionResponse = { successful: false, message: "server error", tags:[] };
+    return result;
+  }
 
   const response:TagCollectionResponse={
     successful:true,
