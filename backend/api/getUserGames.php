@@ -33,21 +33,21 @@ if (!$username) {
 $sql_games = "SELECT g.id_game, g.title, g.description
               FROM games g
               JOIN user_games ug ON g.id_game = ug.id_game
-              JOIN users u ON ug.id = u.id
+              JOIN users u ON ug.id_user = u.id
               WHERE u.username = '$username'
               ORDER BY g.title ASC
               LIMIT $offset, $games_per_page";
 
 $sql_totalGames = "SELECT COUNT(*) AS total_games
                    FROM user_games ug
-                   JOIN users u ON ug.id_user = u.id_user
+                   JOIN users u ON ug.id_user = u.id
                    WHERE u.username = '$username'";
 
 $sql_tags = "SELECT tg.id_game, t.name AS tag_name
-             FROM tag_games tg
+             FROM game_tags tg
              JOIN tag t ON tg.id_tag = t.id_tag
              JOIN user_games ug ON tg.id_game = ug.id_game
-             JOIN users u ON ug.id_user = u.id_user
+             JOIN users u ON ug.id_user = u.id
              WHERE u.username = '$username'";
 
 $result_games = $dbConnection->query($sql_games);

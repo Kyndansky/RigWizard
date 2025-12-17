@@ -195,7 +195,6 @@ export async function getLibraryGames(pageNumber:number): Promise<GameCollection
       games:data["games"],
       totalNumberOfGames:Number(["total_games"])
     };
-    console.log(pageNumber);
     console.log(result);
     return result;
   } catch (error) {
