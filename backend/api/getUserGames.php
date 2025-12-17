@@ -16,7 +16,15 @@ $offset = ($pageNumber - 1) * $games_per_page;
 
 // If no username in session, return empty list
 if (!$username) {
-    echo json_encode([], JSON_PRETTY_PRINT);
+    $response = [
+    'total_games' => "down",
+    'games' => "",
+    'tags' => "",
+    'message' => 'User games retrieved successfully',
+    'status' => 'fail'
+    
+];
+    echo json_encode($response, JSON_PRETTY_PRINT);
     exit();
 }
 
