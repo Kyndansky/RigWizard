@@ -138,13 +138,13 @@ function App() {
                   ?.filter((game) => {
                     return (
                       selectedTags.every((tag) => game.tags.includes(tag)) &&
-                      game.name.toLowerCase().includes(searchText.toLowerCase())
+                      game.title.toLowerCase().includes(searchText.toLowerCase())
                     );
                   })
                   .map((game, index) => (
                     <GameInfoCard
                       key={index}
-                      name={game.name}
+                      name={game.title}
                       description={game.description}
                       tags={game.tags}
                       imageUrl={game.imgPath}
@@ -169,7 +169,7 @@ function App() {
                 <button className="join-item btn-active bg-primary px-4">
                   {pageNumber}
                 </button>
-                {maxPageNumber && (
+                {maxPageNumber && pageNumber!==maxPageNumber &&(
                   <button
                     className="join-item btn"
                     onClick={() => {

@@ -1,5 +1,5 @@
 export interface Game{
-    name:string;
+    title:string;
     description:string;
     imgPath:string;
     tags:string[];

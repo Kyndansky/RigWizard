@@ -193,7 +193,7 @@ export async function getLibraryGames(pageNumber:number): Promise<GameCollection
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games:data["games"],
-      totalNumberOfGames:Number(["total_games"])
+      totalNumberOfGames:data["total_games"]
     };
     console.log(result);
     return result;
@@ -214,31 +214,31 @@ export async function getLibraryGames(pageNumber:number): Promise<GameCollection
 
 const gameTestArray:Game[]=[
   {
-    name:"Hollow Knight: Silksong",
+    title:"Hollow Knight: Silksong",
     description:"Very cool game",
     imgPath:"http://localhost/progetti/imgHostateTest/silksong.jpg",
     tags:["Action","Platformer","Indie","2D","Metroidvania"]
   },
   {
-    name:"Hollow Knight",
+    title:"Hollow Knight",
     description:"Another very cool game",
     imgPath:"http://localhost/progetti/imgHostateTest/hollowKnight.jpg",
     tags:["Action","Platformer","Indie","2D","Metroidvania"]
   },
   {
-    name:"Celeste",
+    title:"Celeste",
     description:"Another very cool game",
     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
     tags:["Platformer","Indie","2D"]
   },
   {
-    name:"Celeste",
+    title:"Celeste",
     description:"Another very cool game",
     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
     tags:["Platformer","Indie","2D"]
   },
   {
-    name:"Celeste",
+    title:"Celeste",
     description:"Another very cool game",
     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
     tags:["Platformer","Indie","2D"]
