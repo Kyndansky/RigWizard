@@ -33,7 +33,7 @@ if (!$username) {
 $sql_games = "SELECT g.id_game, g.title, g.description
               FROM games g
               JOIN user_games ug ON g.id_game = ug.id_game
-              JOIN users u ON ug.id_user = u.id_user
+              JOIN users u ON ug.id = u.id
               WHERE u.username = '$username'
               ORDER BY g.title ASC
               LIMIT $offset, $games_per_page";
