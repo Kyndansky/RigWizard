@@ -4,8 +4,15 @@ require_once "DBConnect.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
+$games_per_page = 20;
 
 $username = $_SESSION["username"] ?? '';
+
+// Set page number defaulting to 1
+$pageNumber = isset($data['pageNumber']) ? (int) $data['pageNumber'] : 1;
+
+// Calculate start position for database query
+$offset = ($pageNumber - 1) * $games_per_page;
 
 // If no username in session, return empty list
 if (!$username) {
@@ -18,7 +25,8 @@ $sql_games = "SELECT g.id_gioco, g.titolo, g.descrizione
               JOIN user_games ug ON g.id_gioco = ug.id_gioco
               JOIN users u ON ug.id_utente = u.id_utente
               WHERE u.username = '$username'
-              ORDER BY g.titolo ASC";
+              ORDER BY g.titolo ASC
+              LIMIT $offset, $games_per_page";
 
 $sql_totalGames = "SELECT COUNT(*) AS total_games
                    FROM user_games ug
