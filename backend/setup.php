@@ -124,13 +124,24 @@ CREATE TABLE `tag` (
     PRIMARY KEY (`id_tag`)
 );
 
--- Game_Tags (Many-to-Many Bridge Table)
+-- Game_Tags 
 CREATE TABLE `game_tags` (
     `id_game` INT(11) NOT NULL,
     `id_tag` INT(11) NOT NULL,
     PRIMARY KEY (`id_game`, `id_tag`),
     FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`id_tag`) REFERENCES `tag`(`id_tag`) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- User_Games 
+-- This represents the User's Library
+CREATE TABLE `user_games` (
+    `id_user` INT(11) NOT NULL,
+    `id_game` INT(11) NOT NULL,
+    `purchase_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id_user`, `id_game`),
+    FOREIGN KEY (`id_user`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 ";
 
@@ -169,3 +180,4 @@ if ($dbConnection->multi_query($sql_script)) {
 }
 
 $dbConnection->close();
+?>

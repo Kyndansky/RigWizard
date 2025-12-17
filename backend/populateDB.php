@@ -1,7 +1,6 @@
 <?php
 
-require_once "DBConnect.php";
-
+require_once "DBConnect.php"; // Assumes this file creates a connection object named $conn
 
 // SQL SCRIPT: DATA POPULATION
 // Using 'INSERT IGNORE' prevents the script from crashing if data already exists
@@ -68,6 +67,14 @@ INSERT IGNORE INTO `game_tags` (`id_game`, `id_tag`) VALUES
 (2, 5), (2, 6),
 (3, 2), (3, 3), (3, 7);
 
+-- USER_GAMES (Users' Library)
+-- Linking Users (ID 1, 2) to Games (ID 1, 2, 3)
+INSERT IGNORE INTO `user_games` (`id_user`, `id_game`) VALUES
+(1, 1), -- Gamer_Pro77 owns Cyberpunk 2077
+(1, 3), -- Gamer_Pro77 owns Red Dead Redemption 2
+(2, 2), -- BetaTester01 owns Terraria
+(2, 1); -- BetaTester01 owns Cyberpunk 2077
+
 -- REVIEWS
 INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ( 1, 1, 9, 'Assolutamente incredibile dopo le patch, grafica mozzafiato!'),
@@ -75,10 +82,8 @@ INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ( 3, 1, 10, 'La migliore storia e il miglior open-world mai creati.');
 ";
 
-
-
-// Execute the multi-query script
-if ($dbConnection->multi_query($sql_script)) {
+// Execute the multi-query script using $conn (from DBConnect.php)
+if ($conn->multi_query($sql_script)) {
     
     $success_message = "SQL script executed successfully. Database populated (duplicates ignored).";
     $error_occurred = false;
@@ -86,7 +91,7 @@ if ($dbConnection->multi_query($sql_script)) {
     // Cycle through all results of the multi_query
     do {
         // We store the result to clear the buffer (essential for multi_query)
-        if ($result = $dbConnection->store_result()) {
+        if ($result = $conn->store_result()) {
             $result->free();
         }
 
@@ -96,7 +101,7 @@ if ($dbConnection->multi_query($sql_script)) {
             $error_occurred = true;
         }
 
-    } while ($dbConnection->more_results() && $dbConnection->next_result());
+    } while ($conn->more_results() && $conn->next_result());
 
     if (!$error_occurred) {
         echo $success_message;
