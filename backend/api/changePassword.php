@@ -1,101 +1,42 @@
 <?php
-// Imposta l'intestazione per restituire dati JSON
-header('Content-Type: application/json');
+require_once "cors.php";
+require_once "DBConnect.php";
 
-// GESTIONE INPUT DAL FRONTEND (RICHIESTA JSON)
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 
-// Estrazione dei Parametri
-$username = isset($data['username']) ? trim($data['username']) : null;
-$current_password = isset($data['current_password']) ? $data['current_password'] : null;
-$new_password = isset($data['new_password']) ? $data['new_password'] : null;
+$username = $data['username'] ?? '';
+$current_password = $data['current_password'] ?? '';
+$new_password = $data['new_password'] ?? '';
 
-// Validazione base
-if (empty($username) || empty($current_password) || empty($new_password)) {
-    http_response_code(400);
-    echo json_encode(['successo' => false, 'messaggio' => 'Tutti i campi (username, password corrente e nuova password) sono obbligatori.']);
+// Basic validation
+if (!$username || !$current_password || !$new_password) {
+    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
     exit();
 }
 
 
-// CONFIGURAZIONE E CONNESSIONE DB
-$servername = "localhost";
-$username_db = "root";
-$password_db = "";
-$dbname = "rigwizard";
-
-$conn = new mysqli($servername, $username_db, $password_db, $dbname);
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['successo' => false, 'messaggio' => 'Connessione al database fallita.']);
-    exit();
-}
-
-// RECUPERO E VERIFICA PASSWORD CORRENTE
-
-// Prepara la query per recuperare l'hash della password basato sull'username
-$sql_select = "SELECT password_hash FROM users WHERE username = ?";
-$stmt_select = $conn->prepare($sql_select);
-
-if (!$stmt_select) {
-    http_response_code(500);
-    echo json_encode(['successo' => false, 'messaggio' => 'Errore nella preparazione della query di verifica.']);
-    $conn->close();
-    exit();
-}
-
-$stmt_select->bind_param("s", $username);
-$stmt_select->execute();
-$result = $stmt_select->get_result();
-
-if ($result->num_rows === 0) {
-    http_response_code(401);
-    echo json_encode(['successo' => false, 'messaggio' => 'Utente non trovato.']);
-    $stmt_select->close();
-    $conn->close();
-    exit();
-}
-
+$sql = "SELECT password_hash FROM users WHERE username = '$username'";
+$result = $conn->query($sql);
 $user = $result->fetch_assoc();
-$stored_hash = $user['password_hash'];
-$stmt_select->close();
 
-// Verifica se la password corrente fornita è corretta
-if (!password_verify($current_password, $stored_hash)) {
-    http_response_code(401);
-    echo json_encode(['successo' => false, 'messaggio' => 'Password corrente non corretta.']);
-    $conn->close();
-    exit();
-}
+// Check if user exists and password is correct
+if ($user && password_verify($current_password, $user['password_hash'])) {
 
-// AGGIORNAMENTO DELLA PASSWORD
+    $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
 
-// ⚠️ Genera un NUOVO hash sicuro per la nuova password ⚠️
-$new_password_hash = password_hash($new_password, PASSWORD_DEFAULT);
+    // We put '$new_hash' and '$username' directly inside the string
+    $sql_update = "UPDATE users SET password_hash = '$new_hash' WHERE username = '$username'";
 
-// Prepara la query per aggiornare l'hash della password
-$sql_update = "UPDATE users SET password_hash = ? WHERE username = ?";
-$stmt_update = $conn->prepare($sql_update);
+    if ($conn->query($sql_update)) {
+        echo json_encode(['success' => true, 'message' => 'Password updated successfully.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Database error.']);
+    }
 
-if (!$stmt_update) {
-    http_response_code(500);
-    echo json_encode(['successo' => false, 'messaggio' => 'Errore nella preparazione della query di aggiornamento.']);
-    $conn->close();
-    exit();
-}
-
-// "ss": entrambi i parametri (il nuovo hash e l'username) sono stringhe
-$stmt_update->bind_param("ss", $new_password_hash, $username);
-
-if ($stmt_update->execute()) {
-    http_response_code(200);
-    echo json_encode(['successo' => true, 'messaggio' => 'Password aggiornata con successo.']);
 } else {
-    http_response_code(500);
-    echo json_encode(['successo' => false, 'messaggio' => 'Errore durante l\'aggiornamento nel database: ' . $stmt_update->error]);
+    echo json_encode(['success' => false, 'message' => 'Invalid username or current password.']);
 }
 
-$stmt_update->close();
 $conn->close();
 ?>
