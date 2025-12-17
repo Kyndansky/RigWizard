@@ -5,7 +5,7 @@ require_once "../DBConnect.php";
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 $games_per_page = 20;
-if(!isset($_SESSION)) {
+if (!isset($_SESSION)) {
     session_start();
 }
 $username = $_SESSION["username"] ?? '';
@@ -19,13 +19,12 @@ $offset = ($pageNumber - 1) * $games_per_page;
 // If no username in session, return empty list
 if (!$username) {
     $response = [
-    'total_games' => "down",
-    'games' => "",
-    'tags' => "",
-    'message' => 'User games retrieved successfully',
-    'status' => 'fail'
-    
-];
+        'status' => 'error',
+        'message' => 'User games retrieved successfully',
+        'games' => "",
+    ];
+
+
     echo json_encode($response, JSON_PRETTY_PRINT);
     exit();
 }
@@ -61,7 +60,7 @@ $result_tags = $dbConnection->query($sql_tags);
 $total_games = 0;
 if ($result_total) {
     $row = $result_total->fetch_assoc();
-    $total_games = (int)$row['total_games'];
+    $total_games = (int) $row['total_games'];
 }
 $games_list = [];
 if ($result_games) {
@@ -70,12 +69,7 @@ if ($result_games) {
     }
 }
 
-$tags_list = [];
-if ($result_tags) {
-    while ($row = $result_tags->fetch_assoc()) {
-        $tags_list[] = $row;
-    }
-}
+
 // Attach tags to corresponding games
 foreach ($games_list as &$game) {
     $game_tags = [];
@@ -88,10 +82,10 @@ foreach ($games_list as &$game) {
 }
 
 $response = [
-    'total_games' => $total_games,
-    'games' => $games_list,
+    'status' => 'success',
     'message' => 'User games retrieved successfully',
-    'status' => 'success'
+    'games' => $games_list,
+    'total_games' => $total_games,
 ];
 
 echo json_encode($response, JSON_PRETTY_PRINT);
