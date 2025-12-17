@@ -30,7 +30,7 @@ if (!$username) {
     exit();
 }
 // query to get user games with pagination
-$sql_games = "SELECT g.id_game, g.title, g.description
+$sql_games = "SELECT g.id_game, g.title, g.description, g.img_URL
               FROM games g
               JOIN user_games ug ON g.id_game = ug.id_game
               JOIN users u ON ug.id_user = u.id

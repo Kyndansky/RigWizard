@@ -45,10 +45,10 @@ INSERT IGNORE INTO `users` (`username`, `password_hash`, `id_main_pc`) VALUES
 ( 'User_Without_PC', 'placeholder_hash_3', NULL);
 
 -- GAMES (using PC IDs)
-INSERT IGNORE INTO `games` (`title`, `release_year`, `publisher`, `price`, `description`, `id_min_pc`, `id_recommended_pc`, `creator`) VALUES
-( 'Cyberpunk 2077', 2020, 'CD Projekt', 59.99, 'Un RPG open-world d\'azione-avventura ambientato a Night City.', 2, 1, 'CD Projekt Red'),
-( 'Terraria', 2011, 'Re-Logic', 9.99, 'Un sandbox 2D con esplorazione e combattimento.', 4, 4, 'Re-Logic'),
-( 'Red Dead Redemption 2', 2018, 'Rockstar Games', 49.99, 'Un epico open-world ambientato nell\'America della fine del 1800.', 3, 2, 'Rockstar Games');
+INSERT IGNORE INTO `games` (`title`, `release_year`, `publisher`, `price`, `description`, `id_min_pc`, `id_recommended_pc`, `creator`, `img_URL`) VALUES
+( 'Cyberpunk 2077', 2020, 'CD Projekt', 59.99, 'Un RPG open-world d\'azione-avventura ambientato a Night City.', 2, 1, 'CD Projekt Red', ''),
+( 'Terraria', 2011, 'Re-Logic', 9.99, 'Un sandbox 2D con esplorazione e combattimento.', 4, 4, 'Re-Logic', ''),
+( 'Red Dead Redemption 2', 2018, 'Rockstar Games', 49.99, 'Un epico open-world ambientato nell\'America della fine del 1800.', 3, 2, 'Rockstar Games', '');
 
 -- TAGS
 INSERT IGNORE INTO `tag` (`name`) VALUES

@@ -100,7 +100,8 @@ CREATE TABLE `games` (
     `creator` VARCHAR(150),
     PRIMARY KEY (`id_game`),
     FOREIGN KEY (`id_min_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-    FOREIGN KEY (`id_recommended_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY (`id_recommended_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+    `img_URL` VARCHAR(255) DEFAULT ''
 );
 
 -- Reviews
