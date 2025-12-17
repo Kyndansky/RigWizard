@@ -30,24 +30,24 @@ if (!$username) {
     exit();
 }
 
-$sql_games = "SELECT g.id_gioco, g.titolo, g.descrizione 
-              FROM giochi g
-              JOIN user_games ug ON g.id_gioco = ug.id_gioco
-              JOIN users u ON ug.id_utente = u.id_utente
+$sql_games = "SELECT g.id_game, g.title, g.description
+              FROM games g
+              JOIN user_games ug ON g.id_game = ug.id_game
+              JOIN users u ON ug.id_user = u.id_user
               WHERE u.username = '$username'
-              ORDER BY g.titolo ASC
+              ORDER BY g.title ASC
               LIMIT $offset, $games_per_page";
 
 $sql_totalGames = "SELECT COUNT(*) AS total_games
                    FROM user_games ug
-                   JOIN users u ON ug.id_utente = u.id_utente
+                   JOIN users u ON ug.id_user = u.id_user
                    WHERE u.username = '$username'";
 
-$sql_tags = "SELECT tg.id_gioco, t.nome AS tag_name
-             FROM tag_giochi tg
+$sql_tags = "SELECT tg.id_game, t.name AS tag_name
+             FROM tag_games tg
              JOIN tag t ON tg.id_tag = t.id_tag
-             JOIN user_games ug ON tg.id_gioco = ug.id_gioco
-             JOIN users u ON ug.id_utente = u.id_utente
+             JOIN user_games ug ON tg.id_game = ug.id_game
+             JOIN users u ON ug.id_user = u.id_user
              WHERE u.username = '$username'";
 
 $result_games = $dbConnection->query($sql_games);
