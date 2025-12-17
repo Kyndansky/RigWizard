@@ -1,12 +1,12 @@
 <?php
 require_once "cors.php";
-require_once "DBConnect.php";
+require_once "../DBConnect.php";
 
 
 // Select ID (for logic) and Name (for display), ordered alphabetically
 $sql_tags = "SELECT id_tag, name FROM tag ORDER BY name ASC";
 
-$result = $conn->query($sql_tags);
+$result = $dbConnection->query($sql_tags);
 
 $tags_list = [];
 

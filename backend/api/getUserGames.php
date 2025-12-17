@@ -1,6 +1,6 @@
 <?php
 require_once "cors.php";
-require_once "DBConnect.php";
+require_once "../DBConnect.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
@@ -51,6 +51,7 @@ $sql_tags = "SELECT tg.id_gioco, t.nome AS tag_name
 $result_games = $dbConnection->query($sql_games);
 $result_total = $dbConnection->query($sql_totalGames);
 $result_tags = $dbConnection->query($sql_tags);
+
 
 $total_games = 0;
 if ($result_total) {
