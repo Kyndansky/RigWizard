@@ -29,7 +29,7 @@ if (!$username) {
     echo json_encode($response, JSON_PRETTY_PRINT);
     exit();
 }
-
+// query to get user games with pagination
 $sql_games = "SELECT g.id_game, g.title, g.description
               FROM games g
               JOIN user_games ug ON g.id_game = ug.id_game
@@ -38,11 +38,14 @@ $sql_games = "SELECT g.id_game, g.title, g.description
               ORDER BY g.title ASC
               LIMIT $offset, $games_per_page";
 
+// query to get total number of user games
+
 $sql_totalGames = "SELECT COUNT(*) AS total_games
                    FROM user_games ug
                    JOIN users u ON ug.id_user = u.id
                    WHERE u.username = '$username'";
 
+// query to get tags for user games
 $sql_tags = "SELECT tg.id_game, t.name AS tag_name
              FROM game_tags tg
              JOIN tag t ON tg.id_tag = t.id_tag
@@ -73,11 +76,20 @@ if ($result_tags) {
         $tags_list[] = $row;
     }
 }
+// Attach tags to corresponding games
+foreach ($games_list as &$game) {
+    $game_tags = [];
+    foreach ($tags_list as $tag) {
+        if ($tag['id_game'] == $game['id_game']) {
+            $game_tags[] = $tag['tag_name'];
+        }
+    }
+    $game['tags'] = $game_tags;
+}
 
 $response = [
     'total_games' => $total_games,
     'games' => $games_list,
-    'tags' => $tags_list,
     'message' => 'User games retrieved successfully',
     'status' => 'success'
 ];
