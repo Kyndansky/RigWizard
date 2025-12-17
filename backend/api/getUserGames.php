@@ -5,7 +5,9 @@ require_once "../DBConnect.php";
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 $games_per_page = 20;
-
+if(!isset($_SESSION)) {
+    session_start();
+}
 $username = $_SESSION["username"] ?? '';
 
 // Set page number defaulting to 1

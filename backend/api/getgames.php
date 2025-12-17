@@ -19,7 +19,7 @@ $sql_games = "SELECT id_gioco, titolo, descrizione
               ORDER BY titolo ASC 
               LIMIT $games_per_page OFFSET $offset";
 
-require_once "DBConnect.php";
+require_once "../DBConnect.php";
 // Run the query
 $result_games = $dbConnection->query($sql_games);
 
