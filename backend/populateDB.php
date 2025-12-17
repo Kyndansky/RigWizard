@@ -1,6 +1,6 @@
 <?php
 
-require_once "DBConnect.php"; // Assumes this file creates a connection object named $conn
+require_once "DBConnect.php"; 
 
 // SQL SCRIPT: DATA POPULATION
 // Using 'INSERT IGNORE' prevents the script from crashing if data already exists
@@ -83,7 +83,7 @@ INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ";
 
 // Execute the multi-query script using $conn (from DBConnect.php)
-if ($conn->multi_query($sql_script)) {
+if ($dbConnection->multi_query($sql_script)) {
     
     $success_message = "SQL script executed successfully. Database populated (duplicates ignored).";
     $error_occurred = false;
@@ -91,7 +91,7 @@ if ($conn->multi_query($sql_script)) {
     // Cycle through all results of the multi_query
     do {
         // We store the result to clear the buffer (essential for multi_query)
-        if ($result = $conn->store_result()) {
+        if ($result = $dbConnection->store_result()) {
             $result->free();
         }
 
@@ -101,7 +101,7 @@ if ($conn->multi_query($sql_script)) {
             $error_occurred = true;
         }
 
-    } while ($conn->more_results() && $conn->next_result());
+    } while ($dbConnection->more_results() && $dbConnection->next_result());
 
     if (!$error_occurred) {
         echo $success_message;
