@@ -176,12 +176,10 @@ export async function getGames(/*pageNumber:number*/): Promise<GameCollectionRes
 //fetches some games from the current user's library
 //for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
 export async function getLibraryGames(pageNumber:number): Promise<GameCollectionResponse> {
-  try {
-    const response = await api.get('getLibraryGames.php',
+  try {  
+    const response = await api.post('getUserGames.php',
+      pageNumber,
       {
-        params:{
-          pageNumber:pageNumber
-        },
         headers: {
           'Content-Type': 'application/json'
         }
@@ -189,19 +187,30 @@ export async function getLibraryGames(pageNumber:number): Promise<GameCollection
     );
 
     const data = await response.data;
+    console.log(data);
     const result: GameCollectionResponse =
     {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games:data["games"],
-      totalNumberOfGames:Number(["totalNumGames"])
+      totalNumberOfGames:Number(["total_games"])
     };
+    console.log(pageNumber);
+    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
     const result: GameCollectionResponse = { successful: false, message: "server error", games:[], totalNumberOfGames:0};
     return result;
   }
+  const result: GameCollectionResponse =
+    {
+      successful: true,
+      message: "successfully fetched games",
+      games:gameTestArray,
+      totalNumberOfGames:gameTestArray.length
+    };
+    return result;
 }
 
 const gameTestArray:Game[]=[
