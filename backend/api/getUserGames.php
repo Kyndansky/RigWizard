@@ -4,8 +4,6 @@ require_once "../DBConnect.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
-define('GAMES_PER_PAGE', 20);
-$games_per_page = GAMES_PER_PAGE;
 if (!isset($_SESSION)) 
     session_start();
 // Use null coalescing operator to fallback to empty string if username is not set in session
@@ -13,10 +11,8 @@ $username = $_SESSION["username"] ?? '';
 $username = $_SESSION["username"] ?? '';
 
 // Set page number defaulting to 1
-$pageNumber = isset($data['pageNumber']) ? (int) $data['pageNumber'] : 1;
-
-// Calculate start position for database query
-$offset = ($pageNumber - 1) * $games_per_page;
+$offset = isset($data['indexStart']) ? (int) $data['indexStart']-1 : 1;
+$games_per_page = isset($data['numOfGames']) ? (int) $data['numOfGames']-1 : 30;
 
 // If no username in session, return empty list
 if (!$username) {
@@ -25,7 +21,6 @@ if (!$username) {
         'message' => 'User games retrieved successfully',
         'games' => [],
     ];
-
 
     echo json_encode($response, JSON_PRETTY_PRINT);
     exit();
@@ -65,7 +60,6 @@ if ($result_tags) {
     }
 }
 
-
 $total_games = 0;
 if ($result_total) {
     $row = $result_total->fetch_assoc();
@@ -77,7 +71,6 @@ if ($result_games) {
         $games_list[] = $row;
     }
 }
-
 
 // Attach tags to corresponding games
 foreach ($games_list as &$game) {

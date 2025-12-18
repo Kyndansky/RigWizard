@@ -10,11 +10,12 @@ import { GameInfoCard } from "./components/GameInfoCard";
 import type { Game } from "./misc/interfaces";
 
 function App() {
+  const gamesPerPage = 20;
   const [games, setGames] = useState<Game[] | undefined>(undefined);
   const [tags, setTags] = useState<string[] | undefined>(undefined);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { isAuthenticated, isLoading, setIsAuthenticated, username } =
     useAuth();
@@ -22,15 +23,18 @@ function App() {
     undefined
   );
 
-  async function fetchGames() {
-    const fetchedGamesResponse = await getLibraryGames(pageNumber);
+  async function fetchGames(targetPage: number) {
+    const indexStart = (targetPage - 1) * gamesPerPage + 1;
+    const fetchedGamesResponse = await getLibraryGames(indexStart, gamesPerPage);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
+      setCurrentPageNumber(targetPage);
       const roundedPageNumber = Math.ceil(
-        fetchedGamesResponse.totalNumberOfGames / 20
+        fetchedGamesResponse.totalNumberOfGames / gamesPerPage
       );
       if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
+        console.log("rounded:" + roundedPageNumber);
       }
     } else {
       setErrorMessage(fetchedGamesResponse.message);
@@ -48,7 +52,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      await fetchGames();
+      await fetchGames(1);
       await fetchTags();
     })();
   }, []);
@@ -152,62 +156,57 @@ function App() {
                   ))}
               </div>
             )}
+
+            {/* TODO: make it so that when adding a filter or searching for a game (or when ordering by something when i add the feature to do that)
+            the frontend sends a request to the backend which in turn does a query to get all games that meets the requirements
+            (because currently the filters and the search bar only work on the 20 loaded games, which does not make much sense) */}
+
             {/* section for changing page (to load more games) */}
             <div className="flex items-center w-full mt-4">
-              {/* button for switching to first page */}
+
+
               <div className="join mx-auto">
-                <button
-                  className="join-item btn px-4"
-                  onClick={() => {
-                    if (pageNumber !== 1) {
-                      setPageNumber(1);
-                      fetchGames();
-                    }
-                  }}
-                >
-                  {"<<"}
-                </button>
+                {/* button for switching to first page */}
+                {currentPageNumber !== 1 && (
+                  <button
+                    className="join-item btn px-4"
+                    onClick={() => {
+                      if (currentPageNumber !== 1) {
+                        fetchGames(1);
+                      }
+                    }}
+                  >
+                    {"<<"}
+                  </button>
+                )}
+
                 {/* button for switching to previous page */}
-                {pageNumber>1 && (
-                  <button className="join-item btn px-4" onClick={()=>{
-                    setPageNumber(pageNumber-1);
-                    fetchGames();
-                  }}>{pageNumber-1}</button>
+                {currentPageNumber > 1 && (
+                  <button className="join-item btn px-4" onClick={() => {
+                    fetchGames(currentPageNumber - 1);
+                  }}>{currentPageNumber - 1}</button>
                 )}
                 {/* current page button */}
                 <button className="join-item btn-active bg-primary px-4">
-                  {pageNumber}
+                  {currentPageNumber}
                 </button>
                 {/* button for switching to next page */}
-                {maxPageNumber && pageNumber<maxPageNumber && (
-                  <button className="join-item btn px-4" onClick={()=>{
-                    setPageNumber(pageNumber+1);
-                    fetchGames();
-                  }}>{pageNumber+1}</button>
+                {maxPageNumber !== undefined && currentPageNumber < maxPageNumber && (
+                  <button className="join-item btn px-4" onClick={() => {
+                    fetchGames(currentPageNumber + 1);
+                  }}>{currentPageNumber + 1}</button>
                 )}
                 {/* button for switching to last page number */}
-                {maxPageNumber && pageNumber!==maxPageNumber && pageNumber+1!=maxPageNumber &&(
+                {maxPageNumber && currentPageNumber !== maxPageNumber && (
                   <button
                     className="join-item btn"
                     onClick={() => {
-                      setPageNumber(maxPageNumber);
-                      fetchGames();
+                      fetchGames(maxPageNumber);
                     }}
                   >
-                    {maxPageNumber}
+                    {">>"}
                   </button>
                 )}
-                <button
-                  className="join-item btn px-4"
-                  onClick={() => {
-                    if (maxPageNumber && pageNumber !== maxPageNumber) {
-                      setPageNumber(maxPageNumber);
-                      fetchGames();
-                    }
-                  }}
-                >
-                  {">>"}
-                </button>
               </div>
             </div>
           </main>
@@ -238,7 +237,7 @@ function App() {
                   }}
                 />
               ))}
-
+              {/* button to reset filters */}
               <input
                 className="btn btn-square"
                 type="reset"
