@@ -25,7 +25,7 @@ function App() {
 
   async function fetchGames(targetPage: number) {
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
-    const fetchedGamesResponse = await getLibraryGames(indexStart, gamesPerPage);
+    const fetchedGamesResponse = await getLibraryGames(indexStart, gamesPerPage, selectedTags, searchText);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
       setCurrentPageNumber(targetPage);
@@ -34,7 +34,6 @@ function App() {
       );
       if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
-        console.log("rounded:" + roundedPageNumber);
       }
     } else {
       setErrorMessage(fetchedGamesResponse.message);
@@ -56,6 +55,15 @@ function App() {
       await fetchTags();
     })();
   }, []);
+
+//when the selectedTags change, the games are fetched
+  useEffect(() => {
+    fetchGames(1);
+  }, [selectedTags]);
+
+  useEffect(() => {
+    fetchGames(1);
+  }, [searchText]);
 
   if (isLoading) {
     return <LoadingScreen />;

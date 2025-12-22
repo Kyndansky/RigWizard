@@ -173,12 +173,14 @@ export async function login(username: string, password: string): Promise<UserInf
 // }
 //fetches some games from the current user's library
 //for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
-export async function getLibraryGames(indexStart: number, numOfGames: number): Promise<GameCollectionResponse> {
+export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = ""): Promise<GameCollectionResponse> {
   try {
     const response = await api.post('getUserGames.php',
       {
         indexStart: indexStart,
-        numOfGames:numOfGames
+        numOfGames: numOfGames,
+        filters,
+        searchString
       },
       {
         headers: {

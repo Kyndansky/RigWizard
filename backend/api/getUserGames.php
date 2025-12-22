@@ -6,17 +6,14 @@ $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 if (!isset($_SESSION)) 
     session_start();
-// Use null coalescing operator to fallback to empty string if username is not set in session
+// username is empty if it is not set in session
 $username = $_SESSION["username"] ?? '';
 
 // Set page number defaulting to 1
 $offset = isset($data['indexStart']) ? (int) $data['indexStart']-1 : 1;
-$games_per_page = isset($data['numOfGames']) ? (int) $data['numOfGames']-1 : 30;
+$numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames']-1 : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
-
-
-
 
 $sql_games = "SELECT DISTINCT g.id_game, g.title, g.description, g.img_URL
         FROM games g
@@ -25,26 +22,26 @@ $sql_games = "SELECT DISTINCT g.id_game, g.title, g.description, g.img_URL
 
 // If there are filters, join the tags tables
 if (!empty($filters)) {
-    $sql .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
+    $sql_games .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
               LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-$sql .= " WHERE u.username = '$username'";
+$sql_games .= " WHERE u.username = '$username'";
 
 // Add filter condition
 if (!empty($filters)) {
     // Convert filters array to a comma-separated string for SQL IN clause
     $lista_filtri = implode("','", $filters);
-    $sql .= " AND t.name IN ('$lista_filtri')";
+    $sql_games .= " AND t.name IN ('$lista_filtri')";
 }
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_games .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
 }
 
 
-$sql .= " ORDER BY g.title ASC LIMIT $offset, $games_per_page";
+$sql_games .= " ORDER BY g.title ASC LIMIT $offset, $numOfGames";
 
 // Query to get total number of user games
 $sql_totalGames = "SELECT COUNT(DISTINCT g.id_game) AS total_games

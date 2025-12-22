@@ -25,7 +25,7 @@ export function CredentialsCard(props: CredentialsCardProps) {
           <label className="label">Username</label>
           <input
             type="text"
-            className="input"
+            className="input focus:outline-none focus:ring-0"
             placeholder="Username"
             value={props.username}
             onChange={props.onUsernameChange}
@@ -33,7 +33,7 @@ export function CredentialsCard(props: CredentialsCardProps) {
           <label className="label">Password</label>
           <input
             type="password"
-            className="input"
+            className="input focus:outline-none focus:ring-0"
             placeholder="Password"
             value={props.password}
             onChange={props.onPasswordChange}
