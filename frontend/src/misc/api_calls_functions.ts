@@ -1,29 +1,13 @@
 import axios from "axios";
-import type { Game } from "./interfaces";
+import type { UserInfoResponse, RigWizardResponse, GameInfoResponse, TagCollectionResponse, GameCollectionResponse, Game } from "./interfaces";
 
-
-interface Response {
-  successful: boolean
-  message: string
-}
-interface UserInfoResponse extends Response {
-  username: string
-}
-
-interface GameCollectionResponse extends Response {
-  totalNumberOfGames: number
-  games: Game[],
-}
-
-interface TagCollectionResponse extends Response {
-  tags: string[],
-}
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL,
   withCredentials: true,
 });
 
 // Make a GET request to the backend API to check if the user is logged in
+// sends a getUserInfoRequest to the backend to get information about the user's authentication
 export async function getIsLoggedIn(): Promise<UserInfoResponse> {
   try {
     const response = await api.get('getUserInfo.php',
@@ -50,7 +34,8 @@ export async function getIsLoggedIn(): Promise<UserInfoResponse> {
 
 }
 
-export async function logout(): Promise<Response> {
+//sends a logout request to the backend
+export async function logout(): Promise<RigWizardResponse> {
   try {
 
     const response = await api.get('logout.php',
@@ -61,7 +46,7 @@ export async function logout(): Promise<Response> {
       }
     );
     const data = await response.data;
-    const result: Response =
+    const result: RigWizardResponse =
     {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
@@ -69,13 +54,13 @@ export async function logout(): Promise<Response> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: Response = { successful: false, message: "server error" };
+    const result: RigWizardResponse = { successful: false, message: "server error" };
     return result;
 
   }
 }
 
-
+//sends a register request to the backend
 export async function register(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
@@ -105,6 +90,7 @@ export async function register(username: string, password: string): Promise<User
   }
 }
 
+//sends a login request to the backend
 export async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
@@ -133,46 +119,7 @@ export async function login(username: string, password: string): Promise<UserInf
     return result;
   }
 }
-
-//fetches some games from the store
-//for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
-// export async function getGames(pageNumber:number): Promise<GameCollectionResponse> {
-//   try {
-//     const response = await api.get('getGames.php',
-//       {
-//         params:{
-//           pageNumber:pageNumber
-//         },
-//         headers: {
-//           'Content-Type': 'application/json'
-//         }
-//       }
-//     );
-
-//     const data = await response.data;
-//     const result: GameCollectionResponse =
-//     {
-//       successful: data["status"] === "success" ? true : false,
-//       message: data["message"],
-//       games:data["games"],
-//     };
-//     return result;
-//   } catch (error) {
-//     console.log("error from php server:", error);
-//     const result: GameCollectionResponse = { successful: false, message: "server error", games:[] };
-//     return result;
-//   }
-
-//   const response:GameCollectionResponse={
-//     successful:true,
-//     message:"",
-//     games:gameTestArray,
-//     totalNumberOfGames:gameTestArray.length
-//   }
-//   return response;
-// }
 //fetches some games from the current user's library
-//for now i hardcoded an array of test games since the backend file that returns the games needs to be changed
 export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = ""): Promise<GameCollectionResponse> {
   try {
     const response = await api.post('getUserGames.php',
@@ -208,41 +155,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
 
 }
 
-// const gameTestArray:Game[]=[
-//   {
-//     title:"Hollow Knight: Silksong",
-//     description:"Very cool game",
-//     imgPath:"http://localhost/progetti/imgHostateTest/silksong.jpg",
-//     tags:["Action","Platformer","Indie","2D","Metroidvania"]
-//   },
-//   {
-//     title:"Hollow Knight",
-//     description:"Another very cool game",
-//     imgPath:"http://localhost/progetti/imgHostateTest/hollowKnight.jpg",
-//     tags:["Action","Platformer","Indie","2D","Metroidvania"]
-//   },
-//   {
-//     title:"Celeste",
-//     description:"Another very cool game",
-//     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
-//     tags:["Platformer","Indie","2D"]
-//   },
-//   {
-//     title:"Celeste",
-//     description:"Another very cool game",
-//     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
-//     tags:["Platformer","Indie","2D"]
-//   },
-//   {
-//     title:"Celeste",
-//     description:"Another very cool game",
-//     imgPath:"http://localhost/progetti/imgHostateTest/celeste.png",
-//     tags:["Platformer","Indie","2D"]
-//   },
-// ]
-
 //fetches all possible tags from the backend
-//for now i hardcoded an array of test tags since the backend file that returns the games needs to be changed
 export async function getTags(): Promise<TagCollectionResponse> {
   try {
     const response = await api.get('gettags.php',
@@ -266,14 +179,50 @@ export async function getTags(): Promise<TagCollectionResponse> {
     const result: TagCollectionResponse = { successful: false, message: "server error", tags: [] };
     return result;
   }
-
-  const response: TagCollectionResponse = {
-    successful: true,
-    message: "",
-    tags: tags
-  }
-  return response;
 }
 
+//using test game data while waiting for backend file to be finished
+export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
+  // try {
+  //   const response = await api.get('games/getGameInfo.php',
+  //     {
+  //       params: {
+  //         gameId: gameId
+  //       },
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   );
 
-const tags: string[] = ["Indie", "Action", "Platformer", "2D", "3D", "Shooter", "Roguelike"]
+  //   const data = await response.data;
+  //   console.log(data);
+  //   const result: GameInfoResponse =
+  //   {
+  //     successful: data["status"] === "success" ? true : false,
+  //     message: data["message"],
+  //     game: data["game"]
+  //   };
+  //   return result;
+  // } catch (error) {
+  //   console.log("error from php server:", error);
+  //   const result: GameInfoResponse = { successful: false, message: "server error" };
+  //   return result;
+  // }
+  const result:GameInfoResponse={
+    successful:true,
+    message:"successfully retrieved game info",
+    game:testGame
+
+  }
+  return result;
+}
+
+const testGame:Game =
+{
+  id_game:1,
+  title:"This is the game's title",
+  description:"cool game",
+  imgPath:"idk",
+  tags:[]
+};

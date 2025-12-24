@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
-interface NavBarProps {
-    username?: string;
-    title: string;
-    onLogoutClickButton?: () => void;
-}
+import { logout } from "../misc/api_calls_functions";
 
+export function NavBar() {
+    const { isAuthenticated, setIsAuthenticated, username } =
+        useAuth();
 
-export function NavBar(props: NavBarProps) {
-    const {username}=useAuth();
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
             <div className="navbar bg-base-100 shadow-sm">
                 <div className="flex-1">
-                    <Link to={"/"}><p className="btn btn-ghost text-xl">{props.title}</p></Link>
+                    <Link to={"/"}><p className="btn btn-ghost text-xl">RigWizard</p></Link>
                 </div>
 
                 {/*Theme button section*/}
@@ -66,7 +63,12 @@ export function NavBar(props: NavBarProps) {
                                 </Link>
 
                             </li>
-                            <li><a onClick={props.onLogoutClickButton}>Logout</a></li>
+                            <li><a onClick={async () => {
+                                const loggedOut = await logout();
+                                if (loggedOut) {
+                                    setIsAuthenticated(false);
+                                }
+                            }}>Logout</a></li>
                         </ul>
                     </div>
                 </div>

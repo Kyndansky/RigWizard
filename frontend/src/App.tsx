@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Navigate } from "react-router-dom";
-import { getLibraryGames, getTags, logout } from "./misc/api_calls_functions";
-import NavBar from "./components/NavBar";
+import { Link, Navigate } from "react-router-dom";
+import { getLibraryGames, getTags } from "./misc/api_calls_functions";
 import { useAuth } from "./misc/AuthContextHandler";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
 import type { Game } from "./misc/interfaces";
+import { BasePageLayout } from "./components/BasePageLayout";
 
 function App() {
   const gamesPerPage = 20;
@@ -56,13 +56,22 @@ function App() {
     })();
   }, []);
 
-//when the selectedTags change, the games are fetched
+  //when the selectedTags change, the games are fetched
   useEffect(() => {
     fetchGames(1);
   }, [selectedTags]);
 
   useEffect(() => {
-    fetchGames(1);
+
+    const handler = setTimeout(() => {
+      fetchGames(1);
+    }, 400);
+
+
+    //Viene eseguita ogni volta che searchText cambia prima che il timer scada
+    return () => {
+      clearTimeout(handler);
+    };
   }, [searchText]);
 
   if (isLoading) {
@@ -74,18 +83,7 @@ function App() {
 
   return (
     <React.Fragment>
-      {/*vertical container that contains navbar and page content */}
-      <div className="flex flex-col h-screen overflow-hidden">
-        <NavBar
-          username={username === "" ? undefined : username}
-          title="RigWizard"
-          onLogoutClickButton={async () => {
-            const loggedOut = await logout();
-            if (loggedOut) {
-              setIsAuthenticated(false);
-            }
-          }}
-        />
+      <BasePageLayout>
         <div className="grid grid-cols-12 flex-grow h-full">
           {/* Left sidebar that shows the pc components */}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
@@ -147,20 +145,15 @@ function App() {
               <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-7 mt-4">
                 {/* filters games by only displaying those that have the same tags that are selected and whose title contain what is in the searchbar*/}
                 {games
-                  ?.filter((game) => {
-                    return (
-                      selectedTags.every((tag) => game.tags.includes(tag)) &&
-                      game.title.toLowerCase().includes(searchText.toLowerCase())
-                    );
-                  })
-                  .map((game, index) => (
-                    <GameInfoCard
-                      key={index}
-                      name={game.title}
-                      description={game.description}
-                      tags={game.tags}
-                      imageUrl={game.imgPath}
-                    />
+                  ?.map((game, index) => (
+                    <Link key={index} to={"/games/" + game.id_game}>
+                      <GameInfoCard
+                        name={game.title}
+                        description={game.description}
+                        tags={game.tags}
+                        imageUrl={game.imgPath}
+                      />
+                    </Link>
                   ))}
               </div>
             )}
@@ -257,7 +250,7 @@ function App() {
             </form>
           </aside>
         </div>
-      </div>
+      </BasePageLayout>
     </React.Fragment>
   );
 }
