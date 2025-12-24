@@ -1,6 +1,6 @@
 <?php
-require_once "cors.php";
-require_once "../DBConnect.php";
+require_once "../../cors.php";
+require_once "../../DBConnect.php";
 
 
 //  tag Name (for display), ordered alphabetically

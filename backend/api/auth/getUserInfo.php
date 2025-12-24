@@ -1,5 +1,5 @@
 <?php
-require_once("cors.php");
+require_once("../../cors.php");
 if (!isset($_SESSION))
     session_start();
 

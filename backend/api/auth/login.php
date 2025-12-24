@@ -1,5 +1,5 @@
 <?php
-require_once("cors.php");
+require_once("../../cors.php");
 
 
 //retrieves the JSON data from the request body
@@ -18,7 +18,7 @@ if (!isset($username) || !isset($password)) {
     echo json_encode($response);
     exit();
 }
-require_once("../DBConnect.php");
+require_once("../../DBConnect.php");
 
 $stmt = $dbConnection->prepare("SELECT * FROM users WHERE username = ?");
 $stmt->bind_param("s", $username);

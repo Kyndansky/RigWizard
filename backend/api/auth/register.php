@@ -1,6 +1,6 @@
 <?php
 //header shii
-require_once("cors.php");
+require_once("../../cors.php");
 
 $json_data = file_get_contents('php://input');
 
@@ -30,7 +30,7 @@ if (!$username || !$password) {
     echo json_encode($response);
     exit();
 }
-require_once("../DBConnect.php");
+require_once("../../DBConnect.php");
 
 //checks if the username already exists
 $stmtCheck = $dbConnection->prepare("SELECT COUNT(*) FROM users WHERE username = ?");

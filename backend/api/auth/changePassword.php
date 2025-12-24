@@ -1,6 +1,6 @@
 <?php
-require_once "cors.php";
-require_once "../DBConnect.php";
+require_once "../../cors.php";
+require_once "../../DBConnect.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
