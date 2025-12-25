@@ -1,5 +1,11 @@
-export function LoadingScreen(){
+import React from "react";
+import Loader from "./Loader";
+
+export function LoadingScreen() {
     return (
-        <span className="loading loading-spinner loading-xl"></span>
+        <React.Fragment>
+            <Loader />
+        </React.Fragment>
+
     )
 }

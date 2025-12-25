@@ -1,8 +1,18 @@
 import axios from "axios";
 import type { UserInfoResponse, RigWizardResponse, GameInfoResponse, TagCollectionResponse, GameCollectionResponse, Game } from "./interfaces";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_API_URL,
+const apiAuth=axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/auth/",
+  withCredentials: true,
+});
+
+const apiGames=axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/games/",
+  withCredentials: true,
+});
+
+const apiTags=axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/tags/",
   withCredentials: true,
 });
 
@@ -10,7 +20,7 @@ const api = axios.create({
 // sends a getUserInfoRequest to the backend to get information about the user's authentication
 export async function getIsLoggedIn(): Promise<UserInfoResponse> {
   try {
-    const response = await api.get('getUserInfo.php',
+    const response = await apiAuth.get('getUserInfo.php',
       {
         headers: {
           'Content-Type': 'application/json'
@@ -38,7 +48,7 @@ export async function getIsLoggedIn(): Promise<UserInfoResponse> {
 export async function logout(): Promise<RigWizardResponse> {
   try {
 
-    const response = await api.get('logout.php',
+    const response = await apiAuth.get('logout.php',
       {
         headers: {
           'Content-Type': 'application/json'
@@ -64,7 +74,7 @@ export async function logout(): Promise<RigWizardResponse> {
 export async function register(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
-    const response = await api.post(
+    const response = await apiAuth.post(
       'register.php',
       credentials,
       {
@@ -94,7 +104,7 @@ export async function register(username: string, password: string): Promise<User
 export async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
-    const response = await api.post(
+    const response = await apiAuth.post(
       'login.php',
       credentials,
       {
@@ -122,7 +132,7 @@ export async function login(username: string, password: string): Promise<UserInf
 //fetches some games from the current user's library
 export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = ""): Promise<GameCollectionResponse> {
   try {
-    const response = await api.post('getUserGames.php',
+    const response = await apiGames.post('getUserGames.php',
       {
         indexStart: indexStart,
         numOfGames: numOfGames,
@@ -137,8 +147,6 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
     );
 
     const data = await response.data;
-    console.log(indexStart);
-    console.log(data);
     const result: GameCollectionResponse =
     {
       successful: data["status"] === "success" ? true : false,
@@ -158,7 +166,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
 //fetches all possible tags from the backend
 export async function getTags(): Promise<TagCollectionResponse> {
   try {
-    const response = await api.get('gettags.php',
+    const response = await apiTags.get('gettags.php',
       {
         headers: {
           'Content-Type': 'application/json'
@@ -184,7 +192,7 @@ export async function getTags(): Promise<TagCollectionResponse> {
 //using test game data while waiting for backend file to be finished
 export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
   // try {
-  //   const response = await api.get('games/getGameInfo.php',
+  //   const response = await apiGames.get('getGameInfo.php',
   //     {
   //       params: {
   //         gameId: gameId

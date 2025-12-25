@@ -4,7 +4,7 @@ import { useAuth } from "../misc/AuthContextHandler";
 import { logout } from "../misc/api_calls_functions";
 
 export function NavBar() {
-    const { isAuthenticated, setIsAuthenticated, username } =
+    const { setIsAuthenticated, username } =
         useAuth();
 
     const [theme, setTheme] = useState<"light" | "dark">("dark");
