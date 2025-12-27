@@ -3,7 +3,7 @@ import { CredentialsCard } from "../components/CredentialsCard";
 import { Navigate } from "react-router-dom";
 import { register } from "../misc/api_calls_functions";
 import { useAuth } from "../misc/AuthContextHandler";
-import { LoadingScreen } from "../components/LoadingScreen";
+import Loader from "../components/Loader";
 
 export function Register() {
     const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
@@ -25,7 +25,7 @@ export function Register() {
 
     if (isLoading) {
         return (
-            <LoadingScreen />
+            <Loader />
         )
     }
 

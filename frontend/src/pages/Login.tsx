@@ -4,7 +4,8 @@ import { login } from "../misc/api_calls_functions";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import React, { useState } from "react";
-import { LoadingScreen } from "../components/LoadingScreen";
+import Loader from "../components/Loader";
+
 
 export function Login() {
   //states regarding authentication taken from the AuthContextHandler
@@ -29,7 +30,7 @@ export function Login() {
   //returns loading if the frontend still doesn't know (which means it hasn't received info from the backend yet)
   //if the user is logged in.
   if (isLoading) {
-    return <LoadingScreen />;
+    return <Loader />;
   }
 
   //if the user is authenticated redirects to the homepage

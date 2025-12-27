@@ -95,6 +95,7 @@ CREATE TABLE `games` (
     `publisher` VARCHAR(150),
     `price` DECIMAL(6, 2) DEFAULT 0.00,
     `description` TEXT,
+    `detailed_description` TEXT,
     `id_min_pc` INT(11),
     `id_recommended_pc` INT(11),
     `creator` VARCHAR(150),

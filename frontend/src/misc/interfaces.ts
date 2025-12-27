@@ -23,6 +23,7 @@ export interface Game {
   id_game: number;
   title: string;
   description: string;
+  detailed_description: string;
   imgPath: string;
   tags: string[];
 }

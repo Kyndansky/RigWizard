@@ -220,17 +220,18 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
   const result:GameInfoResponse={
     successful:true,
     message:"successfully retrieved game info",
-    game:testGame
-
+    game:testGame,
   }
+
   return result;
 }
 
 const testGame:Game =
 {
   id_game:1,
-  title:"This is the game's title",
-  description:"cool game",
+  title:"Game title",
+  description:"This is a brief description of the game. The game is an insanely cool game with a lot of mechanics and advanced gameplay.",
+  detailed_description:"This is a detailed description of the game. It goes into depth about the game's features, storyline, gameplay mechanics, and other interesting aspects that might entice players to try it out. Whether you're a fan of action, adventure, strategy, or any other genre, this game offers something for everyone. Dive into an immersive experience filled with challenges, excitement, and unforgettable moments.",
   imgPath:"idk",
   tags:[]
 };

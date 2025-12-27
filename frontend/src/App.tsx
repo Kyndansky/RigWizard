@@ -3,11 +3,11 @@ import "./App.css";
 import { Link, Navigate } from "react-router-dom";
 import { getLibraryGames, getTags } from "./misc/api_calls_functions";
 import { useAuth } from "./misc/AuthContextHandler";
-import { LoadingScreen } from "./components/LoadingScreen";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
 import type { Game } from "./misc/interfaces";
 import { BasePageLayout } from "./components/BasePageLayout";
+import Loader from "./components/Loader";
 
 function App() {
   const gamesPerPage = 20;
@@ -17,7 +17,7 @@ function App() {
   const [searchText, setSearchText] = useState<string>("");
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const { isAuthenticated, isLoading, setIsAuthenticated, username } =
+  const { isAuthenticated, isLoading } =
     useAuth();
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined
@@ -26,6 +26,7 @@ function App() {
   async function fetchGames(targetPage: number) {
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
     const fetchedGamesResponse = await getLibraryGames(indexStart, gamesPerPage, selectedTags, searchText);
+    console.log(fetchedGamesResponse);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
       setCurrentPageNumber(targetPage);
@@ -34,6 +35,9 @@ function App() {
       );
       if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
+      }
+      else{
+        setMaxPageNumber(1);
       }
     } else {
       setErrorMessage(fetchedGamesResponse.message);
@@ -75,7 +79,7 @@ function App() {
   }, [searchText]);
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <Loader />;
   }
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -83,7 +87,7 @@ function App() {
 
   return (
     <React.Fragment>
-      <BasePageLayout>
+      <BasePageLayout hideOverFlow={true}>
         <div className="grid grid-cols-12 flex-grow h-full">
           {/* Left sidebar that shows the pc components */}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
@@ -93,8 +97,8 @@ function App() {
 
           <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">
             <h1 className="text-xl font-bold">Your library</h1>
-            <div className="flex items-center my-5 w-full">
-              <label className="input grow">
+            <div className="flex my-5 w-full">
+              <label className="input w-10 focus:outline-none focus:ring-0">
                 <svg
                   className="h-[1em] opacity-50"
                   xmlns="http://www.w3.org/2000/svg"
@@ -111,8 +115,10 @@ function App() {
                     <path d="m21 21-4.3-4.3"></path>
                   </g>
                 </svg>
-                <input
+              </label>
+              <input
                   type="search"
+                  className="input grow w-auto focus:outline-none focus:ring-0"
                   required
                   placeholder="Search game title here"
                   value={searchText}
@@ -120,7 +126,6 @@ function App() {
                     setSearchText(e.target.value);
                   }}
                 />
-              </label>
             </div>
 
             {/* showing error if there is any */}
