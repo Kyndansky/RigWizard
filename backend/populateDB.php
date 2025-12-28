@@ -2,8 +2,6 @@
 
 require_once "DBConnect.php";
 
-// SQL SCRIPT: DATA POPULATION
-// Using 'INSERT IGNORE' prevents the script from crashing if data already exists
 $sql_script = "
 USE `rigwizard`;
 
@@ -43,24 +41,24 @@ INSERT IGNORE INTO `users` (`username`, `password_hash`, `id_main_pc`) VALUES
 ( 'Gamer_Pro77', 'placeholder_hash_1', 1),
 ( 'User_Without_PC', 'placeholder_hash_3', NULL);
 
--- GAMES (using PC IDs)
+-- GAMES (CORRETTO APEX LEGENDS)
 INSERT IGNORE INTO `games` (`title`, `release_year`, `publisher`, `price`, `description`,`detailed_description`, `id_min_pc`, `id_recommended_pc`, `creator`) VALUES
-('Elden Ring', 2022, 'Bandai Namco', 59.99, 'Action RPG dark fantasy sviluppato da FromSoftware.', 'Alzati, Senzaluce, e lasciati guidare dalla grazia per sfoggiare il potere dell''Anello Elden e diventare un Lord Ancestrale nell''Interregno. Un mondo vasto e pieno di pericoli ti attende, con dungeon complessi e nemici leggendari.', 1, 2, 'FromSoftware'),
-('The Witcher 3: Wild Hunt', 2015, 'CD Projekt', 29.99, 'Geralt di Rivia cerca la figlia adottiva in un mondo devastato.', 'Vivi l''avventura definitiva nei panni di Geralt di Rivia, un cacciatore di mostri mercenario. In un mondo aperto devastato dalla guerra e infestato da creature terribili, dovrai trovare Ciri, la Figlia della Profezia, un''arma vivente capace di mutare la forma del mondo.', 3, 2, 'CD Projekt Red'),
-('Minecraft', 2011, 'Mojang Studios', 23.95, 'Sandbox basato sulla costruzione con blocchi e avventura.', 'Esplora mondi infiniti e costruisci di tutto, dalla più semplice delle case al più maestoso dei castelli. Gioca in Modalità Creativa con risorse illimitate o scava nelle profondità del mondo in Modalità Sopravvivenza, fabbricando armi e armature per difenderti dai mostri.', 4, 4, 'Mojang Studios'),
-('Stardew Valley', 2016, 'ConcernedApe', 13.99, 'Simulatore di vita agricola e rurale.', 'Hai ereditato il vecchio appezzamento di terra di tuo nonno a Stardew Valley. Armato di strumenti di seconda mano e poche monete, ti appresti a iniziare la tua nuova vita. Riuscirai a imparare a vivere della terra e a trasformare questi campi incolti in una casa fiorente?', 4, 4, 'ConcernedApe'),
-('Grand Theft Auto V', 2013, 'Rockstar Games', 29.99, 'Tre criminali compiono rapine audaci a Los Santos.', 'Quando un giovane imbroglione, un rapinatore di banche in pensione e un terribile psicopatico si ritrovano invischiati con alcuni degli elementi più spaventosi e folli del mondo criminale, del governo degli Stati Uniti e dell''industria dello spettacolo, devono compiere una serie di pericolose rapine.', 3, 2, 'Rockstar North'),
-('Hades', 2020, 'Supergiant Games', 24.50, 'Roguelike dungeon crawler ambientato nell''oltretomba greco.', 'In quanto immortale Principe dell''Oltretomba, brandirai i poteri e le mitiche armi dell''Olimpo per liberarti dalle grinfie del dio dei morti in persona, diventando sempre più forte e scoprendo nuovi segreti della storia a ogni tentativo di fuga.', 4, 3, 'Supergiant Games'),
-('Baldur''s Gate 3', 2023, 'Larian Studios', 59.99, 'RPG basato sull''universo di Dungeons & Dragons.', 'Raduna la tua compagnia e torna ai Reami Perduti in una storia di amicizia e tradimento, sacrificio e sopravvivenza, e del fascino del potere assoluto. Abilità misteriose si stanno risvegliando dentro di te, derivanti da un parassita dei Mind Flayer impiantato nel tuo cervello.', 2, 1, 'Larian Studios'),
-('Portal 2', 2011, 'Valve', 9.75, 'Puzzle game basato sulla fisica e portali spaziali.', 'Portal 2 attinge alla formula vincente fatta di gameplay innovativo, storia coinvolgente e musica creativa che ha permesso al Portal originale di vincere oltre 70 premi del settore. La modalità single player introduce nuovi personaggi e una serie di enigmi ancora più complessi.', 4, 4, 'Valve'),
-('God of War', 2018, 'Sony Interactive', 49.99, 'Kratos e suo figlio Atreus affrontano gli dei norreni.', 'Dopo aver compiuto la sua vendetta contro gli dei dell''Olimpo, Kratos vive ora nel regno delle divinità e dei mostri norreni. È in questo mondo spietato e selvaggio che deve combattere per la sopravvivenza e insegnare a suo figlio a fare lo stesso.', 2, 1, 'Santa Monica Studio'),
-('Sekiro: Shadows Die Twice', 2019, 'Activision', 59.99, 'Un ninja cerca vendetta nel Giappone del periodo Sengoku.', 'Esplora il Giappone della fine del 1500, in pieno periodo Sengoku: un''epoca brutale, segnata da conflitti costanti. Affronta nemici più grandi della vita stessa in un mondo oscuro e perverso. Scatena un arsenale di protesi letali e abilità ninja mentre mescoli stealth e combattimenti viscerali.', 3, 2, 'FromSoftware'),
-('Doom Eternal', 2020, 'Bethesda', 39.99, 'Stermina i demoni sulla Terra in questo FPS frenetico.', 'Le armate dell''inferno hanno invaso la Terra. Diventa lo Slayer in un''epica campagna per giocatore singolo, sconfiggi i demoni attraverso le dimensioni e ferma la distruzione finale dell''umanità. L''unica cosa di cui hanno paura... sei tu.', 2, 1, 'id Software'),
-('Subnautica', 2018, 'Unknown Worlds', 29.99, 'Sopravvivenza sottomarina su un pianeta alieno.', 'Sei precipitato su un mondo alieno oceanico e l''unica via è scendere. Gli oceani di Subnautica spaziano da barriere coralline baciate dal sole a pericolose fosse abissali, campi di lava e fiumi sottomarini bio-luminescenti. Gestisci il tuo ossigeno mentre esplori.', 3, 2, 'Unknown Worlds'),
-('Outer Wilds', 2019, 'Annapurna Interactive', 22.99, 'Mistero spaziale ambientato in un sistema solare in loop.', 'Vincitore del premio come Miglior Gioco ai BAFTA Games Awards 2020, Outer Wilds è un mistero open world su un sistema solare intrappolato in un loop temporale infinito. Sei il nuovo acquisto della Outer Wilds Ventures, un programma spaziale alla ricerca di risposte.', 4, 3, 'Mobius Digital'),
-('Resident Evil Village', 2021, 'Capcom', 39.99, 'Ethan Winters affronta orrori in un villaggio remoto.', 'Vivi l''orrore della sopravvivenza come mai prima d''ora nell''ottavo capitolo principale della serie Resident Evil. Ambientato pochi anni dopo i tragici eventi di Resident Evil 7, la nuova storia vede Ethan Winters in un villaggio innevato pieno di creature terrificanti.', 2, 1, 'Capcom'),
-('Disco Elysium', 2019, 'ZA/UM', 39.99, 'RPG investigativo con un sistema di abilità unico.', 'Disco Elysium - The Final Cut è un rivoluzionario gioco di ruolo. Sei un detective con un sistema di abilità unico a tua disposizione e un intero quartiere cittadino da esplorare. Interroga personaggi indimenticabili, risolvi omicidi o accetta mazzette.', 4, 4, 'ZA/UM'),
-('Apex Legends', 2019, 'Electronic Arts', 0.00, 'Battle royale a squadre con personaggi unici.', 'Domina con stile in Apex Legends, uno sparatutto Battle Royale gratuito in cui personaggi leggendari con
+('Elden Ring', 2022, 'Bandai Namco', 59.99, 'Action RPG dark fantasy sviluppato da FromSoftware.', 'Alzati, Senzaluce...', 1, 2, 'FromSoftware'),
+('The Witcher 3: Wild Hunt', 2015, 'CD Projekt', 29.99, 'Geralt di Rivia cerca la figlia adottiva in un mondo devastato.', 'Vivi l''avventura definitiva...', 3, 2, 'CD Projekt Red'),
+('Minecraft', 2011, 'Mojang Studios', 23.95, 'Sandbox basato sulla costruzione con blocchi e avventura.', 'Esplora mondi infiniti...', 4, 4, 'Mojang Studios'),
+('Stardew Valley', 2016, 'ConcernedApe', 13.99, 'Simulatore di vita agricola e rurale.', 'Hai ereditato il vecchio appezzamento...', 4, 4, 'ConcernedApe'),
+('Grand Theft Auto V', 2013, 'Rockstar Games', 29.99, 'Tre criminali compiono rapine audaci a Los Santos.', 'Quando un giovane imbroglione...', 3, 2, 'Rockstar North'),
+('Hades', 2020, 'Supergiant Games', 24.50, 'Roguelike dungeon crawler ambientato nell''oltretomba greco.', 'In quanto immortale Principe...', 4, 3, 'Supergiant Games'),
+('Baldur''s Gate 3', 2023, 'Larian Studios', 59.99, 'RPG basato sull''universo di Dungeons & Dragons.', 'Raduna la tua compagnia...', 2, 1, 'Larian Studios'),
+('Portal 2', 2011, 'Valve', 9.75, 'Puzzle game basato sulla fisica e portali spaziali.', 'Portal 2 attinge alla formula...', 4, 4, 'Valve'),
+('God of War', 2018, 'Sony Interactive', 49.99, 'Kratos e suo figlio Atreus affrontano gli dei norreni.', 'Dopo aver compiuto la sua vendetta...', 2, 1, 'Santa Monica Studio'),
+('Sekiro: Shadows Die Twice', 2019, 'Activision', 59.99, 'Un ninja cerca vendetta nel Giappone del periodo Sengoku.', 'Esplora il Giappone...', 3, 2, 'FromSoftware'),
+('Doom Eternal', 2020, 'Bethesda', 39.99, 'Stermina i demoni sulla Terra in questo FPS frenetico.', 'Le armate dell''inferno hanno invaso...', 2, 1, 'id Software'),
+('Subnautica', 2018, 'Unknown Worlds', 29.99, 'Sopravvivenza sottomarina su un pianeta alieno.', 'Sei precipitato su un mondo alieno...', 3, 2, 'Unknown Worlds'),
+('Outer Wilds', 2019, 'Annapurna Interactive', 22.99, 'Mistero spaziale ambientato in un sistema solare in loop.', 'Vincitore del premio come Miglior Gioco...', 4, 3, 'Mobius Digital'),
+('Resident Evil Village', 2021, 'Capcom', 39.99, 'Ethan Winters affronta orrori in un villaggio remoto.', 'Vivi l''orrore della sopravvivenza...', 2, 1, 'Capcom'),
+('Disco Elysium', 2019, 'ZA/UM', 39.99, 'RPG investigativo con un sistema di abilità unico.', 'Disco Elysium - The Final Cut...', 4, 4, 'ZA/UM'),
+('Apex Legends', 2019, 'Electronic Arts', 0.00, 'Battle royale a squadre con personaggi unici.', 'Domina con stile in Apex Legends, uno sparatutto Battle Royale gratuito in cui personaggi leggendari con abilità potenti si scontrano.', 3, 2, 'Respawn Entertainment');
 
 -- TAGS
 INSERT IGNORE INTO `tag` (`name`) VALUES 
@@ -69,10 +67,10 @@ INSERT IGNORE INTO `tag` (`name`) VALUES
 ('Farming Sim'), ('First-Person'), ('Third-Person'), ('Atmospheric'), ('Story Rich'), 
 ('Multiplayer'), ('Singleplayer'), ('Horror'), ('Puzzle'), ('Difficult');
 
--- GAME_TAGS
+-- GAME_TAGS (PULITI GLI ID CHE NON ESISTONO)
 INSERT IGNORE INTO `game_tags` (`id_game`, `id_tag`) VALUES 
 -- Elden Ring (1)
-(1, 1), (1, 2), (1, 3), (1, 9), (1, 10), (1, 17), (1, 25),
+(1, 1), (1, 2), (1, 3), (1, 9), (1, 10), (1, 17), (1, 20),
 -- The Witcher 3 (2)
 (2, 1), (2, 2), (2, 3), (2, 10), (2, 18), (2, 20),
 -- Minecraft (3)
@@ -86,67 +84,29 @@ INSERT IGNORE INTO `game_tags` (`id_game`, `id_tag`) VALUES
 -- Baldur's Gate 3 (7)
 (7, 1), (7, 10), (7, 13), (7, 14), (7, 20),
 -- Portal 2 (8)
-(8, 17), (8, 22), (8, 19), (8, 20),
+(8, 17), (8, 19), (8, 20),
 -- God of War (9)
 (9, 3), (9, 9), (9, 18), (9, 20),
 -- Sekiro (10)
-(10, 3), (10, 9), (10, 10), (10, 20), (10, 25),
+(10, 3), (10, 9), (10, 10), (10, 20),
 -- Doom Eternal (11)
-(11, 3), (11, 4), (11, 17), (11, 25),
+(11, 3), (11, 4), (11, 17),
 -- Subnautica (12)
-(12, 1), (12, 9), (12, 11), (12, 17), (12, 23),
+(12, 1), (12, 9), (12, 11), (12, 17),
 -- Outer Wilds (13)
-(13, 1), (13, 2), (13, 17), (13, 22), (13, 20),
+(13, 1), (13, 2), (13, 17), (13, 20),
 -- RE Village (14)
-(14, 3), (14, 17), (14, 23), (14, 18),
+(14, 3), (14, 17), (14, 18),
 -- Disco Elysium (15)
 (15, 1), (15, 14), (15, 18), (15, 20),
 -- Apex Legends (16)
-(16, 4), (16, 17), (16, 19),
--- Factorio (17)
-(17, 11), (17, 13), (17, 15), (17, 19),
--- Celeste (18)
-(18, 5), (18, 10), (18, 20), (18, 25),
--- Civ VI (19)
-(19, 13), (19, 14), (19, 19),
--- Cyberpunk 2077 (20)
-(20, 1), (20, 2), (20, 4), (20, 8), (20, 18),
--- Terraria (21)
-(21, 5), (21, 6), (21, 9), (21, 11), (21, 19),
--- Silksong (22)
-(22, 5), (22, 10), (22, 11), (22, 25),
--- Hollow Knight (23)
-(23, 5), (23, 10), (23, 11), (23, 25),
--- RDR2 (24)
-(24, 2), (24, 3), (24, 7), (24, 18), (24, 20);
+(16, 4), (16, 17), (16, 19);
 
--- USER_GAMES (Users' Library)
--- Linking Users (ID 1, 2) to Games (ID 1, 2, 3)
+-- USER_GAMES (MODIFICATO ID USER DA 4 A 1)
 INSERT IGNORE INTO `user_games` (`id_user`, `id_game`) VALUES
-(1, 1),
-(1, 3),
-(2, 2),
-(4, 1),
-(4, 2),
-(4, 3),
-(4, 4),
-(4, 5),
-(4, 6),
-(4, 7),
-(4, 8),
-(4, 9),
-(4, 10),
-(4, 11),
-(4, 12),
-(4, 13),
-(4, 14),
-(4, 15),
-(4, 16),
-(4, 17),
-(4, 18),
-(4, 19),
-(4, 20),
-(4, 21);
+(1, 1), (1, 3), (1, 2), (1, 4), (1, 5), (1, 6), (1, 7), 
+(1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16);
+
 -- REVIEWS
 INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ( 1, 1, 9, 'Assolutamente incredibile dopo le patch, grafica mozzafiato!'),
@@ -154,35 +114,23 @@ INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
 ( 3, 1, 10, 'La migliore storia e il miglior open-world mai creati.');
 ";
 
-// Execute the multi-query script using $conn (from DBConnect.php)
 if ($dbConnection->multi_query($sql_script)) {
-
-    $success_message = "SQL script executed successfully. Database populated (duplicates ignored).";
+    $success_message = "SQL script executed successfully.";
     $error_occurred = false;
-
-    // Cycle through all results of the multi_query
     do {
-        // We store the result to clear the buffer (essential for multi_query)
         if ($result = $dbConnection->store_result()) {
             $result->free();
         }
-
-        // Check for errors in the specific statement
         if ($dbConnection->errno) {
-            echo "Error executing SQL script. Failed statement: " . $dbConnection->error . "\n";
+            echo "Error executing SQL script: " . $dbConnection->error . "\n";
             $error_occurred = true;
         }
-
     } while ($dbConnection->more_results() && $dbConnection->next_result());
 
-    if (!$error_occurred) {
-        echo $success_message;
-    }
-
+    if (!$error_occurred) echo $success_message;
 } else {
-    echo "Error (during multi query setup): " . $dbConnection->error;
+    echo "Error: " . $dbConnection->error;
 }
 
-// Close connection
 $dbConnection->close();
 ?>
