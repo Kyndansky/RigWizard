@@ -36,7 +36,7 @@ function App() {
       if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
       }
-      else{
+      else {
         setMaxPageNumber(1);
       }
     } else {
@@ -117,15 +117,15 @@ function App() {
                 </svg>
               </label>
               <input
-                  type="search"
-                  className="input grow w-auto focus:outline-none focus:ring-0"
-                  required
-                  placeholder="Search game title here"
-                  value={searchText}
-                  onChange={(e) => {
-                    setSearchText(e.target.value);
-                  }}
-                />
+                type="search"
+                className="input grow w-auto focus:outline-none focus:ring-0"
+                required
+                placeholder="Search game title here"
+                value={searchText}
+                onChange={(e) => {
+                  setSearchText(e.target.value);
+                }}
+              />
             </div>
 
             {/* showing error if there is any */}
@@ -153,10 +153,17 @@ function App() {
                   ?.map((game, index) => (
                     <Link key={index} to={"/games/" + game.id_game}>
                       <GameInfoCard
+                        numOfTagsToShow={3}
+                        imagePlacement=""
                         name={game.title}
                         description={game.description}
                         tags={game.tags}
                         imageUrl={game.imgPath}
+                        backgroundColor="base-100"
+                        hoverable={true}
+                        imageHeight="h-60"
+                        cardHeight="md:max-h-40 sm:max-h-30 lg:max-h-80 xl:max-h-100"
+                        showTitle={true}
                       />
                     </Link>
                   ))}
