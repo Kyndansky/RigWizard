@@ -31,7 +31,32 @@ function getPCComponents($dbConnection, $pcId) {
     $result = $dbConnection->query($sql);
     
     if ($result && $result->num_rows > 0) {
-        return $result->fetch_assoc();
+        $row = $result->fetch_assoc();
+        
+        return [
+            "config_name" => $row['config_name'],
+            "cpu" => [
+                "brand" => $row['cpu_brand'],
+                "model" => $row['cpu_model'],
+                "cores" => (int)$row['cores'],
+                "frequency_ghz" => (float)$row['frequency_ghz']
+            ],
+            "gpu" => [
+                "brand" => $row['gpu_brand'],
+                "model" => $row['gpu_model'],
+                "vram_gb" => (int)$row['vram_gb']
+            ],
+            "ram" => [
+                "brand" => $row['ram_brand'],
+                "model" => $row['ram_model'],
+                "quantity_gb" => (int)$row['quantity_gb'],
+                "memory_type" => $row['memory_type']
+            ],
+            "motherboard" => [
+                "brand" => $row['mobo_brand'],
+                "model" => $row['mobo_model']
+            ]
+        ];
     }
     return null;
 }
