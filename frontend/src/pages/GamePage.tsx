@@ -15,7 +15,6 @@ export function GamePage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     async function fetchGameInfo() {
-
         if (!id) {
             navigate("/404");
             return;
@@ -28,7 +27,7 @@ export function GamePage() {
             return;
         }
         //getting response, handling errors etc...
-        const response = await getGameInfo(parseInt(id, 10));
+        const response = await getGameInfo(idNumber);
         if (!response.successful) {
             navigate("/errorPage");
             return;
@@ -80,8 +79,8 @@ export function GamePage() {
                                                     description={game.description}
                                                     tags={game.tags}
                                                     imagePlacement=""
-                                                    // imageUrl={game.imgPath}
-                                                    imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
+                                                    imageUrl={game.horizontal_banner_URL}
+                                                    //imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
                                                     numOfTagsToShow={numTagsVisible}
                                                     backgroundColor="base-300"
                                                     hoverable={false}
@@ -91,38 +90,40 @@ export function GamePage() {
                                                 />
                                             </div>
                                         </div>
-                                        {/* game extended description which will be removed later */}
-                                        <h1 className="text-2xl text-info mt-5">
-                                            Example paragraph title
-                                        </h1>
-                                        <p>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                        </p>
-                                        <h1 className="text-2xl text-info mt-5">
-                                            Example paragraph title
-                                        </h1>
-                                        <p>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                        </p>
-                                        <h1 className="text-2xl text-info mt-5">
-                                            Example paragraph title
-                                        </h1>
-                                        <p>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                        </p>
-                                        <h1 className="text-2xl text-info mt-5">
-                                            Example paragraph title
-                                        </h1>
-                                        <p>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                        </p>
-                                        <h1 className="text-2xl text-info mt-5">
-                                            Example paragraph title
-                                        </h1>
-                                        <p>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                        </p>
-
+                                        {/* example of extended description which will be removed later */}
+                                        <div>
+                                            
+                                            <h1 className="text-2xl text-info mt-5">
+                                                Example paragraph title
+                                            </h1>
+                                            <p>
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                            </p>
+                                            <h1 className="text-2xl text-info mt-5">
+                                                Example paragraph title
+                                            </h1>
+                                            <p>
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                            </p>
+                                            <h1 className="text-2xl text-info mt-5">
+                                                Example paragraph title
+                                            </h1>
+                                            <p>
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                            </p>
+                                            <h1 className="text-2xl text-info mt-5">
+                                                Example paragraph title
+                                            </h1>
+                                            <p>
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                            </p>
+                                            <h1 className="text-2xl text-info mt-5">
+                                                Example paragraph title
+                                            </h1>
+                                            <p>
+                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
