@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { UserInfoResponse, RigWizardResponse, GameInfoResponse, TagCollectionResponse, GameCollectionResponse, Game } from "./interfaces";
+import type { UserInfoResponse, RigWizardResponse, GameInfoResponse, TagCollectionResponse, GameCollectionResponse } from "./interfaces";
 
 const apiAuth=axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL+"/auth/",
@@ -103,6 +103,7 @@ export async function register(username: string, password: string): Promise<User
 //sends a login request to the backend
 export async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
+    
     const credentials = { username: username, password: password };
     const response = await apiAuth.post(
       'login.php',
@@ -114,7 +115,6 @@ export async function login(username: string, password: string): Promise<UserInf
       }
     );
     const data = await response.data;
-
     const result: UserInfoResponse =
     {
       successful: data["status"] === "success" ? true : false,
@@ -147,6 +147,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
     );
 
     const data = await response.data;
+    console.log(data);
     const result: GameCollectionResponse =
     {
       successful: data["status"] === "success" ? true : false,
@@ -191,47 +192,41 @@ export async function getTags(): Promise<TagCollectionResponse> {
 
 //using test game data while waiting for backend file to be finished
 export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
-  // try {
-  //   const response = await apiGames.get('getGameInfo.php',
-  //     {
-  //       params: {
-  //         gameId: gameId
-  //       },
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  //   );
+  try {
+    const response = await apiGames.get('getGameInfo.php',
+      {
+        params: {
+          gameId: gameId
+        },
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-  //   const data = await response.data;
-  //   console.log(data);
-  //   const result: GameInfoResponse =
-  //   {
-  //     successful: data["status"] === "success" ? true : false,
-  //     message: data["message"],
-  //     game: data["game"]
-  //   };
-  //   return result;
-  // } catch (error) {
-  //   console.log("error from php server:", error);
-  //   const result: GameInfoResponse = { successful: false, message: "server error" };
-  //   return result;
-  // }
-  const result:GameInfoResponse={
-    successful:true,
-    message:"successfully retrieved game info",
-    game:testGame,
+    const data = await response.data;
+    console.log(data);
+    const result: GameInfoResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      game: data["game"]
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameInfoResponse = { successful: false, message: "server error" };
+    return result;
   }
-
-  return result;
 }
 
-const testGame:Game =
-{
-  id_game:1,
-  title:"Game title",
-  description:"This is a brief description of the game. The game is an insanely cool game with a lot of mechanics and advanced gameplay.",
-  detailed_description:"This is a detailed description of the game. It goes into depth about the game's features, storyline, gameplay mechanics, and other interesting aspects that might entice players to try it out. Whether you're a fan of action, adventure, strategy, or any other genre, this game offers something for everyone. Dive into an immersive experience filled with challenges, excitement, and unforgettable moments.",
-  imgPath:"idk",
-  tags:["Indie","RPG","Adventure","Singleplayer","Multiplayer","Open World","Action","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy"],
-};
+// const testGame:Game =
+// {
+//   id_game:1,
+//   title:"Game title",
+//   description:"This is a brief description of the game. The game is an insanely cool game with a lot of mechanics and advanced gameplay.",
+//   detailed_description:"This is a detailed description of the game. It goes into depth about the game's features, storyline, gameplay mechanics, and other interesting aspects that might entice players to try it out. Whether you're a fan of action, adventure, strategy, or any other genre, this game offers something for everyone. Dive into an immersive experience filled with challenges, excitement, and unforgettable moments.",
+//   vertical_banner_URL:"",
+//   horizontal_banner_URL:"",
+//   tags:["Indie","RPG","Adventure","Singleplayer","Multiplayer","Open World","Action","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy"],
+// };

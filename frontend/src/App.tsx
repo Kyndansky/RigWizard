@@ -154,15 +154,15 @@ function App() {
                     <Link key={index} to={"/games/" + game.id_game}>
                       <GameInfoCard
                         numOfTagsToShow={3}
-                        imagePlacement=""
+                        imagePlacement="image-full"
                         name={game.title}
                         description={game.description}
                         tags={game.tags}
-                        imageUrl={game.imgPath}
+                        imageUrl={game.vertical_banner_URL}
                         backgroundColor="base-100"
                         hoverable={true}
-                        imageHeight="h-60"
-                        cardHeight="md:max-h-40 sm:max-h-30 lg:max-h-80 xl:max-h-100"
+                        imageHeight=""
+                        cardHeight="md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100"
                         showTitle={true}
                       />
                     </Link>

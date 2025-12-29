@@ -24,7 +24,8 @@ export interface Game {
   title: string;
   description: string;
   detailed_description: string;
-  imgPath: string;
+  vertical_banner_URL:string;
+  horizontal_banner_URL:string;
   tags: string[];
 }
 

@@ -15,7 +15,7 @@ $numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames']-1 : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
 
-$sql_games = "SELECT DISTINCT g.id_game, g.title, g.description, g.img_URL
+$sql_games = "SELECT *
         FROM games g
         JOIN user_games ug ON g.id_game = ug.id_game
         JOIN users u ON ug.id_user = u.id";

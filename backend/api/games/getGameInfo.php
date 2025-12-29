@@ -2,17 +2,16 @@
 require_once '../../cors.php';
 require_once "../../DBConnect.php";
 
-$json_data = file_get_contents("php://input");
-$data = json_decode($json_data, true);
+$gameId=$_GET['gameId'] ?? 0;
 
-if (!isset($_SESSION)) 
+if (!isset($_SESSION))
     session_start();
 
-$gameId = isset($data['gameId']) ? (int) $data['gameId'] : 0;
-
 // Function to get PC components details
-function getPCComponents($dbConnection, $pcId) {
-    if (!$pcId) return null;
+function getPCComponents($dbConnection, $pcId)
+{
+    if (!$pcId)
+        return null;
 
     // Query to get PC components
     $sql = "SELECT 
@@ -27,9 +26,9 @@ function getPCComponents($dbConnection, $pcId) {
             JOIN ram r ON p.id_ram = r.id
             JOIN motherboard m ON p.id_motherboard = m.id
             WHERE p.id = $pcId";
-    
+
     $result = $dbConnection->query($sql);
-    
+
     if ($result && $result->num_rows > 0) {
         return $result->fetch_assoc();
     }
@@ -68,22 +67,30 @@ if ($result && $result->num_rows > 0) {
                  FROM game_tags gt
                  JOIN tag t ON gt.id_tag = t.id_tag
                  WHERE gt.id_game = $gameId";
-    
+
     $result_tags = $dbConnection->query($sql_tags);
     $tags = [];
     // Collect tags
     if ($result_tags) {
         // Fetch tags
         while ($t = $result_tags->fetch_assoc()) {
-            $tags[] = $t['name']; 
+            $tags[] = $t['name'];
         }
     }
     $gameInfo['tags'] = $tags;
-
-    echo json_encode($gameInfo);
+    $response = [
+        "status" => "success",
+        "message" => "User is logged in",
+        "game" => $gameInfo
+    ];
+    echo json_encode($response);
 
 } else {
-    echo json_encode(["error" => "Game not found"]);
+    $response = [
+        "status" => "error",
+        "message" => "Game not found",
+    ];
+    echo json_encode($response);
 }
 
 $dbConnection->close();
