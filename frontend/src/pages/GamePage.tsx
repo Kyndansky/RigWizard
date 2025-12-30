@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
 import { useTagsCount } from "../hooks/useTagsCount";
 import { GameInfoCard } from "../components/GameInfoCard";
+import { ComponentsList } from "../components/ComponentsList";
 
 export function GamePage() {
     const numTagsVisible = useTagsCount();
@@ -14,6 +15,7 @@ export function GamePage() {
     const [game, setGame] = useState<Game | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const navigate = useNavigate();
+
     async function fetchGameInfo() {
         if (!id) {
             navigate("/404");
@@ -42,6 +44,7 @@ export function GamePage() {
         //the game is set
         setIsLoading(false);
         setGame(response.game);
+        console.log(response.game);
     }
 
     useEffect(() => {
@@ -62,8 +65,9 @@ export function GamePage() {
             {game &&
                 (
                     <React.Fragment>
+
                         <div className="w-full bg-base-300 overflow-y-auto">
-                            <div className="card lg:bg-base-100 shadow-sm m-5 lg:m-10 lg:mx-auto lg:w-5/7 p-5">
+                            <div className="card bg-base-100 mx-auto w-5/7 xs:w-full p-5 xs:mt-5 mt-10 mb-5">
                                 <div className="card-body">
                                     <h2 className="card-title text-3xl">{game.title}</h2>
                                     <div className="mx-auto">
@@ -90,39 +94,56 @@ export function GamePage() {
                                                 />
                                             </div>
                                         </div>
+                                        <div className="divider divider-vertical" />
                                         {/* example of extended description which will be removed later */}
                                         <div>
-                                            
-                                            <h1 className="text-2xl text-info mt-5">
+                                            <h1 className="text-2xl text-primary mt-5">
                                                 Example paragraph title
                                             </h1>
                                             <p>
                                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
                                             </p>
-                                            <h1 className="text-2xl text-info mt-5">
+                                            <h1 className="text-2xl text-primary mt-5">
                                                 Example paragraph title
                                             </h1>
                                             <p>
                                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
                                             </p>
-                                            <h1 className="text-2xl text-info mt-5">
+                                            <h1 className="text-2xl text-primary mt-5">
                                                 Example paragraph title
                                             </h1>
                                             <p>
                                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
                                             </p>
-                                            <h1 className="text-2xl text-info mt-5">
+                                            <h1 className="text-2xl text-primary mt-5">
                                                 Example paragraph title
                                             </h1>
                                             <p>
                                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
                                             </p>
-                                            <h1 className="text-2xl text-info mt-5">
+                                            <h1 className="text-2xl text-primary mt-5">
                                                 Example paragraph title
                                             </h1>
                                             <p>
                                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
                                             </p>
+                                        </div>
+                                        <div>
+                                        </div>
+                                        <div className="divider divider-vertical" />
+                                        {/* pc requirements */}
+                                        <div className="collapse collapse-arrow mt-5 max-w-[500px] mx-auto">
+                                            <input type="checkbox" className="peer" />
+                                            <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-300 w-fit">
+                                                Requirements
+                                            </div>
+                                            <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
+                                                <div className="flex flex-row justify-center grow items-center mt-2 mx-5 mb-3">
+                                                    <ComponentsList  pc={game.pc_min_details} descriptionText="Minimum"/>
+                                                    <div className="divider divider-horizontal divider-bg-base-100" />
+                                                    <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended"/>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

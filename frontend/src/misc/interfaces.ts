@@ -19,6 +19,9 @@ export interface GameInfoResponse extends RigWizardResponse {
   game?: Game;
 }
 
+export interface ComputerInfoResponse extends RigWizardResponse{
+  computer?:Computer;
+}
 export interface Game {
   id_game: number;
   title: string;
@@ -27,6 +30,9 @@ export interface Game {
   vertical_banner_URL:string;
   horizontal_banner_URL:string;
   tags: string[];
+  pc_min_details:Computer
+  pc_rec_details:Computer
+
 }
 
 export interface Computer {
@@ -38,7 +44,7 @@ export interface Computer {
 
 export interface ComputerComponent{
   id:number;
-  model_name:string
+  model:string
   score:number;
 }
 export interface Ram extends ComputerComponent{
@@ -65,3 +71,41 @@ export interface MotherBoard extends ComputerComponent{
   chipset:string;
   socket_type:string;
 }
+
+
+export const testPc:Computer={
+        ram:{
+            model:"adadwa",
+            quantity_gb:2,
+            brand:"Corsair",
+            frequency_mhz:1,
+            memory_type:"DDR4",
+            id:1,
+            score:1.0
+        },
+        cpu:{
+            model:"i4440u",
+            cores:2,
+            manufacturer:"Intel",
+            frequency_ghz:3,
+            socket_type:"",
+            id:1,
+            score:1.0
+        },
+        gpu:{
+            model:"GTX 1069",
+            manufacturer:"Nvidia",
+            vram_gb:3,
+            id:1,
+            score:1.0
+        },
+
+        motherboard:{
+            model:"Z3829S",
+            chipset:"",
+            socket_type:"LGA",
+            manufacturer:"ASUS",
+            id:1,
+            score:1.0
+        },
+    }

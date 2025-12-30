@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Link, Navigate } from "react-router-dom";
-import { getLibraryGames, getTags } from "./misc/api_calls_functions";
+import { getUserPc, getLibraryGames, getTags } from "./misc/api_calls_functions";
 import { useAuth } from "./misc/AuthContextHandler";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
-import type { Game } from "./misc/interfaces";
+import { type Computer, testPc, type Game } from "./misc/interfaces";
 import { BasePageLayout } from "./components/BasePageLayout";
 import Loader from "./components/Loader";
+import { div } from "motion/react-client";
+import { CirclePlus, PcCase } from "lucide-react";
 
 function App() {
   const gamesPerPage = 20;
@@ -17,6 +19,8 @@ function App() {
   const [searchText, setSearchText] = useState<string>("");
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [userComputer, setUserComputer] = useState<Computer | undefined>(undefined);
+  const [isLoadingPcConfiguration, setIsLoadingPcConfiguration] = useState<boolean>(true);
   const { isAuthenticated, isLoading } =
     useAuth();
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
@@ -53,10 +57,19 @@ function App() {
     }
   }
 
+  async function fetchUserPc() {
+    const fetchedPcResponse = await getUserPc();
+    if (fetchedPcResponse.successful) {
+      setUserComputer(fetchedPcResponse.computer);
+    }
+    setIsLoadingPcConfiguration(false);
+
+  }
   useEffect(() => {
     (async () => {
       await fetchGames(1);
       await fetchTags();
+      await fetchUserPc();
     })();
   }, []);
 
@@ -91,8 +104,25 @@ function App() {
         <div className="grid grid-cols-12 flex-grow h-full">
           {/* Left sidebar that shows the pc components */}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
-            <h2 className="text-lg font-bold">Your pc specs</h2>
-            <ComponentsList></ComponentsList>
+            <h2 className="text-lg font-bold mb-4">Your PC</h2>
+            <div className="flex flex-col items-center gap-4">
+              {isLoadingPcConfiguration ? (
+                // if the pc config hasn't been retrieved yet show loader
+                <Loader />
+              ) : !userComputer ? (
+                // if the config has been loaded but user hasn't added a pc show warning
+                <React.Fragment>
+                  <div className="alert alert-warning">You haven't set a computer configuration yet: many features will not be availabe.</div>
+                  <button className="btn btn-soft">Add configuration <PcCase size={20} /></button>
+                </React.Fragment>
+              ) : (
+                // show pc configuration and edit button
+                <React.Fragment>
+                  <ComponentsList pc={userComputer} />
+                  <button className="btn btn-soft">Edit configuration <PcCase size={20} /></button>
+                </React.Fragment>
+              )}
+            </div>
           </aside>
 
           <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">

@@ -1,18 +1,23 @@
 import axios from "axios";
-import type { UserInfoResponse, RigWizardResponse, GameInfoResponse, TagCollectionResponse, GameCollectionResponse } from "./interfaces";
+import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc } from "./interfaces";
 
-const apiAuth=axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/auth/",
+const apiAuth = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/auth/",
   withCredentials: true,
 });
 
-const apiGames=axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/games/",
+const apiGames = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/games/",
   withCredentials: true,
 });
 
-const apiTags=axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_API_URL+"/tags/",
+const apiTags = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/tags/",
+  withCredentials: true,
+});
+
+const apiComputers = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/computers/",
   withCredentials: true,
 });
 
@@ -103,7 +108,7 @@ export async function register(username: string, password: string): Promise<User
 //sends a login request to the backend
 export async function login(username: string, password: string): Promise<UserInfoResponse> {
   try {
-    
+
     const credentials = { username: username, password: password };
     const response = await apiAuth.post(
       'login.php',
@@ -147,7 +152,6 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
     );
 
     const data = await response.data;
-    console.log(data);
     const result: GameCollectionResponse =
     {
       successful: data["status"] === "success" ? true : false,
@@ -205,7 +209,6 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
     );
 
     const data = await response.data;
-    console.log(data);
     const result: GameInfoResponse =
     {
       successful: data["status"] === "success" ? true : false,
@@ -230,3 +233,35 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
 //   horizontal_banner_URL:"",
 //   tags:["Indie","RPG","Adventure","Singleplayer","Multiplayer","Open World","Action","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy"],
 // };
+
+export async function getUserPc(): Promise<ComputerInfoResponse> {
+  // try {
+  //   const response = await apiComputers.get('getUserComputer.php',
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     }
+  //   );
+
+  //   const data = await response.data;
+  //   const result: ComputerInfoResponse =
+  //   {
+  //     successful: data["status"] === "success" ? true : false,
+  //     message: data["message"],
+  //     computer: data["computer"]
+  //   };
+  //   return result;
+  // } catch (error) {
+  //   console.log("error from php server:", error);
+  //   const result: ComputerInfoResponse = { successful: false, message: "server error" };
+  //   return result;
+  // }
+  const result: ComputerInfoResponse =
+  {
+    successful: true,
+    message: "successfully retrieved pc",
+    computer: testPc
+  };
+  return result;
+}
