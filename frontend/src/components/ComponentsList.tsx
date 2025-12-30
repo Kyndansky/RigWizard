@@ -6,14 +6,31 @@ interface ComponentsListProps {
     pc: Computer
     descriptionText?: string
     pcToCompareTo?: Computer
+    showGeneralEvaluation: boolean
 }
 
 export function ComponentsList(props: ComponentsListProps) {
     const iconsSize = 20;
+    let totalScore = 0;
+    let percentage = 0;
+    let hue=120;
+    let progressEvaluationColor: string = "#fffff";
+
+    if (props.showGeneralEvaluation) {
+        //in this case 40 is the max score (10 max per component)
+        totalScore = props.pc.cpu.score + props.pc.gpu.score + props.pc.motherboard.score + props.pc.ram.score;
+        percentage = Math.round((totalScore / 40) * 100);
+        // find tonality based on the score: 0 is red, 120 is green
+        // (using HSL color circle or whatever it is called)
+        hue = (totalScore / 40) * 120;
+
+        // Genera la stringa HSL
+        progressEvaluationColor = `hsl(${hue}, 80%, 45%)`;
+    }
 
     return (
         <React.Fragment>
-            <ul className="list bg-base-100 rounded-box shadow-md p-3">
+            <ul className="list bg-base-100 rounded-box shadow-md p-2 w-full">
                 {props.descriptionText && (
                     <li className="p-4 pb-2 text-sm opacity-60 tracking-wide">{props.descriptionText}</li>
                 )}
@@ -24,7 +41,7 @@ export function ComponentsList(props: ComponentsListProps) {
                             Motherboard
                             <CircuitBoard className="ml-2" size={iconsSize} />
                         </div>
-                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.motherboard.model}</div>
+                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.motherboard.manufacturer + " " + props.pc.motherboard.model}</div>
                     </div>
                 </li>
                 <li className="list-row">
@@ -33,7 +50,7 @@ export function ComponentsList(props: ComponentsListProps) {
                             CPU
                             <Cpu className="ml-2" size={iconsSize} />
                         </div>
-                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.cpu.model}</div>
+                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.cpu.manufacturer + " " + props.pc.cpu.model}</div>
                     </div>
                 </li>
                 <li className="list-row">
@@ -48,12 +65,25 @@ export function ComponentsList(props: ComponentsListProps) {
                 <li className="list-row">
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center">
-                            GPU
+                            Graphics Card
                             <Gpu className="ml-2" size={iconsSize} />
                         </div>
-                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.gpu.model + " " + props.pc.gpu.vram_gb + "GB"}</div>
+                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.gpu.manufacturer + " " + props.pc.gpu.model + " " + props.pc.gpu.vram_gb + "GB"}</div>
                     </div>
                 </li>
+                {props.showGeneralEvaluation && (
+                    <li className="list-row items-center grow mx-auto">
+                        {/* For TSX uncomment the commented types below */}
+                        <div className="radial-progress" aria-setsize={2}
+                            style={{
+                                "--value": percentage,
+                                "--size": "3.5rem",
+                                "color": progressEvaluationColor 
+                            } as React.CSSProperties}
+                            aria-valuenow={percentage}
+                            role="progressbar">{percentage}%</div>
+                    </li>
+                )}
             </ul>
         </React.Fragment>
     )

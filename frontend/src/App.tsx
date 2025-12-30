@@ -5,11 +5,10 @@ import { getUserPc, getLibraryGames, getTags } from "./misc/api_calls_functions"
 import { useAuth } from "./misc/AuthContextHandler";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
-import { type Computer, testPc, type Game } from "./misc/interfaces";
+import { type Computer, type Game } from "./misc/interfaces";
 import { BasePageLayout } from "./components/BasePageLayout";
 import Loader from "./components/Loader";
-import { div } from "motion/react-client";
-import { CirclePlus, PcCase } from "lucide-react";
+import { PcCase } from "lucide-react";
 
 function App() {
   const gamesPerPage = 20;
@@ -105,7 +104,7 @@ function App() {
           {/* Left sidebar that shows the pc components */}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
             <h2 className="text-lg font-bold mb-4">Your PC</h2>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
               {isLoadingPcConfiguration ? (
                 // if the pc config hasn't been retrieved yet show loader
                 <Loader />
@@ -118,7 +117,7 @@ function App() {
               ) : (
                 // show pc configuration and edit button
                 <React.Fragment>
-                  <ComponentsList pc={userComputer} />
+                    <ComponentsList pc={userComputer} showGeneralEvaluation={true} />
                   <button className="btn btn-soft">Edit configuration <PcCase size={20} /></button>
                 </React.Fragment>
               )}

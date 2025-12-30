@@ -35,13 +35,13 @@ function getPCComponents($dbConnection, $pcId)
         return [
             "config_name" => $row['config_name'],
             "cpu" => [
-                "brand" => $row['cpu_brand'],
+                "manufacturer" => $row['cpu_brand'],
                 "model" => $row['cpu_model'],
                 "cores" => (int)$row['cores'],
                 "frequency_ghz" => (float)$row['frequency_ghz']
             ],
             "gpu" => [
-                "brand" => $row['gpu_brand'],
+                "manufacturer" => $row['gpu_brand'],
                 "model" => $row['gpu_model'],
                 "vram_gb" => (int)$row['vram_gb']
             ],
@@ -52,7 +52,7 @@ function getPCComponents($dbConnection, $pcId)
                 "memory_type" => $row['memory_type']
             ],
             "motherboard" => [
-                "brand" => $row['mobo_brand'],
+                "manufacturer" => $row['mobo_brand'],
                 "model" => $row['mobo_model']
             ]
         ];

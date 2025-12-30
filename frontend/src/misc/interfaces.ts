@@ -81,7 +81,7 @@ export const testPc:Computer={
             frequency_mhz:1,
             memory_type:"DDR4",
             id:1,
-            score:1.0
+            score:10.0
         },
         cpu:{
             model:"i4440u",
@@ -90,14 +90,14 @@ export const testPc:Computer={
             frequency_ghz:3,
             socket_type:"",
             id:1,
-            score:1.0
+            score:10.0
         },
         gpu:{
-            model:"GTX 1069",
+            model:"GTX 1060",
             manufacturer:"Nvidia",
             vram_gb:3,
             id:1,
-            score:1.0
+            score:10.0
         },
 
         motherboard:{
@@ -106,6 +106,6 @@ export const testPc:Computer={
             socket_type:"LGA",
             manufacturer:"ASUS",
             id:1,
-            score:1.0
+            score:0.0
         },
     }
