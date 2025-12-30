@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import { logout } from "../misc/api_calls_functions";
+import { CircleUserRound, User } from "lucide-react";
 
 export function NavBar() {
     const { setIsAuthenticated, username } =
@@ -44,13 +45,7 @@ export function NavBar() {
                     <div className="dropdown dropdown-end">
                         <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
                             <span>{username}</span>
-                            <div className="btn-circle avatar">
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="Tailwind CSS Navbar component"
-                                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                                </div>
-                            </div>
+                                <CircleUserRound />
                         </div>
                         <ul
                             tabIndex={-1}

@@ -139,9 +139,9 @@ export function GamePage() {
                                             </div>
                                             <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
                                                 <div className="flex flex-row justify-center grow items-center mt-2 mx-5 mb-3">
-                                                    <ComponentsList  pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={false}/>
+                                                    <ComponentsList  pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={false} showRamBrand={false}/>
                                                     <div className="divider divider-horizontal divider-bg-base-100" />
-                                                    <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={false}/>
+                                                    <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={false} showRamBrand={false}/>
                                                 </div>
                                             </div>
                                         </div>

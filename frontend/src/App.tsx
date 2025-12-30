@@ -9,6 +9,7 @@ import { type Computer, type Game } from "./misc/interfaces";
 import { BasePageLayout } from "./components/BasePageLayout";
 import Loader from "./components/Loader";
 import { PcCase } from "lucide-react";
+import { ComputerComponentModal } from "./components/ComputerConfigModal";
 
 function App() {
   const gamesPerPage = 20;
@@ -25,6 +26,7 @@ function App() {
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined
   );
+  const [isPcConfigModalOpen,setIsPcConfigModalOpen]=useState<boolean>(false);
 
   async function fetchGames(targetPage: number) {
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
@@ -97,6 +99,8 @@ function App() {
     return <Navigate to="/login" />;
   }
 
+
+
   return (
     <React.Fragment>
       <BasePageLayout hideOverFlow={true}>
@@ -112,13 +116,17 @@ function App() {
                 // if the config has been loaded but user hasn't added a pc show warning
                 <React.Fragment>
                   <div className="alert alert-warning">You haven't set a computer configuration yet: many features will not be availabe.</div>
-                  <button className="btn btn-soft">Add configuration <PcCase size={20} /></button>
+                  <button className="btn btn-soft" onClick={() => {
+                    setIsPcConfigModalOpen(true);
+                  }}>Add configuration <PcCase size={20} /></button>
                 </React.Fragment>
               ) : (
                 // show pc configuration and edit button
                 <React.Fragment>
-                    <ComponentsList pc={userComputer} showGeneralEvaluation={true} />
-                  <button className="btn btn-soft">Edit configuration <PcCase size={20} /></button>
+                  <ComponentsList pc={userComputer} showGeneralEvaluation={true} showRamBrand={true}/>
+                  <button className="btn btn-soft" onClick={() => {
+                    setIsPcConfigModalOpen(true);
+                  }}>Edit configuration <PcCase size={20} /></button>
                 </React.Fragment>
               )}
             </div>
@@ -292,6 +300,7 @@ function App() {
           </aside>
         </div>
       </BasePageLayout>
+      <ComputerComponentModal modalId={"pcConfigModal"} isOpen={isPcConfigModalOpen} modalMode="Add" closeModal={()=>{setIsPcConfigModalOpen(false)}} onResult={()=>{}}/>
     </React.Fragment>
   );
 }

@@ -3,17 +3,18 @@ import type { Computer } from "../misc/interfaces";
 import { CircuitBoard, Cpu, Gpu, MemoryStick } from "lucide-react";
 
 interface ComponentsListProps {
-    pc: Computer
-    descriptionText?: string
-    pcToCompareTo?: Computer
-    showGeneralEvaluation: boolean
+    pc: Computer;
+    descriptionText?: string;
+    pcToCompareTo?: Computer;
+    showGeneralEvaluation: boolean;
+    showRamBrand: boolean;
 }
 
 export function ComponentsList(props: ComponentsListProps) {
     const iconsSize = 20;
     let totalScore = 0;
     let percentage = 0;
-    let hue=120;
+    let hue = 120;
     let progressEvaluationColor: string = "#fffff";
 
     if (props.showGeneralEvaluation) {
@@ -59,7 +60,7 @@ export function ComponentsList(props: ComponentsListProps) {
                             Ram
                             <MemoryStick className="ml-2" size={iconsSize} />
                         </div>
-                        <div className="text-xs uppercase font-semibold opacity-60">{props.pc.ram.quantity_gb + "GB " + props.pc.ram.memory_type}</div>
+                        <div className="text-xs uppercase font-semibold opacity-60">{(props.showRamBrand ? props.pc.ram.brand + " " : "") + props.pc.ram.quantity_gb + "GB " + props.pc.ram.memory_type}</div>
                     </div>
                 </li>
                 <li className="list-row">
@@ -78,7 +79,7 @@ export function ComponentsList(props: ComponentsListProps) {
                             style={{
                                 "--value": percentage,
                                 "--size": "3.5rem",
-                                "color": progressEvaluationColor 
+                                "color": progressEvaluationColor
                             } as React.CSSProperties}
                             aria-valuenow={percentage}
                             role="progressbar">{percentage}%</div>
