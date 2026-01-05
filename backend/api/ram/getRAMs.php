@@ -9,7 +9,7 @@ if ($result && $result->num_rows > 0) {
         $rams[] = [
             "id" => (int) $row['id'],
             "brand" => $row['brand'],
-            "model_name" => $row['model_name'],
+            "model" => $row['model_name'],
             "quantity_gb" => (int) $row['quantity_gb'],
             "memory_type" => $row['memory_type'],
             "frequency_mhz" => (int) $row['frequency_mhz'],
@@ -19,13 +19,13 @@ if ($result && $result->num_rows > 0) {
     $response = [
         "status" => "success",
         "message" => "Rams retrieved successfully",
-        "data" => $rams
+        "rams" => $rams
     ];
 } else {
     $response = [
         "status" => "success",
         "message" => "No rams found",
-        "data" => []
+        "rams" => []
     ];
 }
 echo json_encode($response, JSON_PRETTY_PRINT);

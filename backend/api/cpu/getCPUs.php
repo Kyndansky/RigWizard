@@ -10,7 +10,7 @@ if ($result && $result->num_rows > 0) {
         $cpus[] = [
             "id" => (int)$row['id'],
             "manufacturer" => $row['manufacturer'], 
-            "model_name" => $row['model_name'],
+            "model" => $row['model_name'],
             "frequency_ghz" => (float)$row['frequency_ghz'], 
             "cores" => (int)$row['cores'],           
             "socket_type" => $row['socket_type'],         
@@ -20,13 +20,13 @@ if ($result && $result->num_rows > 0) {
     $response = [
         "status" => "success",
         "message" => "CPUs retrieved successfully",
-        "data" => $cpus
+        "cpus" => $cpus
     ];
 } else {
     $response = [
         "status" => "success",
         "message" => "No CPUs found", 
-        "data" => []
+        "cpus" => []
     ];
 }
 echo json_encode($response, JSON_PRETTY_PRINT);

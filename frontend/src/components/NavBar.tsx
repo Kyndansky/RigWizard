@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import { logout } from "../misc/api_calls_functions";
-import { CircleUserRound, User } from "lucide-react";
+import { CircleUserRound} from "lucide-react";
 
 export function NavBar() {
     const { setIsAuthenticated, username } =

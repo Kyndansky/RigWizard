@@ -22,6 +22,18 @@ export interface GameInfoResponse extends RigWizardResponse {
 export interface ComputerInfoResponse extends RigWizardResponse{
   computer?:Computer;
 }
+export interface MotherBoardListResponse extends RigWizardResponse{
+  motherboards:MotherBoard[];
+}
+export interface CpuListResponse extends RigWizardResponse{
+  cpus:CPU[];
+}
+export interface GpuListResponse extends RigWizardResponse{
+  gpus:GPU[];
+}
+export interface RamListResponse extends RigWizardResponse{
+  rams:Ram[];
+}
 export interface Game {
   id_game: number;
   title: string;

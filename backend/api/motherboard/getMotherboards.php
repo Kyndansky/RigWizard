@@ -9,22 +9,22 @@ if ($result && $result->num_rows > 0) {
         $motherboards[] = [
             "id" => (int)$row['id'],
             "manufacturer" => $row['manufacturer'],
-            "model_name" => $row['model_name'],
+            "model" => $row['model_name'],
             "chipset" => $row['chipset'],
             "socket_type" => $row['socket_type'],
-            "score" => (float)$row['score']  
+            "score" => (float)$row['score']
         ];
     }
     $response = [
         "status" => "success",
         "message" => "Motherboards retrieved successfully",
-        "data" => $motherboards
+        "motherboards" => $motherboards
     ];
 } else {
     $response = [
         "status" => "success",
         "message" => "No motherboards found",
-        "data" => []
+        "motherboards" => []
     ];
 }
 echo json_encode($response, JSON_PRETTY_PRINT);

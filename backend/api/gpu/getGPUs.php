@@ -9,7 +9,7 @@ if ($result && $result->num_rows > 0) {
     $gpus[] = [
         "id" => (int)$row['id'],
         "manufacturer" => $row['manufacturer'], 
-        "model_name" => $row['model_name'],
+        "model" => $row['model_name'],
         "vram_gb" => (int)$row['vram_gb'],
         "score" => (float)$row['score'] 
        
@@ -18,13 +18,13 @@ if ($result && $result->num_rows > 0) {
     $response = [
         "status" => "success",
         "message" => "GPUs retrieved successfully",
-        "data" => $gpus
+        "gpus" => $gpus
     ];
 } else {
     $response = [
         "status" => "success",
         "message" => "No GPUs found",
-        "data" => []
+        "gpus" => []
     ];
 }
 echo json_encode($response, JSON_PRETTY_PRINT);

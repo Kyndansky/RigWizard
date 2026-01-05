@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc } from "./interfaces";
+import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc, type CpuListResponse, type MotherBoardListResponse, type GpuListResponse, type RamListResponse } from "./interfaces";
 
 const apiAuth = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL + "/auth/",
@@ -20,7 +20,22 @@ const apiComputers = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL + "/computers/",
   withCredentials: true,
 });
-
+const apiCpus = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/cpu/",
+  withCredentials: true,
+});
+const apiMotherBoards = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/motherboard/",
+  withCredentials: true,
+});
+const apiGpus = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/gpu/",
+  withCredentials: true,
+});
+const apiRams = axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_API_URL + "/ram/",
+  withCredentials: true,
+});
 // Make a GET request to the backend API to check if the user is logged in
 // sends a getUserInfoRequest to the backend to get information about the user's authentication
 export async function getIsLoggedIn(): Promise<UserInfoResponse> {
@@ -264,4 +279,103 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
     computer: testPc
   };
   return result;
+}
+
+export async function getMotherboards(): Promise<MotherBoardListResponse> {
+  try {
+    const response = await apiMotherBoards.get('getMotherboards.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: MotherBoardListResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      motherboards: data.motherboards,
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: MotherBoardListResponse = { successful: false, message: "server error", motherboards: [] };
+    return result;
+  }
+}
+export async function getCpus(): Promise<CpuListResponse> {
+  try {
+    const response = await apiCpus.get('getCpus.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: CpuListResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      cpus: data.motherboards,
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: CpuListResponse = { successful: false, message: "server error", cpus: [] };
+    return result;
+  }
+}
+
+export async function getGpus(): Promise<GpuListResponse> {
+  try {
+    const response = await apiGpus.get('getGpus.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: GpuListResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      gpus: data.motherboards,
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GpuListResponse = { successful: false, message: "server error", gpus: [] };
+    return result;
+  }
+}
+
+export async function getRams(): Promise<RamListResponse> {
+  try {
+    const response = await apiRams.get('getRams.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: RamListResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      rams: data.motherboards,
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: RamListResponse = { successful: false, message: "server error", rams: [] };
+    return result;
+  }
 }
