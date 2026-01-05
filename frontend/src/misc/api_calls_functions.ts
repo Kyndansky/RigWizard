@@ -316,12 +316,14 @@ export async function getCpus(): Promise<CpuListResponse> {
     );
 
     const data = await response.data;
+    console.log(data);
     const result: CpuListResponse =
     {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      cpus: data.motherboards,
+      cpus: data.cpus,
     };
+    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -345,7 +347,7 @@ export async function getGpus(): Promise<GpuListResponse> {
     {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      gpus: data.motherboards,
+      gpus: data.gpus,
     };
     return result;
   } catch (error) {
@@ -370,7 +372,7 @@ export async function getRams(): Promise<RamListResponse> {
     {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      rams: data.motherboards,
+      rams: data.rams,
     };
     return result;
   } catch (error) {

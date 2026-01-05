@@ -92,8 +92,8 @@ export const testPc:Computer={
             brand:"Corsair",
             frequency_mhz:1,
             memory_type:"DDR4",
-            id:1,
-            score:10.0
+            id:250,
+            score:2.56
         },
         cpu:{
             model:"i4440u",
@@ -101,14 +101,14 @@ export const testPc:Computer={
             manufacturer:"Intel",
             frequency_ghz:3,
             socket_type:"",
-            id:1,
+            id:250,
             score:10.0
         },
         gpu:{
             model:"GTX 1060",
             manufacturer:"Nvidia",
             vram_gb:3,
-            id:1,
+            id:250,
             score:10.0
         },
 
@@ -117,7 +117,7 @@ export const testPc:Computer={
             chipset:"",
             socket_type:"LGA",
             manufacturer:"ASUS",
-            id:1,
-            score:0.0
+            id:5000,
+            score:10.0
         },
     }

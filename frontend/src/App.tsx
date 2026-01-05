@@ -26,7 +26,7 @@ function App() {
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined
   );
-  const [isPcConfigModalOpen,setIsPcConfigModalOpen]=useState<boolean>(false);
+  const [isPcConfigModalOpen, setIsPcConfigModalOpen] = useState<boolean>(false);
 
   async function fetchGames(targetPage: number) {
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
@@ -123,7 +123,7 @@ function App() {
               ) : (
                 // show pc configuration and edit button
                 <React.Fragment>
-                  <ComponentsList pc={userComputer} showGeneralEvaluation={true} showRamBrand={true}/>
+                  <ComponentsList pc={userComputer} showGeneralEvaluation={true} showRamBrand={true} />
                   <button className="btn btn-soft" onClick={() => {
                     setIsPcConfigModalOpen(true);
                   }}>Edit configuration <PcCase size={20} /></button>
@@ -300,7 +300,20 @@ function App() {
           </aside>
         </div>
       </BasePageLayout>
-      <ComputerComponentModal modalId={"pcConfigModal"} isOpen={isPcConfigModalOpen} modalMode="Add" closeModal={()=>{setIsPcConfigModalOpen(false)}} onResult={()=>{}}/>
+      {/* only show modal if the users's pc info has been retrieved */}
+      {!isLoadingPcConfiguration && (
+        <ComputerComponentModal
+          modalId={"pcConfigModal"}
+          isOpen={isPcConfigModalOpen}
+          modalMode={userComputer?"Edit":"Add"}
+          defaultMobo={userComputer?.motherboard}
+          defaultCpu={userComputer?.cpu}
+          defaultRam={userComputer?.ram}
+          defaultGpu={userComputer?.gpu}
+          closeModal={() => { setIsPcConfigModalOpen(false) }}
+          onResult={() => { }} />
+      )}
+
     </React.Fragment>
   );
 }
