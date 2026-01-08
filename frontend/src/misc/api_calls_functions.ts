@@ -250,28 +250,29 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
 // };
 
 export async function getUserPc(): Promise<ComputerInfoResponse> {
-  // try {
-  //   const response = await apiComputers.get('getUserComputer.php',
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     }
-  //   );
+  try {
+    const response = await apiComputers.get('getUserPC.php',
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-  //   const data = await response.data;
-  //   const result: ComputerInfoResponse =
-  //   {
-  //     successful: data["status"] === "success" ? true : false,
-  //     message: data["message"],
-  //     computer: data["computer"]
-  //   };
-  //   return result;
-  // } catch (error) {
-  //   console.log("error from php server:", error);
-  //   const result: ComputerInfoResponse = { successful: false, message: "server error" };
-  //   return result;
-  // }
+    const data = await response.data;
+    console.log(data);
+    const result: ComputerInfoResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      computer: data["computer"]
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: ComputerInfoResponse = { successful: false, message: "server error" };
+    return result;
+  }
   const result: ComputerInfoResponse =
   {
     successful: true,

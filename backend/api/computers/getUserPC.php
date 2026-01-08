@@ -8,14 +8,12 @@ if (!isset($_SESSION)) {
 
 $username = $_SESSION["username"] ?? '';
 
-
-
 $sql = "SELECT 
             p.config_name,
             r.brand AS ram_brand, r.model_name AS ram_model, r.quantity_gb, r.frequency_mhz, r.memory_type, r.score AS ram_score,
             c.manufacturer AS cpu_manufacturer, c.model_name AS cpu_model, c.frequency_ghz, c.cores, c.socket_type AS cpu_socket, c.score AS cpu_score,
             g.manufacturer AS gpu_manufacturer, g.model_name AS gpu_model, g.vram_gb, g.score AS gpu_score,
-            m.manufacturer AS mb_manufacturer, m.model_name AS mb_model, m.chipset, m.socket_type AS mb_socket, m.score AS mb_score,
+            m.manufacturer AS mb_manufacturer, m.model_name AS mb_model, m.chipset, m.socket_type AS mb_socket, m.score AS mb_score
         FROM users u
         INNER JOIN pc p ON u.id_main_pc = p.id
         INNER JOIN ram r ON p.id_ram = r.id
