@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc, type CpuListResponse, type MotherBoardListResponse, type GpuListResponse, type RamListResponse } from "./interfaces";
+import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc, type CpuListResponse, type MotherBoardListResponse, type GpuListResponse, type RamListResponse, type Computer } from "./interfaces";
 
 const apiAuth = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL + "/auth/",
@@ -379,6 +379,32 @@ export async function getRams(): Promise<RamListResponse> {
   } catch (error) {
     console.log("error from php server:", error);
     const result: RamListResponse = { successful: false, message: "server error", rams: [] };
+    return result;
+  }
+}
+
+
+export async function editPcConfiguration(computer: Computer): Promise<RigWizardResponse> {
+  try {
+    const response = await apiComputers.post('editUserComputer.php',
+      {
+        computer,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    const data = await response.data;
+    const result: RigWizardResponse =
+    {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: RigWizardResponse = { successful: false, message: "server error" };
     return result;
   }
 }

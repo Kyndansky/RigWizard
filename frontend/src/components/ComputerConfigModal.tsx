@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { type MotherBoard, type CPU, type GPU, type Ram } from "../misc/interfaces";
-import { getCpus, getGpus, getMotherboards, getRams } from "../misc/api_calls_functions";
+import { type MotherBoard, type CPU, type GPU, type Ram, type Computer } from "../misc/interfaces";
+import { editPcConfiguration, getCpus, getGpus, getMotherboards, getRams } from "../misc/api_calls_functions";
 import Loader from "./Loader";
+import { showToastAlert } from "./BasePageLayout";
+import { ComponentsList } from "./ComponentsList";
 interface ComputerComponentsModalProps {
     isOpen: boolean;
     modalMode: "Edit" | "Add";
@@ -112,79 +114,108 @@ export function ComputerComponentModal(props: ComputerComponentsModalProps) {
                     ) : (
                         <React.Fragment>
                             {/* todo: add a mini preview of the user's pc build to the side */}
-                            <fieldset className="fieldset">
-                                <legend className="fieldset-legend">Motherboard</legend>
-                                <select
-                                    className="select"
-                                    value={selectedMotherboard?.id?.toString() || "0"}
-                                    onChange={(e) => {
-                                        const selectedMoboId = parseInt(e.target.value, 10);
-                                        const mobo = motherboards.find((mobo) => mobo.id === selectedMoboId);
-                                        setSelectedMotherboard(mobo);
-                                    }}>
-                                    <option disabled={true} value="0">None</option>
-                                    {motherboards?.map((motherboard) => (
-                                        <option key={motherboard.id} value={motherboard.id}>{motherboard.model}</option>
-                                    ))}
-                                </select>
-                            </fieldset>
-                            <fieldset className="fieldset">
-                                <legend className="fieldset-legend">CPU</legend>
-                                <select
-                                    className="select"
-                                    value={selectedCpu?.id?.toString() || "0"}
-                                    onChange={(e) => {
-                                        const selectedCpuId = parseInt(e.target.value, 10);
-                                        const cpu = cpus.find((cpu) => cpu.id === selectedCpuId);
-                                        setSelectedCpu(cpu);
-                                    }}>
-                                    <option disabled={true} value="0">None</option>
-                                    {cpus?.map((cpu) => (
-                                        <option key={cpu.id} value={cpu.id}>{cpu.model}</option>
-                                    ))}
-                                </select>
-                            </fieldset>
-                            <fieldset className="fieldset">
-                                <legend className="fieldset-legend">GPU</legend>
-                                <select
-                                    className="select"
-                                    value={selectedGpu?.id?.toString() || "0"}
-                                    onChange={(e) => {
-                                        const selectedGpuId = parseInt(e.target.value, 10);
-                                        const gpu = gpus.find((gpu) => gpu.id === selectedGpuId);
-                                        setSelectedGpu(gpu);
-                                    }}>
-                                    <option disabled={true} value="0">None</option>
-                                    {gpus?.map((gpu) => (
-                                        <option key={gpu.id} value={gpu.id}>{gpu.model}</option>
-                                    ))}
-                                </select>
-                            </fieldset>
-                            <fieldset className="fieldset">
-                                <legend className="fieldset-legend">Ram</legend>
-                                <select
-                                    className="select"
-                                    value={selectedRam?.id?.toString() || "0"}
-                                    onChange={(e) => {
-                                        const selectedRamId = parseInt(e.target.value, 10);
-                                        const ram = rams.find((ram) => ram.id === selectedRamId);
-                                        setSelectedRam(ram);
-                                    }}>
-                                    <option disabled={true} value="0">None</option>
-                                    {rams?.map((ram) => (
-                                        <option key={ram.id} value={ram.id}>{ram.model}</option>
-                                    ))}
-                                </select>
-                            </fieldset>
+                            <div className="flex flex-row mt-5 gap-3">
+                                <div className="flex flex-col">
+                                    <fieldset className="fieldset">
+                                        <legend className="fieldset-legend">Motherboard</legend>
+                                        <select
+                                            className="select"
+                                            value={selectedMotherboard?.id?.toString() || "0"}
+                                            onChange={(e) => {
+                                                const selectedMoboId = parseInt(e.target.value, 10);
+                                                const mobo = motherboards.find((mobo) => mobo.id === selectedMoboId);
+                                                setSelectedMotherboard(mobo);
+                                            }}>
+                                            <option disabled={true} value="0">None</option>
+                                            {motherboards?.map((motherboard) => (
+                                                <option key={motherboard.id} value={motherboard.id}>{motherboard.model}</option>
+                                            ))}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset className="fieldset">
+                                        <legend className="fieldset-legend">CPU</legend>
+                                        <select
+                                            className="select"
+                                            value={selectedCpu?.id?.toString() || "0"}
+                                            onChange={(e) => {
+                                                const selectedCpuId = parseInt(e.target.value, 10);
+                                                const cpu = cpus.find((cpu) => cpu.id === selectedCpuId);
+                                                setSelectedCpu(cpu);
+                                            }}>
+                                            <option disabled={true} value="0">None</option>
+                                            {cpus?.map((cpu) => (
+                                                <option key={cpu.id} value={cpu.id}>{cpu.model}</option>
+                                            ))}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset className="fieldset">
+                                        <legend className="fieldset-legend">Ram</legend>
+                                        <select
+                                            className="select"
+                                            value={selectedRam?.id?.toString() || "0"}
+                                            onChange={(e) => {
+                                                const selectedRamId = parseInt(e.target.value, 10);
+                                                const ram = rams.find((ram) => ram.id === selectedRamId);
+                                                setSelectedRam(ram);
+                                            }}>
+                                            <option disabled={true} value="0">None</option>
+                                            {rams?.map((ram) => (
+                                                <option key={ram.id} value={ram.id}>{ram.model}</option>
+                                            ))}
+                                        </select>
+                                    </fieldset>
+                                    <fieldset className="fieldset">
+                                        <legend className="fieldset-legend">GPU</legend>
+                                        <select
+                                            className="select"
+                                            value={selectedGpu?.id?.toString() || "0"}
+                                            onChange={(e) => {
+                                                const selectedGpuId = parseInt(e.target.value, 10);
+                                                const gpu = gpus.find((gpu) => gpu.id === selectedGpuId);
+                                                setSelectedGpu(gpu);
+                                            }}>
+                                            <option disabled={true} value="0">None</option>
+                                            {gpus?.map((gpu) => (
+                                                <option key={gpu.id} value={gpu.id}>{gpu.model}</option>
+                                            ))}
+                                        </select>
+                                    </fieldset>
+                                </div>
+                                {selectedCpu && selectedGpu && selectedMotherboard && selectedRam && (
+                                    <ComponentsList showGeneralEvaluation={true}
+                                        pc={
+                                            {
+                                                cpu: selectedCpu,
+                                                gpu:selectedGpu,
+                                                motherboard:selectedMotherboard,
+                                                ram:selectedRam
+                                            }
+                                        } 
+                                        showRamBrand={true}
+                                        bg="base-200"
+                                        />
+                                )}
+                            </div>
                         </React.Fragment>
                     )}
 
                     <div className="modal-action">
-                        <button className="btn btn-default" onClick={() => {
-                            props.onResult();
-                            props.closeModal();
-                        }}>Cancel</button>
-                        <button className="btn btn-success" onClick={props.closeModal}>Save</button>
+                        <button className={"btn btn-default "}
+                            onClick={props.closeModal}>Cancel</button>
+                        <button className={(selectedCpu && selectedGpu && selectedMotherboard && selectedRam) ? "btn btn-success" : "btn btn-success btn-disabled"}
+                            onClick={async () => {
+                                if (selectedCpu && selectedGpu && selectedMotherboard && selectedRam) {
+                                    const pc: Computer = {
+                                        cpu: selectedCpu,
+                                        gpu: selectedGpu,
+                                        ram: selectedRam,
+                                        motherboard: selectedMotherboard
+                                    }
+                                    const response = await editPcConfiguration(pc);
+                                    showToastAlert(response.successful ? "success" : "error", response.message);
+                                }
+                                props.closeModal();
+                            }}>Save</button>
                     </div>
                 </div>
             </div>

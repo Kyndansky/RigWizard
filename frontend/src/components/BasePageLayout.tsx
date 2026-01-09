@@ -2,7 +2,20 @@ import React from "react";
 import NavBar from "./NavBar";
 
 interface BasePageLayoutProps {
-    hideOverFlow:boolean;
+    hideOverFlow: boolean;
+}
+
+export function showToastAlert(alertType: "error" | "success", message: string) {
+    const container = document.getElementById("toastContainer");
+    const alert = document.createElement("div");
+    alert.className = "alert alert-" + alertType;
+    alert.innerHTML = `<span>${message}</span>`;
+    container?.appendChild(alert);
+
+    // Rimozione automatica dopo 3 secondi
+    setTimeout(() => {
+        alert.remove();
+    }, 3000);
 }
 //component for base page layout (so basically just navbar and the rest of the page under it)
 export function BasePageLayout(props: React.PropsWithChildren<BasePageLayoutProps>) {
@@ -12,6 +25,7 @@ export function BasePageLayout(props: React.PropsWithChildren<BasePageLayoutProp
             <div className={"flex flex-col h-screen bg-base-300" + (props.hideOverFlow ? " overflow-hidden" : "")}>
                 <NavBar />
                 {props.children}
+                <div className="toast toast-bottom toast-end" id="toastContainer" />
             </div>
         </React.Fragment>
     )
