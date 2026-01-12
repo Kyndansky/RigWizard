@@ -10,12 +10,13 @@ if (!isset($_SESSION))
 $username = $_SESSION["username"] ?? '';
 
 // Set page number defaulting to 1
-$offset = isset($data['indexStart']) ? (int) $data['indexStart']-1 : 1;
-$numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames']-1 : 30;
+$offset = isset($data['indexStart']) ? (int) $data['indexStart'] : 0;
+$numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames'] : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
+$multiple_filters = isset($data['includeAllFilters']) ? (bool) $data['includeAllFilters'] : false;
 
-$sql_games = "SELECT *
+$sql_games = "SELECT g.*
         FROM games g
         JOIN user_games ug ON g.id_game = ug.id_game
         JOIN users u ON ug.id_user = u.id";
@@ -40,35 +41,51 @@ if (!empty($searchString)) {
     $sql_games .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
 }
 
+// Avoid duplicates by grouping
+$sql_games .= " GROUP BY g.id_game";
+
+// If multiple filters are required, add HAVING clause
+if (!empty($filters) && $multiple_filters) {
+    $count_filters = count($filters);
+    $sql_games .= " HAVING COUNT(DISTINCT t.name) = $count_filters";
+}
 
 $sql_games .= " ORDER BY g.title ASC LIMIT $offset, $numOfGames";
 
 // Query to get total number of user games
-$sql_totalGames = "SELECT COUNT(DISTINCT g.id_game) AS total_games
-                   FROM games g
-                   JOIN user_games ug ON g.id_game = ug.id_game
-                   JOIN users u ON ug.id_user = u.id";
+// I use a subquery to correctly count grouped games with HAVING
+$sql_total_base = "SELECT g.id_game
+                    FROM games g
+                    JOIN user_games ug ON g.id_game = ug.id_game
+                    JOIN users u ON ug.id_user = u.id";
 
 // If there are filters, join the tags tables
 if (!empty($filters)) {
-    $sql_totalGames .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-                         LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+    $sql_total_base .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
+                          LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-
-$sql_totalGames .= " WHERE u.username = '$username'";
+$sql_total_base .= " WHERE u.username = '$username'";
 
 // Add filter condition
 if (!empty($filters)) {
     $lista_filtri = implode("','", $filters);
-    $sql_totalGames .= " AND t.name IN ('$lista_filtri')";
+    $sql_total_base .= " AND t.name IN ('$lista_filtri')";
 }
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql_totalGames .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_total_base .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
 }
 
+$sql_total_base .= " GROUP BY g.id_game";
+// If multiple filters are required, add HAVING clause
+if (!empty($filters) && $multiple_filters) {
+    $count_filters = count($filters);
+    $sql_total_base .= " HAVING COUNT(DISTINCT t.name) = $count_filters";
+}
+
+$sql_totalGames = "SELECT COUNT(*) AS total_games FROM ($sql_total_base) AS subquery";
 
 // query to get tags for user's games
 $sql_tags = "SELECT tg.id_game, t.name AS tag_name
@@ -88,15 +105,16 @@ if ($result_tags) {
         $tags_list[] = $tag_row;
     }
 }
+
 // Fetch total games count
 $total_games = 0;
 if ($result_total) {
     $row = $result_total->fetch_assoc();
-    $total_games = (int) $row['total_games'];
+    $total_games = (int) ($row['total_games'] ?? 0);
 }
+
 // Fetch games list
 $games_list = [];
-
 if ($result_games) {
     while ($row = $result_games->fetch_assoc()) {
         $games_list[] = $row;
@@ -113,6 +131,7 @@ foreach ($games_list as &$game) {
     }
     $game['tags'] = $game_tags;
 }
+
 // Final response
 $response = [
     'status' => 'success',
