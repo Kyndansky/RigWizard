@@ -8,7 +8,8 @@ interface ComponentsListProps {
     pcToCompareTo?: Computer;
     showGeneralEvaluation: boolean;
     showRamBrand: boolean;
-    bg?: string
+    bg?: string;
+    showMetRequirementsCheckBox?:boolean;
 }
 
 export function ComponentsList(props: ComponentsListProps) {

@@ -117,9 +117,9 @@ function App() {
   return (
     <React.Fragment>
       <BasePageLayout hideOverFlow={true}>
-        <div className="grid grid-cols-12 flex-grow h-full">
+        <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
           {/* Left sidebar that shows the pc components */}
-          <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
+          <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0">
             <h2 className="text-lg font-bold mb-4">Your PC</h2>
             <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
               {isLoadingPcConfiguration ? (

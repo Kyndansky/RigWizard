@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Game } from "../misc/interfaces";
-import { getGameInfo } from "../misc/api_calls_functions";
+import { type Computer, type Game } from "../misc/interfaces";
+import { getGameInfo, getUserPc } from "../misc/api_calls_functions";
 import { BasePageLayout } from "../components/BasePageLayout";
 import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
@@ -14,6 +14,7 @@ export function GamePage() {
     const { id } = useParams<{ id: string }>();
     const [game, setGame] = useState<Game | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [userPc, setUserComputer] = useState<Computer>();
     const navigate = useNavigate();
 
     async function fetchGameInfo() {
@@ -30,6 +31,7 @@ export function GamePage() {
         }
         //getting response, handling errors etc...
         const response = await getGameInfo(idNumber);
+        console.log(response);
         if (!response.successful) {
             navigate("/errorPage");
             return;
@@ -46,11 +48,20 @@ export function GamePage() {
         setGame(response.game);
     }
 
+    async function fetchUserPc() {
+        const fetchedPcResponse = await getUserPc();
+        if (fetchedPcResponse.successful) {
+            setUserComputer(fetchedPcResponse.computer);
+        }
+    }
+
     useEffect(() => {
         (async () => {
             await fetchGameInfo();
+            await fetchUserPc();
         })();
     }, []);
+
 
     if (isLoading) {
         return (
@@ -66,87 +77,100 @@ export function GamePage() {
                     <React.Fragment>
 
                         <div className="w-full bg-base-300 overflow-y-auto">
-                            <div className="card bg-base-100 mx-auto w-5/7 xs:w-full p-5 xs:mt-5 mt-10 mb-5">
-                                <div className="card-body">
-                                    <h2 className="card-title text-3xl">{game.title}</h2>
-                                    <div className="mx-auto">
-                                        <div className="w-9/10 flex flex-row items-stretch gap-4 mx-auto mt-3">
-                                            <div className="w-1/2 relative min-h-0">
-                                                <div className="absolute inset-0">
-                                                    <Carousel />
+                            <div className="w-5/7 mx-auto">
+                                <div className="card bg-base-100 mx-auto xs:w-full p-5 xs:mt-5 mt-10 mb-5">
+                                    <div className="card-body">
+                                        <h2 className="card-title text-3xl">{game.title}</h2>
+                                        <div className="mx-auto w-full">
+                                            <div className="w-9/10 flex flex-row items-stretch gap-4 mx-auto mt-3">
+                                                <div className="w-1/2 relative min-h-0">
+                                                    <div className="absolute inset-0">
+                                                        <Carousel />
+                                                    </div>
+                                                </div>
+                                                <div className="w-1/2">
+                                                    <GameInfoCard
+                                                        name={game.title}
+                                                        description={game.description}
+                                                        tags={game.tags}
+                                                        imagePlacement=""
+                                                        imageUrl={game.horizontal_banner_URL}
+                                                        //imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
+                                                        numOfTagsToShow={numTagsVisible}
+                                                        backgroundColor="base-300"
+                                                        hoverable={false}
+                                                        imageHeight="h-auto"
+                                                        cardHeight=""
+                                                        showTitle={false}
+                                                    />
                                                 </div>
                                             </div>
-                                            <div className="w-1/2">
-                                                <GameInfoCard
-                                                    name={game.title}
-                                                    description={game.description}
-                                                    tags={game.tags}
-                                                    imagePlacement=""
-                                                    imageUrl={game.horizontal_banner_URL}
-                                                    //imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
-                                                    numOfTagsToShow={numTagsVisible}
-                                                    backgroundColor="base-300"
-                                                    hoverable={false}
-                                                    imageHeight="h-auto"
-                                                    cardHeight=""
-                                                    showTitle={false}
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="divider divider-vertical" />
-                                        {/* example of extended description which will be removed later */}
-                                        <div>
-                                            <h1 className="text-2xl text-primary mt-5">
-                                                Example paragraph title
-                                            </h1>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                            </p>
-                                            <h1 className="text-2xl text-primary mt-5">
-                                                Example paragraph title
-                                            </h1>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                            </p>
-                                            <h1 className="text-2xl text-primary mt-5">
-                                                Example paragraph title
-                                            </h1>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                            </p>
-                                            <h1 className="text-2xl text-primary mt-5">
-                                                Example paragraph title
-                                            </h1>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                            </p>
-                                            <h1 className="text-2xl text-primary mt-5">
-                                                Example paragraph title
-                                            </h1>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                            </p>
-                                        </div>
-                                        <div>
-                                        </div>
-                                        <div className="divider divider-vertical" />
-                                        {/* pc requirements */}
-                                        <div className="collapse collapse-arrow mt-5 max-w-[500px] mx-auto">
-                                            <input type="checkbox" className="peer" />
-                                            <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-300 w-fit">
-                                                Requirements
-                                            </div>
-                                            <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
-                                                <div className="flex flex-row justify-center grow items-center mt-2 mx-5 mb-3">
-                                                    <ComponentsList  pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false}/>
-                                                    <div className="divider divider-horizontal divider-bg-base-100" />
-                                                    <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false}/>
+                                            <div className="divider divider-vertical" />
+                                            {/* example of extended description which will be removed later */}
+                                            <div className="collapse collapse-arrow mt-3 w-full mx-auto">
+                                                <input type="checkbox" className="peer" defaultChecked={true} />
+                                                <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-300 w-fit">
+                                                    Show description
                                                 </div>
+                                                <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
+                                                    <h1 className="text-2xl text-primary mt-5">
+                                                        Example paragraph title
+                                                    </h1>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                                    </p>
+                                                    <h1 className="text-2xl text-primary mt-5">
+                                                        Example paragraph title
+                                                    </h1>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                                    </p>
+                                                    <h1 className="text-2xl text-primary mt-5">
+                                                        Example paragraph title
+                                                    </h1>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                                    </p>
+                                                    <h1 className="text-2xl text-primary mt-5">
+                                                        Example paragraph title
+                                                    </h1>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                                    </p>
+                                                    <h1 className="text-2xl text-primary mt-5">
+                                                        Example paragraph title
+                                                    </h1>
+                                                    <p>
+                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div>
+                                            </div>
+                                            <div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                {/* pc requirements */}
+                                <div className="collapse collapse-arrow mt-5 w-full mx-auto mb-5">
+                                    <input type="checkbox" className="peer" defaultChecked={true} />
+                                    <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-100 w-fit">
+                                        Requirements
+                                    </div>
+                                    <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-100">
+                                        <div className="flex flex-row justify-center grow items-center mt-2 mx-5 mb-3 gap-5">
+                                            {userPc && (
+                                                <ComponentsList pc={userPc} descriptionText="Your PC" showGeneralEvaluation={true} showRamBrand={true} bg="base-200" />
+                                            )}
+                                            <ComponentsList pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                            <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
+
                         </div>
                     </React.Fragment>
                 )
