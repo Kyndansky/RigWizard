@@ -6,7 +6,6 @@ import {
   type TagCollectionResponse,
   type GameCollectionResponse,
   type ComputerInfoResponse,
-  testPc,
   type CpuListResponse,
   type MotherBoardListResponse,
   type GpuListResponse,
@@ -299,12 +298,6 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
     };
     return result;
   }
-  const result: ComputerInfoResponse = {
-    successful: true,
-    message: "successfully retrieved pc",
-    computer: testPc,
-  };
-  return result;
 }
 
 export async function getMotherboards(): Promise<MotherBoardListResponse> {

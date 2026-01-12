@@ -44,7 +44,6 @@ export function GamePage() {
         //the game is set
         setIsLoading(false);
         setGame(response.game);
-        console.log(response.game);
     }
 
     useEffect(() => {

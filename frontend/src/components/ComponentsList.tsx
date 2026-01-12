@@ -13,14 +13,14 @@ interface ComponentsListProps {
 
 export function ComponentsList(props: ComponentsListProps) {
     const iconsSize = 20;
-    let totalScore = 0;
+    let totalScore:number = 0;
     let percentage = 0;
     let hue = 120;
     let progressEvaluationColor: string = "#fffff";
 
     if (props.showGeneralEvaluation) {
         //in this case 40 is the max score (10 max per component)
-        totalScore = props.pc.cpu.score + props.pc.gpu.score + props.pc.motherboard.score + props.pc.ram.score;
+        totalScore = Number(props.pc.cpu.score) + Number(props.pc.gpu.score) + Number(props.pc.motherboard.score) + Number(props.pc.ram.score);
         percentage = Math.round((totalScore / 40) * 100);
         // find tonality based on the score: 0 is red, 120 is green
         // (using HSL color circle or whatever it is called)
