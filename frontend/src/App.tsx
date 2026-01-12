@@ -46,7 +46,6 @@ function App() {
       searchText,
       includeAllFiltersChecked
     );
-    console.log(fetchedGamesResponse);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
       setCurrentPageNumber(targetPage);
@@ -363,7 +362,9 @@ function App() {
           closeModal={() => {
             setIsPcConfigModalOpen(false);
           }}
-          onResult={() => {}}
+          onResult={() => {
+            fetchUserPc();
+          }}
         />
       )}
     </React.Fragment>

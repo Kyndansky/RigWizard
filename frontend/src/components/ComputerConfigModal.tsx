@@ -213,6 +213,7 @@ export function ComputerComponentModal(props: ComputerComponentsModalProps) {
                                     }
                                     const response = await editPcConfiguration(pc);
                                     showToastAlert(response.successful ? "success" : "error", response.message);
+                                    props.onResult();
                                 }
                                 props.closeModal();
                             }}>Save</button>
