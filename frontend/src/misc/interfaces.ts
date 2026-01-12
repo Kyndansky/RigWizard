@@ -63,7 +63,7 @@ export interface Ram extends ComputerComponent{
   brand: string;
   quantity_gb: number;
   frequency_mhz: number;
-  memory_type: string;
+  type: string;
 }
 
 export interface CPU extends ComputerComponent{
@@ -91,7 +91,7 @@ export const testPc:Computer={
             quantity_gb:2,
             brand:"Corsair",
             frequency_mhz:1,
-            memory_type:"DDR4",
+            type:"DDR4",
             id:250,
             score:2.56
         },

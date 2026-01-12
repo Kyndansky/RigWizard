@@ -61,7 +61,7 @@ export function ComponentsList(props: ComponentsListProps) {
                             Ram
                             <MemoryStick className="ml-2" size={iconsSize} />
                         </div>
-                        <div className="text-xs uppercase font-semibold opacity-60">{(props.showRamBrand ? props.pc.ram.brand + " " : "") + props.pc.ram.quantity_gb + "GB " + props.pc.ram.memory_type}</div>
+                        <div className="text-xs uppercase font-semibold opacity-60">{(props.showRamBrand ? props.pc.ram.brand + " " : "") + props.pc.ram.quantity_gb + "GB " + props.pc.ram.type}</div>
                     </div>
                 </li>
                 <li className={"list-row bg-" + (props.bg ?? "base-100")}>

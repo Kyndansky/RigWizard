@@ -274,6 +274,7 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
 // };
 
 export async function getUserPc(): Promise<ComputerInfoResponse> {
+
   try {
     const response = await apiComputers.get("getUserPC.php", {
       headers: {
@@ -282,12 +283,13 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
     });
 
     const data = await response.data;
-    console.log(data);
+    
     const result: ComputerInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       computer: data["computer"],
     };
+    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
