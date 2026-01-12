@@ -1,5 +1,18 @@
 import axios from "axios";
-import { type UserInfoResponse, type RigWizardResponse, type GameInfoResponse, type TagCollectionResponse, type GameCollectionResponse, type ComputerInfoResponse, testPc, type CpuListResponse, type MotherBoardListResponse, type GpuListResponse, type RamListResponse, type Computer } from "./interfaces";
+import {
+  type UserInfoResponse,
+  type RigWizardResponse,
+  type GameInfoResponse,
+  type TagCollectionResponse,
+  type GameCollectionResponse,
+  type ComputerInfoResponse,
+  testPc,
+  type CpuListResponse,
+  type MotherBoardListResponse,
+  type GpuListResponse,
+  type RamListResponse,
+  type Computer,
+} from "./interfaces";
 
 const apiAuth = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL + "/auth/",
@@ -40,163 +53,170 @@ const apiRams = axios.create({
 // sends a getUserInfoRequest to the backend to get information about the user's authentication
 export async function getIsLoggedIn(): Promise<UserInfoResponse> {
   try {
-    const response = await apiAuth.get('getUserInfo.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiAuth.get("getUserInfo.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: UserInfoResponse =
-    {
+    const result: UserInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      username: data["username"]
+      username: data["username"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    const result: UserInfoResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
     return result;
   }
-
 }
 
 //sends a logout request to the backend
 export async function logout(): Promise<RigWizardResponse> {
   try {
-
-    const response = await apiAuth.get('logout.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiAuth.get("logout.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.data;
-    const result: RigWizardResponse =
-    {
+    const result: RigWizardResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: RigWizardResponse = { successful: false, message: "server error" };
+    const result: RigWizardResponse = {
+      successful: false,
+      message: "server error",
+    };
     return result;
-
   }
 }
 
 //sends a register request to the backend
-export async function register(username: string, password: string): Promise<UserInfoResponse> {
+export async function register(
+  username: string,
+  password: string
+): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
-    const response = await apiAuth.post(
-      'register.php',
-      credentials,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-    );
+    const response = await apiAuth.post("register.php", credentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.data;
 
-    const result: UserInfoResponse =
-    {
+    const result: UserInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      username: data["username"]
+      username: data["username"],
     };
     return result;
-
   } catch (error) {
     console.log("error from php server:", error);
-    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    const result: UserInfoResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
     return result;
   }
 }
 
 //sends a login request to the backend
-export async function login(username: string, password: string): Promise<UserInfoResponse> {
+export async function login(
+  username: string,
+  password: string
+): Promise<UserInfoResponse> {
   try {
-
     const credentials = { username: username, password: password };
-    const response = await apiAuth.post(
-      'login.php',
-      credentials,
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }
-    );
+    const response = await apiAuth.post("login.php", credentials, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.data;
-    const result: UserInfoResponse =
-    {
+    const result: UserInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      username: data["username"]
+      username: data["username"],
     };
     return result;
-
   } catch (error) {
     console.log("error from php server:", error);
-    const result: UserInfoResponse = { successful: false, message: "server error", username: "" };
+    const result: UserInfoResponse = {
+      successful: false,
+      message: "server error",
+      username: "",
+    };
     return result;
   }
 }
 //fetches some games from the current user's library
-export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = ""): Promise<GameCollectionResponse> {
+export async function getLibraryGames(
+  indexStart: number,
+  numOfGames: number,
+  filters: string[] = [],
+  searchString: string = "",
+  includeAllFilters: boolean
+): Promise<GameCollectionResponse> {
   try {
-    const response = await apiGames.post('getUserGames.php',
+    const response = await apiGames.post(
+      "getUserGames.php",
       {
         indexStart: indexStart,
         numOfGames: numOfGames,
         filters,
-        searchString
+        searchString,
+        includeAllFilters: includeAllFilters,
       },
       {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
 
     const data = await response.data;
-    const result: GameCollectionResponse =
-    {
+    const result: GameCollectionResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games: data["games"],
-      totalNumberOfGames: data["total_games"]
+      totalNumberOfGames: data["total_games"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GameCollectionResponse = { successful: false, message: "server error", games: [], totalNumberOfGames: 0 };
+    const result: GameCollectionResponse = {
+      successful: false,
+      message: "server error",
+      games: [],
+      totalNumberOfGames: 0,
+    };
     return result;
   }
-
 }
 
 //fetches all possible tags from the backend
 export async function getTags(): Promise<TagCollectionResponse> {
   try {
-    const response = await apiTags.get('gettags.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiTags.get("gettags.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: TagCollectionResponse =
-    {
+    const result: TagCollectionResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       tags: data.tags || [],
@@ -204,7 +224,11 @@ export async function getTags(): Promise<TagCollectionResponse> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: TagCollectionResponse = { successful: false, message: "server error", tags: [] };
+    const result: TagCollectionResponse = {
+      successful: false,
+      message: "server error",
+      tags: [],
+    };
     return result;
   }
 }
@@ -212,28 +236,28 @@ export async function getTags(): Promise<TagCollectionResponse> {
 //using test game data while waiting for backend file to be finished
 export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
   try {
-    const response = await apiGames.get('getGameInfo.php',
-      {
-        params: {
-          gameId: gameId
-        },
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiGames.get("getGameInfo.php", {
+      params: {
+        gameId: gameId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: GameInfoResponse =
-    {
+    const result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      game: data["game"]
+      game: data["game"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GameInfoResponse = { successful: false, message: "server error" };
+    const result: GameInfoResponse = {
+      successful: false,
+      message: "server error",
+    };
     return result;
   }
 }
@@ -251,50 +275,46 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
 
 export async function getUserPc(): Promise<ComputerInfoResponse> {
   try {
-    const response = await apiComputers.get('getUserPC.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiComputers.get("getUserPC.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
     console.log(data);
-    const result: ComputerInfoResponse =
-    {
+    const result: ComputerInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      computer: data["computer"]
+      computer: data["computer"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: ComputerInfoResponse = { successful: false, message: "server error" };
+    const result: ComputerInfoResponse = {
+      successful: false,
+      message: "server error",
+    };
     return result;
   }
-  const result: ComputerInfoResponse =
-  {
+  const result: ComputerInfoResponse = {
     successful: true,
     message: "successfully retrieved pc",
-    computer: testPc
+    computer: testPc,
   };
   return result;
 }
 
 export async function getMotherboards(): Promise<MotherBoardListResponse> {
   try {
-    const response = await apiMotherBoards.get('getMotherboards.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiMotherBoards.get("getMotherboards.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: MotherBoardListResponse =
-    {
+    const result: MotherBoardListResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       motherboards: data.motherboards,
@@ -302,24 +322,25 @@ export async function getMotherboards(): Promise<MotherBoardListResponse> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: MotherBoardListResponse = { successful: false, message: "server error", motherboards: [] };
+    const result: MotherBoardListResponse = {
+      successful: false,
+      message: "server error",
+      motherboards: [],
+    };
     return result;
   }
 }
 export async function getCpus(): Promise<CpuListResponse> {
   try {
-    const response = await apiCpus.get('getCpus.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiCpus.get("getCpus.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
     console.log(data);
-    const result: CpuListResponse =
-    {
+    const result: CpuListResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       cpus: data.cpus,
@@ -328,24 +349,25 @@ export async function getCpus(): Promise<CpuListResponse> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: CpuListResponse = { successful: false, message: "server error", cpus: [] };
+    const result: CpuListResponse = {
+      successful: false,
+      message: "server error",
+      cpus: [],
+    };
     return result;
   }
 }
 
 export async function getGpus(): Promise<GpuListResponse> {
   try {
-    const response = await apiGpus.get('getGpus.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiGpus.get("getGpus.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: GpuListResponse =
-    {
+    const result: GpuListResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       gpus: data.gpus,
@@ -353,24 +375,25 @@ export async function getGpus(): Promise<GpuListResponse> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GpuListResponse = { successful: false, message: "server error", gpus: [] };
+    const result: GpuListResponse = {
+      successful: false,
+      message: "server error",
+      gpus: [],
+    };
     return result;
   }
 }
 
 export async function getRams(): Promise<RamListResponse> {
   try {
-    const response = await apiRams.get('getRams.php',
-      {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiRams.get("getRams.php", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: RamListResponse =
-    {
+    const result: RamListResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       rams: data.rams,
@@ -378,33 +401,45 @@ export async function getRams(): Promise<RamListResponse> {
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: RamListResponse = { successful: false, message: "server error", rams: [] };
+    const result: RamListResponse = {
+      successful: false,
+      message: "server error",
+      rams: [],
+    };
     return result;
   }
 }
 
-
-export async function editPcConfiguration(computer: Computer): Promise<RigWizardResponse> {
+export async function editPcConfiguration(
+  computer: Computer
+): Promise<RigWizardResponse> {
+  const id_ram: number = computer.ram.id;
+  const id_cpu: number = computer.cpu.id;
+  const id_gpu: number = computer.gpu.id;
+  const id_motherboard: number = computer.motherboard.id;
   try {
-    const response = await apiComputers.post('editUserComputer.php',
-      {
-        computer,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+    const response = await apiComputers.post("editUserPc.php", {
+      id_ram,
+      id_cpu,
+      id_gpu,
+      id_motherboard,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const data = await response.data;
-    const result: RigWizardResponse =
-    {
+    const result: RigWizardResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: RigWizardResponse = { successful: false, message: "server error" };
+    const result: RigWizardResponse = {
+      successful: false,
+      message: "server error",
+    };
     return result;
   }
 }

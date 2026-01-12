@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Link, Navigate } from "react-router-dom";
-import { getUserPc, getLibraryGames, getTags } from "./misc/api_calls_functions";
+import {
+  getUserPc,
+  getLibraryGames,
+  getTags,
+} from "./misc/api_calls_functions";
 import { useAuth } from "./misc/AuthContextHandler";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
@@ -19,18 +23,29 @@ function App() {
   const [searchText, setSearchText] = useState<string>("");
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [userComputer, setUserComputer] = useState<Computer | undefined>(undefined);
-  const [isLoadingPcConfiguration, setIsLoadingPcConfiguration] = useState<boolean>(true);
-  const { isAuthenticated, isLoading } =
-    useAuth();
+  const [userComputer, setUserComputer] = useState<Computer | undefined>(
+    undefined
+  );
+  const [isLoadingPcConfiguration, setIsLoadingPcConfiguration] =
+    useState<boolean>(true);
+  const [includeAllFiltersChecked, setIncludeAllFiltersChecked] =
+    useState<boolean>(true);
+  const { isAuthenticated, isLoading } = useAuth();
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined
   );
-  const [isPcConfigModalOpen, setIsPcConfigModalOpen] = useState<boolean>(false);
+  const [isPcConfigModalOpen, setIsPcConfigModalOpen] =
+    useState<boolean>(false);
 
   async function fetchGames(targetPage: number) {
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
-    const fetchedGamesResponse = await getLibraryGames(indexStart, gamesPerPage, selectedTags, searchText);
+    const fetchedGamesResponse = await getLibraryGames(
+      indexStart,
+      gamesPerPage,
+      selectedTags,
+      searchText,
+      includeAllFiltersChecked
+    );
     console.log(fetchedGamesResponse);
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
@@ -40,8 +55,7 @@ function App() {
       );
       if (roundedPageNumber > 0) {
         setMaxPageNumber(roundedPageNumber);
-      }
-      else {
+      } else {
         setMaxPageNumber(1);
       }
     } else {
@@ -64,7 +78,6 @@ function App() {
       setUserComputer(fetchedPcResponse.computer);
     }
     setIsLoadingPcConfiguration(false);
-
   }
   useEffect(() => {
     (async () => {
@@ -74,17 +87,20 @@ function App() {
     })();
   }, []);
 
+  // when the checkbox to select all filters or not is checked, the games are re-fetched
+  useEffect(() => {
+    fetchGames(1);
+  }, [includeAllFiltersChecked]);
+
   //when the selectedTags change, the games are fetched
   useEffect(() => {
     fetchGames(1);
   }, [selectedTags]);
 
   useEffect(() => {
-
     const handler = setTimeout(() => {
       fetchGames(1);
     }, 400);
-
 
     //Viene eseguita ogni volta che searchText cambia prima che il timer scada
     return () => {
@@ -98,8 +114,6 @@ function App() {
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-
-
 
   return (
     <React.Fragment>
@@ -115,18 +129,35 @@ function App() {
               ) : !userComputer ? (
                 // if the config has been loaded but user hasn't added a pc show warning
                 <React.Fragment>
-                  <div className="alert alert-warning">You haven't set a computer configuration yet: many features will not be availabe.</div>
-                  <button className="btn btn-soft" onClick={() => {
-                    setIsPcConfigModalOpen(true);
-                  }}>Add configuration <PcCase size={20} /></button>
+                  <div className="alert alert-warning">
+                    You haven't set a computer configuration yet: many features
+                    will not be availabe.
+                  </div>
+                  <button
+                    className="btn btn-soft"
+                    onClick={() => {
+                      setIsPcConfigModalOpen(true);
+                    }}
+                  >
+                    Add configuration <PcCase size={20} />
+                  </button>
                 </React.Fragment>
               ) : (
                 // show pc configuration and edit button
                 <React.Fragment>
-                  <ComponentsList pc={userComputer} showGeneralEvaluation={true} showRamBrand={true} />
-                  <button className="btn btn-soft" onClick={() => {
-                    setIsPcConfigModalOpen(true);
-                  }}>Edit configuration <PcCase size={20} /></button>
+                  <ComponentsList
+                    pc={userComputer}
+                    showGeneralEvaluation={true}
+                    showRamBrand={true}
+                  />
+                  <button
+                    className="btn btn-soft"
+                    onClick={() => {
+                      setIsPcConfigModalOpen(true);
+                    }}
+                  >
+                    Edit configuration <PcCase size={20} />
+                  </button>
                 </React.Fragment>
               )}
             </div>
@@ -186,24 +217,23 @@ function App() {
             ) : (
               <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-7 mt-4">
                 {/* filters games by only displaying those that have the same tags that are selected and whose title contain what is in the searchbar*/}
-                {games
-                  ?.map((game, index) => (
-                    <Link key={index} to={"/games/" + game.id_game}>
-                      <GameInfoCard
-                        numOfTagsToShow={3}
-                        imagePlacement="image-full"
-                        name={game.title}
-                        description={game.description}
-                        tags={game.tags}
-                        imageUrl={game.vertical_banner_URL}
-                        backgroundColor="base-100"
-                        hoverable={true}
-                        imageHeight=""
-                        cardHeight="md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100"
-                        showTitle={true}
-                      />
-                    </Link>
-                  ))}
+                {games?.map((game, index) => (
+                  <Link key={index} to={"/games/" + game.id_game}>
+                    <GameInfoCard
+                      numOfTagsToShow={3}
+                      imagePlacement="image-full"
+                      name={game.title}
+                      description={game.description}
+                      tags={game.tags}
+                      imageUrl={game.vertical_banner_URL}
+                      backgroundColor="base-100"
+                      hoverable={true}
+                      imageHeight=""
+                      cardHeight="md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100"
+                      showTitle={true}
+                    />
+                  </Link>
+                ))}
               </div>
             )}
 
@@ -213,8 +243,6 @@ function App() {
 
             {/* section for changing page (to load more games) */}
             <div className="flex items-center w-full mt-4">
-
-
               <div className="join mx-auto">
                 {/* button for switching to first page */}
                 {currentPageNumber !== 1 && (
@@ -232,20 +260,31 @@ function App() {
 
                 {/* button for switching to previous page */}
                 {currentPageNumber > 1 && (
-                  <button className="join-item btn px-4" onClick={() => {
-                    fetchGames(currentPageNumber - 1);
-                  }}>{currentPageNumber - 1}</button>
+                  <button
+                    className="join-item btn px-4"
+                    onClick={() => {
+                      fetchGames(currentPageNumber - 1);
+                    }}
+                  >
+                    {currentPageNumber - 1}
+                  </button>
                 )}
                 {/* current page button */}
                 <button className="join-item btn-active bg-primary px-4">
                   {currentPageNumber}
                 </button>
                 {/* button for switching to next page */}
-                {maxPageNumber !== undefined && currentPageNumber < maxPageNumber && (
-                  <button className="join-item btn px-4" onClick={() => {
-                    fetchGames(currentPageNumber + 1);
-                  }}>{currentPageNumber + 1}</button>
-                )}
+                {maxPageNumber !== undefined &&
+                  currentPageNumber < maxPageNumber && (
+                    <button
+                      className="join-item btn px-4"
+                      onClick={() => {
+                        fetchGames(currentPageNumber + 1);
+                      }}
+                    >
+                      {currentPageNumber + 1}
+                    </button>
+                  )}
                 {/* button for switching to last page number */}
                 {maxPageNumber && currentPageNumber !== maxPageNumber && (
                   <button
@@ -264,6 +303,17 @@ function App() {
           {/*Filters sidebar*/}
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
             <h2 className="text-lg font-bold">Tag Filters</h2>
+            <div className="flex flex-row my-3 gap-2">
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={includeAllFiltersChecked}
+                onChange={() => {
+                  setIncludeAllFiltersChecked(!includeAllFiltersChecked);
+                }}
+              />
+              <p>Include all filters</p>
+            </div>
             <form>
               {tags?.map((tag, index) => (
                 <input
@@ -305,15 +355,17 @@ function App() {
         <ComputerComponentModal
           modalId={"pcConfigModal"}
           isOpen={isPcConfigModalOpen}
-          modalMode={userComputer?"Edit":"Add"}
+          modalMode={userComputer ? "Edit" : "Add"}
           defaultMobo={userComputer?.motherboard}
           defaultCpu={userComputer?.cpu}
           defaultRam={userComputer?.ram}
           defaultGpu={userComputer?.gpu}
-          closeModal={() => { setIsPcConfigModalOpen(false) }}
-          onResult={() => { }} />
+          closeModal={() => {
+            setIsPcConfigModalOpen(false);
+          }}
+          onResult={() => {}}
+        />
       )}
-
     </React.Fragment>
   );
 }
