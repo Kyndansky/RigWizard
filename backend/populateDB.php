@@ -38,7 +38,7 @@ INSERT IGNORE INTO `pc` (`config_name`, `id_ram`, `id_motherboard`, `id_cpu`, `i
 
 -- USERS
 INSERT IGNORE INTO `users` (`username`, `password_hash`, `id_main_pc`) VALUES
-( 'Gamer_Pro77', 'placeholder_hash_1', 1),
+( 'Kynda', '$2y$10$5WCy65o2Im23rQHGPsNpOe61N2jxjqvqoUqYH4VZLKEwZXpQRaXyW', 1),
 ( 'User_Without_PC', 'placeholder_hash_3', NULL);
 
 -- GAMES 
