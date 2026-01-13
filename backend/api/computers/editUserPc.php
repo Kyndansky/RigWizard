@@ -47,12 +47,12 @@ if ($existing_pc_id) {
     if ($dbConnection->query($sql)) {
         $response = [
             "status" => "success",
-            "message" => "Configurazione PC aggiornata con successo"
+            "message" => "Successfully updated pc configuration"
         ];
     } else {
         $response = [
             "status" => "error",
-            "message" => "Errore durante l'aggiornamento: " . $dbConnection->error
+            "message" => "Error while updating pc configuration: " . $dbConnection->error
         ];
     }
 } else {
@@ -65,12 +65,12 @@ if ($existing_pc_id) {
         $dbConnection->query($updateUser);
         $response = [
             "status" => "success",
-            "message" => "Nuovo PC creato e associato all'utente"
+            "message" => "Pc created successfully"
         ];
     } else {
         $response = [
             "status" => "error",
-            "message" => "Errore durante la creazione: " . $dbConnection->error
+            "message" => "Error during creation of pc configuration: " . $dbConnection->error
         ];
     }
 }

@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { type Computer, type Game } from "../misc/interfaces";
-import { getGameInfo, getUserPc } from "../misc/api_calls_functions";
+import { type Game } from "../misc/interfaces";
+import { getGameInfo } from "../misc/api_calls_functions";
 import { BasePageLayout } from "../components/BasePageLayout";
 import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
 import { useTagsCount } from "../hooks/useTagsCount";
 import { GameInfoCard } from "../components/GameInfoCard";
 import { ComponentsList } from "../components/ComponentsList";
+import { useUserComputer } from "../misc/UserComputerContextHandler";
 
 export function GamePage() {
     const numTagsVisible = useTagsCount();
     const { id } = useParams<{ id: string }>();
     const [game, setGame] = useState<Game | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [userPc, setUserComputer] = useState<Computer>();
+    const { userComputer } = useUserComputer();
     const navigate = useNavigate();
 
     async function fetchGameInfo() {
@@ -31,7 +32,6 @@ export function GamePage() {
         }
         //getting response, handling errors etc...
         const response = await getGameInfo(idNumber);
-        console.log(response);
         if (!response.successful) {
             navigate("/errorPage");
             return;
@@ -48,17 +48,9 @@ export function GamePage() {
         setGame(response.game);
     }
 
-    async function fetchUserPc() {
-        const fetchedPcResponse = await getUserPc();
-        if (fetchedPcResponse.successful) {
-            setUserComputer(fetchedPcResponse.computer);
-        }
-    }
-
     useEffect(() => {
         (async () => {
             await fetchGameInfo();
-            await fetchUserPc();
         })();
     }, []);
 
@@ -160,11 +152,34 @@ export function GamePage() {
                                     </div>
                                     <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-100">
                                         <div className="flex flex-row justify-center grow items-center mt-2 mx-5 mb-3 gap-5">
-                                            {userPc && (
-                                                <ComponentsList pc={userPc} descriptionText="Your PC" showGeneralEvaluation={true} showRamBrand={true} bg="base-200" />
-                                            )}
-                                            <ComponentsList pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
-                                            <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                            {userComputer ? (
+                                                <React.Fragment>
+                                                    <ComponentsList pc={userComputer}
+                                                        descriptionText="Your PC"
+                                                        showGeneralEvaluation={true}
+                                                        showRamBrand={true}
+                                                        bg="base-200" />
+                                                    <ComponentsList pc={game.pc_min_details}
+                                                        descriptionText="Minimum"
+                                                        showGeneralEvaluation={true}
+                                                        showRamBrand={false} bg="base-200"
+                                                        pcToBeCompared={userComputer} />
+                                                    <ComponentsList pc={game.pc_rec_details}
+                                                        descriptionText="Recommended"
+                                                        showGeneralEvaluation={true}
+                                                        showRamBrand={false}
+                                                        bg="base-200"
+                                                        pcToBeCompared={userComputer}
+                                                    />
+                                                </React.Fragment>
+                                            ) :
+                                                (
+                                                    <React.Fragment>
+                                                        <ComponentsList pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                                        <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                                    </React.Fragment>
+                                                )}
+
                                         </div>
                                     </div>
                                 </div>

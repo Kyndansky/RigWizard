@@ -261,17 +261,6 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
   }
 }
 
-// const testGame:Game =
-// {
-//   id_game:1,
-//   title:"Game title",
-//   description:"This is a brief description of the game. The game is an insanely cool game with a lot of mechanics and advanced gameplay.",
-//   detailed_description:"This is a detailed description of the game. It goes into depth about the game's features, storyline, gameplay mechanics, and other interesting aspects that might entice players to try it out. Whether you're a fan of action, adventure, strategy, or any other genre, this game offers something for everyone. Dive into an immersive experience filled with challenges, excitement, and unforgettable moments.",
-//   vertical_banner_URL:"",
-//   horizontal_banner_URL:"",
-//   tags:["Indie","RPG","Adventure","Singleplayer","Multiplayer","Open World","Action","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy","Strategy"],
-// };
-
 export async function getUserPc(): Promise<ComputerInfoResponse> {
 
   try {
@@ -288,7 +277,6 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
       message: data["message"],
       computer: data["computer"],
     };
-    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -334,13 +322,11 @@ export async function getCpus(): Promise<CpuListResponse> {
     });
 
     const data = await response.data;
-    console.log(data);
     const result: CpuListResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       cpus: data.cpus,
     };
-    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);

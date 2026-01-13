@@ -11,7 +11,7 @@ if ($result && $result->num_rows > 0) {
             "brand" => $row['brand'],
             "model" => $row['model_name'],
             "quantity_gb" => (int) $row['quantity_gb'],
-            "memory_type" => $row['memory_type'],
+            "type" => $row['memory_type'],
             "frequency_mhz" => (int) $row['frequency_mhz'],
             "score" => (float) $row['score']
         ];

@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Link, Navigate } from "react-router-dom";
 import {
-  getUserPc,
   getLibraryGames,
   getTags,
 } from "./misc/api_calls_functions";
 import { useAuth } from "./misc/AuthContextHandler";
 import { ComponentsList } from "./components/ComponentsList";
 import { GameInfoCard } from "./components/GameInfoCard";
-import { type Computer, type Game } from "./misc/interfaces";
+import { type Game } from "./misc/interfaces";
 import { BasePageLayout } from "./components/BasePageLayout";
 import Loader from "./components/Loader";
 import { PcCase } from "lucide-react";
 import { ComputerComponentModal } from "./components/ComputerConfigModal";
+import { useUserComputer } from "./misc/UserComputerContextHandler";
 
 function App() {
   const gamesPerPage = 20;
@@ -23,11 +23,9 @@ function App() {
   const [searchText, setSearchText] = useState<string>("");
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [userComputer, setUserComputer] = useState<Computer | undefined>(
-    undefined
-  );
-  const [isLoadingPcConfiguration, setIsLoadingPcConfiguration] =
-    useState<boolean>(true);
+  
+  const {userComputer, isLoadingUserComputer,fetchUserComputer}=useUserComputer();
+  
   const [includeAllFiltersChecked, setIncludeAllFiltersChecked] =
     useState<boolean>(true);
   const { isAuthenticated, isLoading } = useAuth();
@@ -71,18 +69,12 @@ function App() {
     }
   }
 
-  async function fetchUserPc() {
-    const fetchedPcResponse = await getUserPc();
-    if (fetchedPcResponse.successful) {
-      setUserComputer(fetchedPcResponse.computer);
-    }
-    setIsLoadingPcConfiguration(false);
-  }
+  
   useEffect(() => {
     (async () => {
       await fetchGames(1);
       await fetchTags();
-      await fetchUserPc();
+      
     })();
   }, []);
 
@@ -122,7 +114,7 @@ function App() {
           <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0">
             <h2 className="text-lg font-bold mb-4">Your PC</h2>
             <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
-              {isLoadingPcConfiguration ? (
+              {isLoadingUserComputer ? (
                 // if the pc config hasn't been retrieved yet show loader
                 <Loader />
               ) : !userComputer ? (
@@ -350,7 +342,7 @@ function App() {
         </div>
       </BasePageLayout>
       {/* only show modal if the users's pc info has been retrieved */}
-      {!isLoadingPcConfiguration && (
+      {!isLoadingUserComputer && (
         <ComputerComponentModal
           modalId={"pcConfigModal"}
           isOpen={isPcConfigModalOpen}
@@ -363,7 +355,7 @@ function App() {
             setIsPcConfigModalOpen(false);
           }}
           onResult={() => {
-            fetchUserPc();
+            fetchUserComputer();
           }}
         />
       )}
