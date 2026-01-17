@@ -12,6 +12,7 @@ interface GameInfoCardProps {
   imageHeight: string;
   cardHeight: string;
   showTitle: boolean;
+  id:number;
 }
 export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
   return (
@@ -28,7 +29,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             <p className="text-sm line-clamp-4">{props.description}</p>
             {props.children}
             <div className="card-actions justify-end gap-2 flex">
-              <TagList tags={props.tags} numVisible={props.numOfTagsToShow} />
+              <TagList tags={props.tags} numVisible={props.numOfTagsToShow} id={props.id}/>
             </div>
           </div>
         </div>

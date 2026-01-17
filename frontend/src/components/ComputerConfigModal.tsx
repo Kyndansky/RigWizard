@@ -4,6 +4,7 @@ import { editPcConfiguration, getCpus, getGpus, getMotherboards, getRams } from 
 import Loader from "./Loader";
 import { showToastAlert } from "./BasePageLayout";
 import { ComponentsList } from "./ComponentsList";
+import { X } from "lucide-react";
 interface ComputerComponentsModalProps {
     isOpen: boolean;
     modalMode: "Edit" | "Add";
@@ -109,6 +110,9 @@ export function ComputerComponentModal(props: ComputerComponentsModalProps) {
             <input type="checkbox" id={props.modalId} className="modal-toggle" checked={props.isOpen} />
             <div className="modal" role="dialog">
                 <div className="modal-box p-7 min-w-2/5">
+                    <button className="btn btn-sm btn-circle absolute right-2 top-2 transition duration-350 hover:rotate-90 hover:btn-error " onClick={()=>{
+                        props.closeModal();
+                    }}><X size={20} strokeWidth={2.5}/></button>
                     <h3 className="text-lg font-bold">{props.modalMode} your pc components here</h3>
                     {motherboards?.length < 1 || cpus?.length < 1 || gpus?.length < 1 || rams?.length < 1 ? (
                         <div className="p-6 mt-10">
@@ -197,8 +201,8 @@ export function ComputerComponentModal(props: ComputerComponentsModalProps) {
                                                     }
                                                 }
                                                 showRamBrand={true}
-                                                bg="base-200"
-                                                
+                                                bgClass="bg-base-200"
+
                                             />
                                         </div>
 

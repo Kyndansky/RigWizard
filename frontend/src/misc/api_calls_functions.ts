@@ -161,16 +161,48 @@ export async function login(
   }
 }
 //fetches some games from the current user's library
-export async function getLibraryGames(
-  indexStart: number,
-  numOfGames: number,
-  filters: string[] = [],
-  searchString: string = "",
-  includeAllFilters: boolean
-): Promise<GameCollectionResponse> {
+export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
   try {
     const response = await apiGames.post(
       "getUserGames.php",
+      {
+        indexStart: indexStart,
+        numOfGames: numOfGames,
+        filters,
+        searchString,
+        includeAllFilters: includeAllFilters,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.data;
+    const result: GameCollectionResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      games: data["games"],
+      totalNumberOfGames: data["total_games"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameCollectionResponse = {
+      successful: false,
+      message: "server error",
+      games: [],
+      totalNumberOfGames: 0,
+    };
+    return result;
+  }
+}
+
+export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
+  try {
+    const response = await apiGames.post(
+      "getGames.php",
       {
         indexStart: indexStart,
         numOfGames: numOfGames,
@@ -271,7 +303,7 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
     });
 
     const data = await response.data;
-    
+
     const result: ComputerInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],

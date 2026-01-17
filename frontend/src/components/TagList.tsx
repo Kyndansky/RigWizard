@@ -5,6 +5,7 @@ import { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent } from 
 interface TagListProps {
     tags: string[];
     numVisible: number;
+    id:number;
 }
 
 export function TagList(props: TagListProps) {
@@ -24,7 +25,7 @@ export function TagList(props: TagListProps) {
                     <MorphingPopoverTrigger asChild>
                         <button className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px]">
                             <motion.span
-                                layoutId='morphing-popover-basic-label'
+                                layoutId={String(props.id)}
                                 layout='position'
                             >
                                 <div>

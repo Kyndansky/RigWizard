@@ -8,7 +8,7 @@ interface ComponentsListProps {
     pcToBeCompared?: Computer;
     showGeneralEvaluation: boolean;
     showRamBrand: boolean;
-    bg?: string;
+    bgClass?: string;
     showMetRequirementsCheckBox?: boolean;
 }
 
@@ -33,17 +33,16 @@ export function ComponentsList(props: ComponentsListProps) {
         // Genera la stringa HSL
         progressEvaluationColor = `hsl(${hue}, 80%, 45%)`;
     }
-
+    const bgDefault="bg-base-100";
     return (
 
         < React.Fragment >
             {/* TODO: make a popover component to show messages dynamically instead of the popover used here. And add a way to better discern the user's pc from min and rec requirements*/}
-
-            <ul className={"list rounded-box shadow-md p-2 w-full bg-" + (props.bg ?? "base-100")}>
+            <ul className={"list rounded-box shadow-md p-2 w-full " + (props.bgClass ?? bgDefault)}>
                 {props.descriptionText && (
                     <li className="p-4 pb-2 text-sm opacity-60 tracking-wide">{props.descriptionText}</li>
                 )}
-                <li className={"list-row w-full bg-" + (props.bg ?? "base-100")}>
+                <li className={"list-row w-full " + (props.bgClass ?? bgDefault)}>
 
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center">
@@ -55,18 +54,21 @@ export function ComponentsList(props: ComponentsListProps) {
                     {/* if a pc was given to compare, we show a green check if the score of that pc's components is equal or higher than that of the pc shown */}
                     {props.pcToBeCompared ? (
                         <div className="list-col-grow ml-auto">
-                            {props.pc.motherboard.score <= props.pcToBeCompared.motherboard.score ? (
-                                <CircleCheck color={successCheckColor} size={checkIconsSize} />
-                            ) :
-                                (
+                            <div className="tooltip" data-tip={props.pc.motherboard.score <= props.pcToBeCompared.motherboard.score ? "Requirement met." : "Requirement not met."}>
+                                {props.pc.motherboard.score <= props.pcToBeCompared.motherboard.score ? (
+                                    <CircleCheck color={successCheckColor} size={checkIconsSize} />
+
+                                ) : (
                                     <CircleX color={failureCheckColor} size={checkIconsSize} />
-                                )}
+                                )
+                                }
+                            </div>
                         </div>
                     ) : (null)}
 
 
                 </li>
-                <li className={"list-row w-full bg-" + (props.bg ?? "base-100")}>
+                <li className={"list-row w-full " + (props.bgClass ?? bgDefault)}>
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center">
                             CPU
@@ -76,16 +78,19 @@ export function ComponentsList(props: ComponentsListProps) {
                     </div>
                     {props.pcToBeCompared ? (
                         <div className="list-col-grow ml-auto">
-                            {props.pc.cpu.score <= props.pcToBeCompared.cpu.score ? (
-                                <CircleCheck color={successCheckColor} size={checkIconsSize} />
-                            ) :
-                                (
+                            <div className="tooltip" data-tip={props.pc.cpu.score <= props.pcToBeCompared.cpu.score ? "Requirement met." : "Requirement not met."}>
+                                {props.pc.cpu.score <= props.pcToBeCompared.cpu.score ? (
+                                    <CircleCheck color={successCheckColor} size={checkIconsSize} />
+
+                                ) : (
                                     <CircleX color={failureCheckColor} size={checkIconsSize} />
-                                )}
+                                )
+                                }
+                            </div>
                         </div>
                     ) : (null)}
                 </li>
-                <li className={"list-row bg-" + (props.bg ?? "base-100")}>
+                <li className={"list-row " + (props.bgClass ?? bgDefault)}>
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center">
                             Ram
@@ -95,22 +100,20 @@ export function ComponentsList(props: ComponentsListProps) {
                     </div>
                     {props.pcToBeCompared ? (
                         <div className="list-col-grow ml-auto">
-
-                            {props.pc.ram.score <= props.pcToBeCompared.ram.score ? (
-                                <div className="tooltip" data-tip="You meet this requirements with your pc configuration.">
+                            <div className="tooltip" data-tip={props.pc.ram.score <= props.pcToBeCompared.ram.score ? "Requirement met." : "Requirement not met."}>
+                                {props.pc.ram.score <= props.pcToBeCompared.ram.score ? (
                                     <CircleCheck color={successCheckColor} size={checkIconsSize} />
-                                </div>
-                            ) :
-                                (
-                                    <div className="tooltip" data-tip="You don't this requirements with your pc configuration.">
-                                        <CircleX color={failureCheckColor} size={checkIconsSize} />
-                                    </div>
-                                )}
+
+                                ) : (
+                                    <CircleX color={failureCheckColor} size={checkIconsSize} />
+                                )
+                                }
+                            </div>
                         </div>
                     ) : (null)}
 
                 </li>
-                <li className={"list-row bg-" + (props.bg ?? "base-100")}>
+                <li className={"list-row " + (props.bgClass ?? bgDefault)}>
 
                     <div className="flex flex-col">
                         <div className="flex flex-row items-center">
@@ -121,20 +124,22 @@ export function ComponentsList(props: ComponentsListProps) {
                     </div>
                     {props.pcToBeCompared ? (
                         <div className="list-col-grow ml-auto">
-                            {props.pc.gpu.score <= props.pcToBeCompared.gpu.score ? (
-                                <CircleCheck color={successCheckColor} size={checkIconsSize} />
-                            ) :
-                                (
+                            <div className="tooltip" data-tip={props.pc.gpu.score <= props.pcToBeCompared.gpu.score ? "Requirement met." : "Requirement not met."}>
+                                {props.pc.gpu.score <= props.pcToBeCompared.gpu.score ? (
+                                    <CircleCheck color={successCheckColor} size={checkIconsSize} />
+
+                                ) : (
                                     <CircleX color={failureCheckColor} size={checkIconsSize} />
-                                )}
+                                )
+                                }
+                            </div>
                         </div>
                     ) : (null)}
 
 
                 </li>
                 {props.showGeneralEvaluation && (
-                    <li className={"list-row items-center grow mx-auto bg-" + (props.bg ?? "base-100")}>
-                        {/* For TSX uncomment the commented types below */}
+                    <li className={"list-row items-center grow mx-auto " + (props.bgClass ?? bgDefault)}>
                         <div className="radial-progress" aria-setsize={2}
                             style={{
                                 "--value": percentage,

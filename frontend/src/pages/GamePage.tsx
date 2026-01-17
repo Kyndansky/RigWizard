@@ -94,6 +94,7 @@ export function GamePage() {
                                                         imageHeight="h-auto"
                                                         cardHeight=""
                                                         showTitle={false}
+                                                        id={game.id_game}
                                                     />
                                                 </div>
                                             </div>
@@ -158,25 +159,28 @@ export function GamePage() {
                                                         descriptionText="Your PC"
                                                         showGeneralEvaluation={true}
                                                         showRamBrand={true}
-                                                        bg="base-200" />
+                                                        bgClass="bg-primary" />
                                                     <ComponentsList pc={game.pc_min_details}
                                                         descriptionText="Minimum"
-                                                        showGeneralEvaluation={true}
-                                                        showRamBrand={false} bg="base-200"
-                                                        pcToBeCompared={userComputer} />
+                                                        showGeneralEvaluation={false}
+                                                        showRamBrand={false} 
+                                                        bgClass="bg-base-200"
+                                                        pcToBeCompared={userComputer} 
+                                                        
+                                                        />
                                                     <ComponentsList pc={game.pc_rec_details}
                                                         descriptionText="Recommended"
-                                                        showGeneralEvaluation={true}
+                                                        showGeneralEvaluation={false}
                                                         showRamBrand={false}
-                                                        bg="base-200"
+                                                        bgClass="bg-base-200"
                                                         pcToBeCompared={userComputer}
                                                     />
                                                 </React.Fragment>
                                             ) :
                                                 (
                                                     <React.Fragment>
-                                                        <ComponentsList pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
-                                                        <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false} bg="base-200" />
+                                                        <ComponentsList pc={game.pc_min_details} descriptionText="Minimum" showGeneralEvaluation={true} showRamBrand={false} bgClass="bg-base-200" />
+                                                        <ComponentsList pc={game.pc_rec_details} descriptionText="Recommended" showGeneralEvaluation={true} showRamBrand={false} bgClass="bg-base-200" />
                                                     </React.Fragment>
                                                 )}
 

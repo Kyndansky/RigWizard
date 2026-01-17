@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react'
+import { useEffect } from 'react'
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -7,7 +7,6 @@ import { twMerge } from "tailwind-merge";
 import {
     useState,
     useId,
-    useRef,
     createContext,
     useContext,
     isValidElement,
@@ -19,43 +18,12 @@ import {
     type Transition,
     type Variants,
 } from 'motion/react';
-function cn(...inputs: ClassValue[]):string{
+
+function cn(...inputs: ClassValue[]): string {
     return twMerge(clsx(inputs));
 }
-type Handler = (event: MouseEvent | TouchEvent) => void
 
-function useClickOutside<T extends HTMLElement = HTMLElement>(
-    ref: RefObject<T|null>,
-    handler: Handler,
-    mouseEvent: 'mousedown' | 'mouseup' = 'mousedown'
-): void {
-    useEffect(() => {
-        const listener = (event: MouseEvent | TouchEvent) => {
-            const el = ref?.current
-            const target = event.target
-
-            // Do nothing if clicking ref's element or descendent elements
-            if (!el || !target || el.contains(target as Node)) {
-                return
-            }
-
-            handler(event)
-        }
-
-        document.addEventListener(mouseEvent, listener)
-        document.addEventListener('touchstart', listener)
-
-        return () => {
-            document.removeEventListener(mouseEvent, listener)
-            document.removeEventListener('touchstart', listener)
-        }
-    }, [ref, handler, mouseEvent])
-}
-
-
-
-
-const TRANSITION:Transition = {
+const TRANSITION: Transition = {
     type: 'spring',
     bounce: 0.1,
     duration: 0.4,
@@ -131,6 +99,8 @@ function MorphingPopover({
                 <div
                     className={cn('relative flex items-center justify-center', className)}
                     key={popoverLogic.uniqueId}
+                    onMouseEnter={popoverLogic.open}
+                    onMouseLeave={popoverLogic.close}
                     {...props}
                 >
                     {children}
@@ -168,7 +138,6 @@ function MorphingPopoverTrigger({
         return (
             <MotionComponent
                 {...childProps}
-                onClick={context.open}
                 layoutId={`popover-trigger-${context.uniqueId}`}
                 className={childProps.className}
                 key={context.uniqueId}
@@ -182,7 +151,6 @@ function MorphingPopoverTrigger({
         <motion.div
             key={context.uniqueId}
             layoutId={`popover-trigger-${context.uniqueId}`}
-            onClick={context.open}
         >
             <motion.button
                 {...props}
@@ -214,9 +182,7 @@ function MorphingPopoverContent({
             'MorphingPopoverContent must be used within MorphingPopover'
         );
 
-    const ref = useRef<HTMLDivElement>(null);
-    useClickOutside(ref, context.close);
-
+    // Gestione chiusura con tasto Escape (utile per accessibilità anche in hover)
     useEffect(() => {
         if (!context.isOpen) return;
 
@@ -234,7 +200,6 @@ function MorphingPopoverContent({
                 <>
                     <motion.div
                         {...props}
-                        ref={ref}
                         layoutId={`popover-trigger-${context.uniqueId}`}
                         key={context.uniqueId}
                         id={`popover-content-${context.uniqueId}`}
