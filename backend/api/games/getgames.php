@@ -12,18 +12,19 @@ $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
 $multiple_filters = isset($data['includeAllFilters']) ? (bool) $data['includeAllFilters'] : false;
 
-$sql_games = "SELECT g.*
-        FROM games g";
+$sql_games = "SELECT g.* FROM games g";
 
 // If there are filters, join the tags tables
 if (!empty($filters)) {
     $sql_games .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-              LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+                    LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
+
+// Inizio clausola WHERE (1=1 permette di concatenare AND senza preoccuparsi se è la prima condizione)
+$sql_games .= " WHERE 1=1";
 
 // Add filter condition
 if (!empty($filters)) {
-    // Convert filters array to a comma-separated string for SQL IN clause
     $lista_filtri = implode("','", $filters);
     $sql_games .= " AND t.name IN ('$lista_filtri')";
 }
@@ -45,29 +46,26 @@ if (!empty($filters) && $multiple_filters) {
 $sql_games .= " ORDER BY g.title ASC LIMIT $offset, $numOfGames";
 
 // Query to get total number of games
-// I use a subquery to correctly count grouped games with HAVING
-$sql_total_base = "SELECT g.id_game
-                    FROM games g";
+$sql_total_base = "SELECT g.id_game FROM games g";
 
-// If there are filters, join the tags tables
 if (!empty($filters)) {
     $sql_total_base .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-                          LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+                         LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-// Add filter condition
+$sql_total_base .= " WHERE 1=1";
+
 if (!empty($filters)) {
     $lista_filtri = implode("','", $filters);
     $sql_total_base .= " AND t.name IN ('$lista_filtri')";
 }
 
-// Add search condition
 if (!empty($searchString)) {
     $sql_total_base .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
 }
 
 $sql_total_base .= " GROUP BY g.id_game";
-// If multiple filters are required, add HAVING clause
+
 if (!empty($filters) && $multiple_filters) {
     $count_filters = count($filters);
     $sql_total_base .= " HAVING COUNT(DISTINCT t.name) = $count_filters";

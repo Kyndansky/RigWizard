@@ -86,8 +86,8 @@ export function GamePage() {
                                                         description={game.description}
                                                         tags={game.tags}
                                                         imagePlacement=""
-                                                        imageUrl={game.horizontal_banner_URL}
-                                                        //imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
+                                                        //imageUrl={game.horizontal_banner_URL}
+                                                        imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
                                                         numOfTagsToShow={numTagsVisible}
                                                         backgroundColor="base-300"
                                                         hoverable={false}
@@ -95,6 +95,7 @@ export function GamePage() {
                                                         cardHeight=""
                                                         showTitle={false}
                                                         id={game.id_game}
+                                                        animate={false}
                                                     />
                                                 </div>
                                             </div>

@@ -1,5 +1,6 @@
 import React, { type PropsWithChildren } from "react";
 import { TagList } from "./TagList";
+import { motion } from "motion/react";
 interface GameInfoCardProps {
   name: string;
   description: string;
@@ -12,13 +13,26 @@ interface GameInfoCardProps {
   imageHeight: string;
   cardHeight: string;
   showTitle: boolean;
-  id:number;
+  id: number;
+  animate:boolean;
 }
 export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
   return (
     <React.Fragment>
 
-      <div className={props.hoverable ? "hover-3d" : ""}>
+      <motion.div  
+        className={props.hoverable ? "hover-3d" : ""}
+        style={{ willChange: "transform" }}
+        layout="position"
+        initial={props.animate?{ y: 100, opacity: 0 }:{}}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 120,
+          damping: 20,
+          mass:0.8
+        }}
+      >
         <div className={"card shadow-sm " + props.imagePlacement + " " + props.cardHeight + " " + (props.backgroundColor ? " bg-" + props.backgroundColor + " " : "bg-base-100 ")}>
           <figure className={props.imageHeight}>
             <img src={props.imageUrl} alt="game image" className="w-full h-full object-cover" />
@@ -28,8 +42,8 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             {props.showTitle && <h2 className="card-title">{props.name}</h2>}
             <p className="text-sm line-clamp-4">{props.description}</p>
             {props.children}
-            <div className="card-actions justify-end gap-2 flex">
-              <TagList tags={props.tags} numVisible={props.numOfTagsToShow} id={props.id}/>
+            <div className="card-actions justify-end gap-2 flex z-30">
+              <TagList tags={props.tags} numVisible={props.numOfTagsToShow} id={props.id} />
             </div>
           </div>
         </div>
@@ -47,7 +61,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
           </React.Fragment>
         )}
 
-      </div>
+      </motion.div>
 
     </React.Fragment>
   );

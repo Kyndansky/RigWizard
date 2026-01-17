@@ -26,7 +26,7 @@ export function ComputerComponentModal(props: ComputerComponentsModalProps) {
     const [selectedCpu, setSelectedCpu] = useState<CPU>();
     const [selectedGpu, setSelectedGpu] = useState<GPU>();
     const [selectedRam, setSelectedRam] = useState<Ram>();
-    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [_errorMessage, setErrorMessage] = useState<string>("");
 
     async function fetchMotherboards() {
         if (!props.isOpen) return;

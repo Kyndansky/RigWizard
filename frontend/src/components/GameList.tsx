@@ -24,13 +24,15 @@ export function GameList(props:GameListProps){
                       name={game.title}
                       description={game.description}
                       tags={game.tags}
-                      imageUrl={game.vertical_banner_URL}
+                      //imageUrl={game.vertical_banner_URL}
+                      imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
                       backgroundColor="base-100"
                       hoverable={props.layout==="grid"?true:false}
                       imageHeight=""
                       cardHeight={props.layout==="grid"?gridLayoutCardClassname:rowsLayoutCardClassname}
                       showTitle={true}
                       id={game.id_game}
+                      animate={true}
                     />
                   </Link>
                 ))}

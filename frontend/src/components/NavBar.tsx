@@ -11,7 +11,7 @@ interface TabItem {
     pathTo: string;
     text: string;
 }
-const tabItems: TabItem[] = [
+export const tabItems: TabItem[] = [
     {
         id: 1,
         pathTo: "/library",
@@ -21,6 +21,11 @@ const tabItems: TabItem[] = [
         id: 2,
         pathTo: "/shop",
         text: "Shop"
+    },
+    {
+        id: 3,
+        pathTo: "/wishlist",
+        text: "Wishlist"
     }
 ]
 export function NavBar(props: NavBarProps) {

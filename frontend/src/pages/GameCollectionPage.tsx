@@ -11,7 +11,7 @@ import type { Game, GameCollectionResponse } from "../misc/interfaces";
 import { useUserComputer } from "../misc/UserComputerContextHandler";
 
 interface MainPageProps {
-    gamesCollection: "Library" | "Shop";
+    gamesCollection: "Library" | "Shop" | "Wishlist";
     gameCollectionTitleText: string;
     retrieveGamesFunction: (indexStart: number, numOfGames: number, filters: string[], searchString: string, includeAllFilters: boolean) => Promise<GameCollectionResponse>;
 }
@@ -67,7 +67,7 @@ export function GameCollectionPage(props: MainPageProps) {
             setErrorMessage(fetchedTagsResponse.message);
         }
     }
-    
+
     useEffect(() => {
         setSearchText("");
         setSelectedTags([]);
@@ -113,7 +113,7 @@ export function GameCollectionPage(props: MainPageProps) {
 
     return (
         <React.Fragment>
-            <BasePageLayout hideOverFlow={true} selectedTabId={props.gamesCollection === "Library" ? 1 : 2}>
+            <BasePageLayout hideOverFlow={true} selectedTabId={props.gamesCollection === "Library" ? 1 : props.gamesCollection === "Shop" ? 2 : 3}>
                 <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
                     {/* Left sidebar that shows the pc components */}
                     <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0">
@@ -230,10 +230,6 @@ export function GameCollectionPage(props: MainPageProps) {
                             <GameList games={games} layout={layoutGrid ? "grid" : "rows"} />
                         )
                         }
-
-                        {/* TODO: make it so that when adding a filter or searching for a game (or when ordering by something when i add the feature to do that)
-            the frontend sends a request to the backend which in turn does a query to get all games that meets the requirements
-            (because currently the filters and the search bar only work on the 20 loaded games, which does not make much sense) */}
 
                         {/* section for changing page (to load more games) */}
                         <div className="flex items-center w-full mt-4">

@@ -10,7 +10,8 @@ import { NotFound } from "../pages/NotFoundPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import { UserComputerProvider } from "./UserComputerContextHandler";
 import { GameCollectionPage } from "../pages/GameCollectionPage";
-import { getLibraryGames, getShopGames } from "./api_calls_functions";
+import { getLibraryGames, getShopGames, getWishlistGames } from "./api_calls_functions";
+
 function AppRouter() {
     return (
         <React.Fragment>
@@ -18,8 +19,9 @@ function AppRouter() {
                 <UserComputerProvider>
                     <Routes>
                         <Route path='/' element={<App />} />
-                        <Route path='/library' element={<GameCollectionPage key={"library"} gamesCollection="Library" gameCollectionTitleText="Your Library" retrieveGamesFunction={getLibraryGames}/>} />
-                        <Route path='/shop' element={<GameCollectionPage key={"shop"} gamesCollection="Shop" gameCollectionTitleText="Shop" retrieveGamesFunction={getShopGames}/>} />
+                        <Route path='/library' element={<GameCollectionPage key={"library"} gamesCollection="Library" gameCollectionTitleText="Your Library" retrieveGamesFunction={getLibraryGames} />} />
+                        <Route path='/shop' element={<GameCollectionPage key={"shop"} gamesCollection="Shop" gameCollectionTitleText="Shop" retrieveGamesFunction={getShopGames} />} />
+                        <Route path='/wishlist' element={<GameCollectionPage key={"wishlist"} gamesCollection="Wishlist" gameCollectionTitleText="Wishlist" retrieveGamesFunction={getWishlistGames} />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/register' element={<Register />} />
                         <Route path="/profile" element={<Profile />} />

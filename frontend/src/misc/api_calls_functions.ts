@@ -218,6 +218,46 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
     );
 
     const data = await response.data;
+    console.log(data);
+    const result: GameCollectionResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      games: data["games"],
+      totalNumberOfGames: data["total_games"],
+    };
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameCollectionResponse = {
+      successful: false,
+      message: "server error",
+      games: [],
+      totalNumberOfGames: 0,
+    };
+    return result;
+  }
+}
+
+export async function getWishlistGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
+  try {
+    const response = await apiGames.post(
+      "getWishlistGames.php",
+      {
+        indexStart: indexStart,
+        numOfGames: numOfGames,
+        filters,
+        searchString,
+        includeAllFilters: includeAllFilters,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.data;
     const result: GameCollectionResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
@@ -236,6 +276,7 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
     return result;
   }
 }
+
 
 //fetches all possible tags from the backend
 export async function getTags(): Promise<TagCollectionResponse> {
