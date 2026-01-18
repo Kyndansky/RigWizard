@@ -1,6 +1,5 @@
-import { Loader, PcCase, LayoutGrid, Rows2 } from "lucide-react";
+import { PcCase, LayoutGrid, Rows2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
 import { BasePageLayout } from "../components/BasePageLayout";
 import { ComponentsList } from "../components/ComponentsList";
 import { ComputerComponentModal } from "../components/ComputerConfigModal";
@@ -9,6 +8,8 @@ import { getTags } from "../misc/api_calls_functions";
 import { useAuth } from "../misc/AuthContextHandler";
 import type { Game, GameCollectionResponse } from "../misc/interfaces";
 import { useUserComputer } from "../misc/UserComputerContextHandler";
+import { motion } from "motion/react";
+import Loader from "../components/Loader";
 
 interface MainPageProps {
     gamesCollection: "Library" | "Shop" | "Wishlist";
@@ -27,7 +28,7 @@ export function GameCollectionPage(props: MainPageProps) {
     const { userComputer, isLoadingUserComputer, fetchUserComputer } = useUserComputer();
     const [includeAllFiltersChecked, setIncludeAllFiltersChecked] =
         useState<boolean>(true);
-    const { isAuthenticated, isLoading } = useAuth();
+    const { isLoading } = useAuth();
     const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
         undefined
     );
@@ -67,25 +68,29 @@ export function GameCollectionPage(props: MainPageProps) {
             setErrorMessage(fetchedTagsResponse.message);
         }
     }
-
-    useEffect(() => {
-        setSearchText("");
+    //todo: fix the fact that when changing tabs some api calls are still pending
+    // and everything goes to shit because idk how to do stuff properly
+    function resetAll() {
         setSelectedTags([]);
-        setCurrentPageNumber(1);
+        setIncludeAllFiltersChecked(true);
+        setSearchText("");
         fetchGames(1);
+    }
+    useEffect(() => {
+        resetAll();
     }, [props.gamesCollection]);
 
     useEffect(() => {
-        (async () => {
-            await fetchGames(1);
-            await fetchTags();
-            fetchUserComputer();
-        })();
-    }, [props.retrieveGamesFunction]);
+        fetchTags();
+        fetchGames(1);
+        fetchUserComputer();
+    }, []);
 
     // when the checkbox to select all filters or not is checked, the games are re-fetched
     useEffect(() => {
-        fetchGames(1);
+        if (tags?.length && tags?.length > 0) {
+            fetchGames(1);
+        }
     }, [includeAllFiltersChecked]);
 
     //when the selectedTags change, the games are fetched
@@ -105,10 +110,14 @@ export function GameCollectionPage(props: MainPageProps) {
     }, [searchText]);
 
     if (isLoading) {
-        return <Loader />;
-    }
-    if (!isAuthenticated) {
-        return <Navigate to="/login" />;
+
+        return (
+            <React.Fragment>
+                <BasePageLayout hideOverFlow={true} selectedTabId={props.gamesCollection === "Library" ? 1 : props.gamesCollection === "Shop" ? 2 : 3} >
+                    <Loader />
+                </BasePageLayout>
+            </React.Fragment>
+        );
     }
 
     return (
@@ -116,7 +125,16 @@ export function GameCollectionPage(props: MainPageProps) {
             <BasePageLayout hideOverFlow={true} selectedTabId={props.gamesCollection === "Library" ? 1 : props.gamesCollection === "Shop" ? 2 : 3}>
                 <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
                     {/* Left sidebar that shows the pc components */}
-                    <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0">
+                    <motion.div
+                        initial={{ x: -20, opacity: 0.5 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 120,
+                            damping: 20,
+                            mass: 0.8
+                        }}
+                        className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0">
                         <h2 className="text-lg font-bold mb-4">Your PC</h2>
                         <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
                             {isLoadingUserComputer ? (
@@ -145,7 +163,6 @@ export function GameCollectionPage(props: MainPageProps) {
                                         pc={userComputer}
                                         showGeneralEvaluation={true}
                                         showRamBrand={true}
-
                                     />
                                     <button
                                         className="btn btn-soft"
@@ -158,7 +175,7 @@ export function GameCollectionPage(props: MainPageProps) {
                                 </React.Fragment>
                             )}
                         </div>
-                    </aside>
+                    </motion.div>
 
                     <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">
                         <div className="flex flex-row items-center gap-5 justify-between">
@@ -174,8 +191,6 @@ export function GameCollectionPage(props: MainPageProps) {
                                     <LayoutGrid size={25} className="swap-on" />
                                 </label>
                             </button>
-
-
                         </div>
                         <div className="flex my-5 w-full">
                             <label className="input w-10 focus:outline-none focus:ring-0">

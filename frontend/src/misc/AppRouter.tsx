@@ -19,9 +19,9 @@ function AppRouter() {
                 <UserComputerProvider>
                     <Routes>
                         <Route path='/' element={<App />} />
-                        <Route path='/library' element={<GameCollectionPage key={"library"} gamesCollection="Library" gameCollectionTitleText="Your Library" retrieveGamesFunction={getLibraryGames} />} />
-                        <Route path='/shop' element={<GameCollectionPage key={"shop"} gamesCollection="Shop" gameCollectionTitleText="Shop" retrieveGamesFunction={getShopGames} />} />
-                        <Route path='/wishlist' element={<GameCollectionPage key={"wishlist"} gamesCollection="Wishlist" gameCollectionTitleText="Wishlist" retrieveGamesFunction={getWishlistGames} />} />
+                        <Route path='/library' element={<GameCollectionPage  gamesCollection="Library" gameCollectionTitleText="Your Library" retrieveGamesFunction={getLibraryGames} />} />
+                        <Route path='/shop' element={<GameCollectionPage  gamesCollection="Shop" gameCollectionTitleText="Shop" retrieveGamesFunction={getShopGames} />} />
+                        <Route path='/wishlist' element={<GameCollectionPage  gamesCollection="Wishlist" gameCollectionTitleText="Wishlist" retrieveGamesFunction={getWishlistGames} />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/register' element={<Register />} />
                         <Route path="/profile" element={<Profile />} />
