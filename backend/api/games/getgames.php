@@ -20,7 +20,7 @@ if (!empty($filters)) {
                     LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-// Inizio clausola WHERE (1=1 permette di concatenare AND senza preoccuparsi se è la prima condizione)
+// Base WHERE clause
 $sql_games .= " WHERE 1=1";
 
 // Add filter condition
@@ -31,7 +31,7 @@ if (!empty($filters)) {
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql_games .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_games .= " AND (g.title LIKE '%$searchString%')";
 }
 
 // Avoid duplicates by grouping
@@ -61,7 +61,7 @@ if (!empty($filters)) {
 }
 
 if (!empty($searchString)) {
-    $sql_total_base .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_total_base .= " AND (g.title LIKE '%$searchString%')";
 }
 
 $sql_total_base .= " GROUP BY g.id_game";
