@@ -11,7 +11,7 @@ $numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames'] : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
 $multiple_filters = isset($data['includeAllFilters']) ? (bool) $data['includeAllFilters'] : false;
-
+$offset = ($offset - 1);
 $sql_games = "SELECT g.* FROM games g";
 
 // If there are filters, join the tags tables
@@ -114,6 +114,7 @@ foreach ($games_list as &$game) {
     }
     $game['tags'] = $game_tags;
 }
+unset($game);
 
 // Final response
 $response = [
@@ -122,7 +123,7 @@ $response = [
     'games' => $games_list,
     'total_games' => $total_games,
 ];
-
+$response['debug_sql'] = $sql_games;
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
 ?>
