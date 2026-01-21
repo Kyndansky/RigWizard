@@ -19,15 +19,17 @@ export function GameList(props:GameListProps){
         <React.Fragment>
             <div className={(props.layout==="grid"?gridLayoutClasses:rowsLayoutClasses)+" gap-5"}>
                 {props.games?.map((game, index) => {
+                  console.log("pc");
+                  console.log(game.pc_min_details);
           let numOfRequirementsMet: number = 0;
 
-          if (props.userPc) {
+          if (props.userPc && game.pc_min_details) {
             if (props.userPc.cpu.score >= game.pc_min_details.cpu.score) numOfRequirementsMet+=1;
             if (props.userPc.gpu.score >= game.pc_min_details.gpu.score) numOfRequirementsMet+=1;
             if (props.userPc.ram.score >= game.pc_min_details.ram.score) numOfRequirementsMet+=1;
             if (props.userPc.motherboard.score >= game.pc_min_details.motherboard.score) numOfRequirementsMet+=1;
           }
-          let requirementsBadgeColor:"warning"|"success"|"error";
+          let requirementsBadgeColor:"warning"|"success"|"error"="error";
           if(numOfRequirementsMet===0){
             requirementsBadgeColor="error";
           }
