@@ -124,9 +124,7 @@ export function GameCollectionPage(props: MainPageProps) {
           selectedTabId={
             props.gamesCollection === "Library"
               ? 1
-              : props.gamesCollection === "Shop"
-                ? 2
-                : 3
+              : 2
           }
         >
           <Loader />
@@ -142,9 +140,7 @@ export function GameCollectionPage(props: MainPageProps) {
         selectedTabId={
           props.gamesCollection === "Library"
             ? 1
-            : props.gamesCollection === "Shop"
-              ? 2
-              : 3
+            : 2
         }
       >
         <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
@@ -276,9 +272,8 @@ export function GameCollectionPage(props: MainPageProps) {
                   games={games}
                   layout={layoutGrid ? "grid" : "rows"}
                   userPc={userComputer}
-                  showRequirementsMetBadge={
-                    props.gamesCollection === "Library" ? true : false
-                  }
+                  showRequirementsMetBadge={true}
+                  showOwnedBadges={props.gamesCollection==="Shop"?true:false}
                 />
               )
             )}

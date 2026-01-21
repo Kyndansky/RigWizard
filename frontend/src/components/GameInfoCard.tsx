@@ -1,7 +1,6 @@
 import React, { type PropsWithChildren } from "react";
 import { TagList } from "./TagList";
 import { motion } from "motion/react";
-import { Dot } from "lucide-react";
 interface GameInfoCardProps {
   name: string;
   description: string;
@@ -18,9 +17,37 @@ interface GameInfoCardProps {
   animate: boolean;
   showGameOwnedBadge: boolean;
   showRequirementsBadge: boolean;
-  requirementsMetBadgeColor: "warning" | "success" | "error";
+  requirementsMetBadgeColor?: "warning" | "success" | "error";
 }
 export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
+  
+  const colorMap = {
+      warning: {
+        badge: "border-warning text-warning",
+        dot: "bg-warning",
+        text: "Your PC configuration might be able to handle this game's minimum requirements"
+      },
+      error: {
+        badge: "border-error text-error",
+        dot: "bg-error",
+        text: "Your PC configuration can't handle this game's minimum requirements. You should probably upgrade your PC first."
+
+      },
+      success: {
+        badge: "border-success text-success",
+        dot: "bg-success",
+        text: "Your PC configuration can handle this game's minimum requirements"
+
+      }
+    };
+    const activeColors = colorMap[props.requirementsMetBadgeColor??"error"] || {
+      badge: "border-gray-500 text-gray-500",
+      dot: "bg-gray-500"
+    };
+    const dotsClassname = `rounded w-[8px] h-[8px] mx-[3px] ${activeColors.dot}`;
+    const badgePerformanceClassname = `badge badge-outline text-xs ${activeColors.badge}`;
+    const performanceBadgeText = activeColors.text;
+
   return (
     <React.Fragment>
       <motion.div
@@ -57,36 +84,38 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
           </figure>
 
           <div className="card-body">
-            {props.showTitle && <h2 className="card-title">{props.name}</h2>}
+            <div className="flex flex-row space-between">
+              {props.showTitle && <h2 className="card-title">{props.name}</h2>}
+              <div className="tooltip ml-auto" data-tip="You own this game">
+                {props.showGameOwnedBadge && (
+                  <div className="badge badge-outline text-info border-info">Owned</div>
+                )}
+              </div>
+
+            </div>
+
             <p className="text-sm line-clamp-4">{props.description}</p>
             {props.children}
             <div className="card-actions justify-end gap-2 flex z-30 items-end">
               {props.showRequirementsBadge && (
-                <div
-                  className={
-                    "badge badge-outline h-auto text-xs border-" +
-                    props.requirementsMetBadgeColor +
-                    " text-" +
-                    props.requirementsMetBadgeColor
-                  }
-                >
-                  <div className="flex flex-col">
-                    <div>Performance</div>
-                    <div className="flex flex-row">
+                <div className="tooltip" data-tip={performanceBadgeText}>
+                  <div
+                    className={badgePerformanceClassname}>
+                    <div className="flex flex-row gap-2 mx-0">
                       {props.requirementsMetBadgeColor === "success" ? (
                         <React.Fragment>
-                          <Dot />
+                          <div className={dotsClassname} />
+                          <div className={dotsClassname} />
+                          <div className={dotsClassname} />
                         </React.Fragment>
                       ) : props.requirementsMetBadgeColor === "warning" ? (
                         <React.Fragment>
-                          <Dot />
-                          <Dot />
+                          <div className={dotsClassname} />
+                          <div className={dotsClassname} />
                         </React.Fragment>
                       ) : (
                         <React.Fragment>
-                          <Dot />
-                          <Dot />
-                          <Dot />
+                          <div className={dotsClassname} />
                         </React.Fragment>
                       )}
                     </div>

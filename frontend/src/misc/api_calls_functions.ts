@@ -224,7 +224,6 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
       games: data["games"],
       totalNumberOfGames: data["total_games"],
     };
-    console.log(numOfGames);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -510,33 +509,7 @@ export async function addGameToLibrary(gameId: number): Promise<RigWizardRespons
     const data = await response.data;
     const result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
-      message: data["message"],
-    };
-    return result;
-  } catch (error) {
-    console.log("error from php server:", error);
-    const result: GameInfoResponse = {
-      successful: false,
-      message: "server error",
-    };
-    return result;
-  }
-}
-
-export async function addGameToWishlist(gameId: number): Promise<RigWizardResponse> {
-  try {
-    const response = await apiGames.get("addGameToWishlist.php", {
-      params: {
-        gameId: gameId,
-      },
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.data;
-    const result: GameInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
-      message: data["message"],
+      message: data["message"] || "no message from backend",
     };
     return result;
   } catch (error) {

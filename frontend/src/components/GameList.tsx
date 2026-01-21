@@ -3,41 +3,38 @@ import type { Computer, Game } from "../misc/interfaces";
 import { Link } from "react-router-dom";
 import { GameInfoCard } from "./GameInfoCard";
 
-interface GameListProps{
-    games:Game[];
-    layout:"grid"|"rows";
-    userPc?:Computer;
-    showRequirementsMetBadge:boolean;
+interface GameListProps {
+  games: Game[];
+  layout: "grid" | "rows";
+  userPc?: Computer;
+  showRequirementsMetBadge: boolean;
+  showOwnedBadges: boolean;
+
 }
 
-export function GameList(props:GameListProps){
-    const gridLayoutClasses="grid lg:grid-cols-4 md:grid-cols-2";
-    const rowsLayoutClasses="flex flex-col";
-    const gridLayoutCardClassname="md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100";
-    const rowsLayoutCardClassname="w-full grow";
-    return (
-        <React.Fragment>
-            <div className={(props.layout==="grid"?gridLayoutClasses:rowsLayoutClasses)+" gap-5"}>
-                {props.games?.map((game, index) => {
-                  console.log("pc");
-                  console.log(game.pc_min_details);
+export function GameList(props: GameListProps) {
+  const gridLayoutClasses = "grid lg:grid-cols-4 md:grid-cols-2";
+  const rowsLayoutClasses = "flex flex-col";
+  const gridLayoutCardClassname = "md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100";
+  const rowsLayoutCardClassname = "w-full grow";
+  return (
+    <React.Fragment>
+      <div className={(props.layout === "grid" ? gridLayoutClasses : rowsLayoutClasses) + " gap-5"}>
+        {props.games?.map((game, index) => {
           let numOfRequirementsMet: number = 0;
 
           if (props.userPc && game.pc_min_details) {
-            if (props.userPc.cpu.score >= game.pc_min_details.cpu.score) numOfRequirementsMet+=1;
-            if (props.userPc.gpu.score >= game.pc_min_details.gpu.score) numOfRequirementsMet+=1;
-            if (props.userPc.ram.score >= game.pc_min_details.ram.score) numOfRequirementsMet+=1;
-            if (props.userPc.motherboard.score >= game.pc_min_details.motherboard.score) numOfRequirementsMet+=1;
+            if (props.userPc.cpu.score >= game.pc_min_details.cpu.score) numOfRequirementsMet += 1;
+            if (props.userPc.gpu.score >= game.pc_min_details.gpu.score) numOfRequirementsMet += 1;
+            if (props.userPc.ram.score >= game.pc_min_details.ram.score) numOfRequirementsMet += 1;
+            if (props.userPc.motherboard.score >= game.pc_min_details.motherboard.score) numOfRequirementsMet += 1;
           }
-          let requirementsBadgeColor:"warning"|"success"|"error"="error";
-          if(numOfRequirementsMet===0){
-            requirementsBadgeColor="error";
+          let requirementsBadgeColor: "warning" | "success" | "error" = "error";
+          if (numOfRequirementsMet === 4) {
+            requirementsBadgeColor = "success";
           }
-          else if(numOfRequirementsMet<4){
-            requirementsBadgeColor="warning";
-          }
-          else{
-            requirementsBadgeColor="error";
+          else if (numOfRequirementsMet > 0) {
+            requirementsBadgeColor = "warning";
           }
 
           return (
@@ -56,14 +53,14 @@ export function GameList(props:GameListProps){
                 showTitle={true}
                 id={game.id_game}
                 animate={true}
-                showGameOwnedBadge={true}
+                showGameOwnedBadge={(props.showOwnedBadges && game.isOwned)??false}
                 showRequirementsBadge={props.showRequirementsMetBadge}
                 requirementsMetBadgeColor={requirementsBadgeColor}
               />
             </Link>
           );
         })}
-              </div>
-        </React.Fragment>
-    )
+      </div>
+    </React.Fragment>
+  )
 }

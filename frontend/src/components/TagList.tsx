@@ -23,7 +23,7 @@ export function TagList(props: TagListProps) {
             {showPopover && (
                 <MorphingPopover >
                     <MorphingPopoverTrigger asChild>
-                        <button className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px]">
+                        <button className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">
                             <motion.span
                                 layoutId={String(props.id)}
                                 layout='position'
@@ -37,7 +37,7 @@ export function TagList(props: TagListProps) {
                     <MorphingPopoverContent className='p-2 shadow-sm'>
                         <div className="flex flex-col gap-2 p-2">
                             {hiddenTags.map((tag) => (
-                                <div key={tag} className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px]">{tag}</div>
+                                <div key={tag} className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">{tag}</div>
                             ))}
                         </div>
                     </MorphingPopoverContent>

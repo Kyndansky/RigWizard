@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { type Game } from "../misc/interfaces";
-import { getGameInfo } from "../misc/api_calls_functions";
-import { BasePageLayout } from "../components/BasePageLayout";
+import { addGameToLibrary, getGameInfo } from "../misc/api_calls_functions";
+import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
 import { useTagsCount } from "../hooks/useTagsCount";
@@ -54,7 +54,6 @@ export function GamePage() {
         })();
     }, []);
 
-
     if (isLoading) {
         return (
             <BasePageLayout hideOverFlow={false}>
@@ -67,12 +66,30 @@ export function GamePage() {
             {game &&
                 (
                     <React.Fragment>
-
                         <div className="w-full bg-base-300 overflow-y-auto">
                             <div className="w-5/7 mx-auto">
                                 <div className="card bg-base-100 mx-auto xs:w-full p-5 xs:mt-5 mt-10 mb-5">
                                     <div className="card-body">
-                                        <h2 className="card-title text-3xl">{game.title}</h2>
+                                        <div className="flex flex-row">
+                                            <h2 className="card-title text-3xl">{game.title}</h2>
+                                            <button className="btn btn-info btn-soft w-auto ml-auto"
+                                                disabled={game.isOwned}
+                                                onClick={async () => {
+                                                    const response = await addGameToLibrary(game.id_game);
+                                                    showToastAlert(response.successful ? "success" : "error", response.message);
+                                                    if (response.successful) {
+                                                        //copies all properties from game except isOwned, which is explicitly specified
+                                                        setGame({...game, isOwned: true});
+                                                    }
+                                                }}
+                                            >
+                                                {game.isOwned ? (
+                                                    <p>Game owned</p>
+                                                ) : (
+                                                    <p>Add to library</p>
+                                                )}
+                                            </button>
+                                        </div>
                                         <div className="mx-auto w-full">
                                             <div className="w-9/10 flex flex-row items-stretch gap-4 mx-auto mt-3">
                                                 <div className="w-1/2 relative min-h-0">
@@ -96,6 +113,8 @@ export function GamePage() {
                                                         showTitle={false}
                                                         id={game.id_game}
                                                         animate={false}
+                                                        showRequirementsBadge={false}
+                                                        showGameOwnedBadge={false}
                                                     />
                                                 </div>
                                             </div>
@@ -164,11 +183,11 @@ export function GamePage() {
                                                     <ComponentsList pc={game.pc_min_details}
                                                         descriptionText="Minimum"
                                                         showGeneralEvaluation={false}
-                                                        showRamBrand={false} 
+                                                        showRamBrand={false}
                                                         bgClass="bg-base-200"
-                                                        pcToBeCompared={userComputer} 
-                                                        
-                                                        />
+                                                        pcToBeCompared={userComputer}
+
+                                                    />
                                                     <ComponentsList pc={game.pc_rec_details}
                                                         descriptionText="Recommended"
                                                         showGeneralEvaluation={false}

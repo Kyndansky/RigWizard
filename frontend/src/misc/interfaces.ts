@@ -43,9 +43,9 @@ export interface Game {
   vertical_banner_URL:string;
   horizontal_banner_URL:string;
   tags: string[];
-  pc_min_details:Computer
-  pc_rec_details:Computer
-
+  pc_min_details:Computer;
+  pc_rec_details:Computer;
+  isOwned?:boolean;
 }
 
 export interface Computer {
