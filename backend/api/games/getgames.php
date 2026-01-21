@@ -5,7 +5,6 @@ require_once "../../DBConnect.php";
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 
-
 $offset = isset($data['indexStart']) ? (int)$data['indexStart'] : 0;
 $offset = ($offset > 0) ? ($offset - 1) : 0; 
 
@@ -13,6 +12,7 @@ $numOfGames = isset($data['numOfGames']) ? (int)$data['numOfGames'] : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? trim($data['searchString']) : '';
 $multiple_filters = isset($data['includeAllFilters']) ? (bool)$data['includeAllFilters'] : false;
+$username = isset($data['username']) ? $data['username'] : '';
 
 $sql_games = "SELECT g.* FROM games g";
 // Join with tags if filters are applied
@@ -78,6 +78,21 @@ $result_games = $dbConnection->query($sql_games);
 $result_total = $dbConnection->query($sql_totalGames);
 $result_tags = $dbConnection->query($sql_tags);
 
+// Fetch user's owned games
+$user_owned_ids = [];
+if ($username !== '') {
+    // Query to get user's owned games
+    $sql_owned = "SELECT ug.id_game FROM user_games ug 
+                  JOIN users u ON ug.id_user = u.id 
+                  WHERE u.username = '$username'";
+    $result_owned = $dbConnection->query($sql_owned);
+    if ($result_owned) {
+        while ($row_owned = $result_owned->fetch_assoc()) {
+            $user_owned_ids[] = (int)$row_owned['id_game'];
+        }
+    }
+}
+
 $tags_list = [];
 if ($result_tags) {
     while ($tag_row = $result_tags->fetch_assoc()) {
@@ -102,6 +117,7 @@ if ($result_games) {
 
 // Attach tags to corresponding games
 foreach ($games_list as &$game) {
+    $game['isOwned'] = in_array((int)$game['id_game'], $user_owned_ids);
     $game_tags = [];
     foreach ($tags_list as $tag) {
         if ($tag['id_game'] == $game['id_game']) {

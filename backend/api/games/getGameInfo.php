@@ -7,6 +7,14 @@ $gameId=$_GET['gameId'] ?? 0;
 if (!isset($_SESSION))
     session_start();
 
+
+$username = $_SESSION['username'] ?? null;
+// Query to check if the user owns the game
+$sql_isOwned = "SELECT ug.id_game 
+                FROM user_games ug
+                JOIN users u ON ug.id_user = u.id
+                WHERE u.username = '$username' AND ug.id_game = $gameId";
+
 // Function to get PC components details
 function getPCComponents($dbConnection, $pcId)
 {
