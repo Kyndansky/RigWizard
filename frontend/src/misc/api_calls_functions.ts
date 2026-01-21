@@ -149,7 +149,6 @@ export async function login(
       message: data["message"],
       username: data["username"],
     };
-    console.log("login result:", result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -201,8 +200,8 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
 }
 
 export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
-  console.log("surchString in api call:", searchString);
   try {
+    console.log(filters);
     const response = await apiGames.post(
       "getGames.php",
       {
@@ -218,16 +217,14 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
         },
       }
     );
-
     const data = await response.data;
-    console.log(data);
     const result: GameCollectionResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games: data["games"],
       totalNumberOfGames: data["total_games"],
     };
-    console.log(result);
+    console.log(numOfGames);
     return result;
   } catch (error) {
     console.log("error from php server:", error);
@@ -493,6 +490,58 @@ export async function editPcConfiguration(
   } catch (error) {
     console.log("error from php server:", error);
     const result: RigWizardResponse = {
+      successful: false,
+      message: "server error",
+    };
+    return result;
+  }
+}
+
+export async function addGameToLibrary(gameId: number): Promise<RigWizardResponse> {
+  try {
+    const response = await apiGames.get("addGameToLibrary.php", {
+      params: {
+        gameId: gameId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.data;
+    const result: GameInfoResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameInfoResponse = {
+      successful: false,
+      message: "server error",
+    };
+    return result;
+  }
+}
+
+export async function addGameToWishlist(gameId: number): Promise<RigWizardResponse> {
+  try {
+    const response = await apiGames.get("addGameToWishlist.php", {
+      params: {
+        gameId: gameId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.data;
+    const result: GameInfoResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameInfoResponse = {
       successful: false,
       message: "server error",
     };

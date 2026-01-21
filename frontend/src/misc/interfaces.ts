@@ -17,6 +17,7 @@ export interface TagCollectionResponse extends RigWizardResponse {
 
 export interface GameInfoResponse extends RigWizardResponse {
   game?: Game;
+  isOwned?:boolean;
 }
 
 export interface ComputerInfoResponse extends RigWizardResponse{
