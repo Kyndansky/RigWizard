@@ -1,6 +1,7 @@
 import React, { type PropsWithChildren } from "react";
 import { TagList } from "./TagList";
 import { motion } from "motion/react";
+import { Dot } from "lucide-react";
 interface GameInfoCardProps {
   name: string;
   description: string;
@@ -59,16 +60,38 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             {props.showTitle && <h2 className="card-title">{props.name}</h2>}
             <p className="text-sm line-clamp-4">{props.description}</p>
             {props.children}
-            <div className="card-actions justify-end gap-2 flex z-30">
+            <div className="card-actions justify-end gap-2 flex z-30 items-end">
               {props.showRequirementsBadge && (
                 <div
                   className={
-                    "badge badge-outline text-xs max-w-[90px] border-" +
+                    "badge badge-outline h-auto text-xs border-" +
                     props.requirementsMetBadgeColor +
                     " text-" +
                     props.requirementsMetBadgeColor
                   }
-                ></div>
+                >
+                  <div className="flex flex-col">
+                    <div>Performance</div>
+                    <div className="flex flex-row">
+                      {props.requirementsMetBadgeColor === "success" ? (
+                        <React.Fragment>
+                          <Dot />
+                        </React.Fragment>
+                      ) : props.requirementsMetBadgeColor === "warning" ? (
+                        <React.Fragment>
+                          <Dot />
+                          <Dot />
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment>
+                          <Dot />
+                          <Dot />
+                          <Dot />
+                        </React.Fragment>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
               <TagList
                 tags={props.tags}

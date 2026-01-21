@@ -10,7 +10,7 @@ import { NotFound } from "../pages/NotFoundPage";
 import { ErrorPage } from "../pages/ErrorPage";
 import { UserComputerProvider } from "./UserComputerContextHandler";
 import { GameCollectionPage } from "../pages/GameCollectionPage";
-import { getLibraryGames, getShopGames, getWishlistGames } from "./api_calls_functions";
+import { getLibraryGames, getShopGames } from "./api_calls_functions";
 
 function AppRouter() {
     return (
@@ -21,7 +21,6 @@ function AppRouter() {
                         <Route path='/' element={<App />} />
                         <Route path='/library' element={<GameCollectionPage  gamesCollection="Library" gameCollectionTitleText="Your Library" retrieveGamesFunction={getLibraryGames} />} />
                         <Route path='/shop' element={<GameCollectionPage  gamesCollection="Shop" gameCollectionTitleText="Shop" retrieveGamesFunction={getShopGames} />} />
-                        <Route path='/wishlist' element={<GameCollectionPage  gamesCollection="Wishlist" gameCollectionTitleText="Wishlist" retrieveGamesFunction={getWishlistGames} />} />
                         <Route path='/login' element={<Login />} />
                         <Route path='/register' element={<Register />} />
                         <Route path="/profile" element={<Profile />} />

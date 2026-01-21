@@ -12,7 +12,7 @@ import { motion } from "motion/react";
 import Loader from "../components/Loader";
 
 interface MainPageProps {
-  gamesCollection: "Library" | "Shop" | "Wishlist";
+  gamesCollection: "Library" | "Shop";
   gameCollectionTitleText: string;
   retrieveGamesFunction: (
     indexStart: number,
@@ -150,7 +150,7 @@ export function GameCollectionPage(props: MainPageProps) {
         <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
           {/* Left sidebar that shows the pc components */}
           <motion.div
-            initial={{ x: -20, opacity: 0.5 }}
+            initial={{ x: -30, opacity: 0.5 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{
               type: "spring",
@@ -343,7 +343,16 @@ export function GameCollectionPage(props: MainPageProps) {
           </main>
 
           {/*Filters sidebar*/}
-          <aside className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full">
+          <motion.div className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full"
+          initial={{ x: 30, opacity: 0.5 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 120,
+              damping: 20,
+              mass: 0.8,
+            }}
+          >
             <h2 className="text-lg font-bold">Tag Filters</h2>
             <div className="flex flex-row my-3 gap-2">
               <input
@@ -389,7 +398,7 @@ export function GameCollectionPage(props: MainPageProps) {
                 }}
               />
             </form>
-          </aside>
+          </motion.div>
         </div>
       </BasePageLayout>
       {/* only show modal if the users's pc info has been retrieved */}

@@ -22,11 +22,6 @@ export const tabItems: TabItem[] = [
         pathTo: "/shop",
         text: "Shop"
     },
-    {
-        id: 3,
-        pathTo: "/wishlist",
-        text: "Wishlist"
-    }
 ]
 export function NavBar(props: NavBarProps) {
 

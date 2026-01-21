@@ -7,7 +7,7 @@ interface GameListProps{
     games:Game[];
     layout:"grid"|"rows";
     userPc?:Computer;
-    showRequirementsMetBadge:boolean
+    showRequirementsMetBadge:boolean;
 }
 
 export function GameList(props:GameListProps){
