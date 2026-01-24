@@ -20,33 +20,33 @@ interface GameInfoCardProps {
   requirementsMetBadgeColor?: "warning" | "success" | "error";
 }
 export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
-  
+
   const colorMap = {
-      warning: {
-        badge: "border-warning text-warning",
-        dot: "bg-warning",
-        text: "Your PC configuration might be able to handle this game's minimum requirements"
-      },
-      error: {
-        badge: "border-error text-error",
-        dot: "bg-error",
-        text: "Your PC configuration can't handle this game's minimum requirements. You should probably upgrade your PC first."
+    warning: {
+      badge: "border-warning text-warning",
+      dot: "bg-warning",
+      text: "Your PC configuration might be able to handle this game's minimum requirements"
+    },
+    error: {
+      badge: "border-error text-error",
+      dot: "bg-error",
+      text: "Your PC configuration can't handle this game's minimum requirements. You should probably upgrade your PC first."
 
-      },
-      success: {
-        badge: "border-success text-success",
-        dot: "bg-success",
-        text: "Your PC configuration can handle this game's minimum requirements"
+    },
+    success: {
+      badge: "border-success text-success",
+      dot: "bg-success",
+      text: "Your PC configuration can handle this game's minimum requirements"
 
-      }
-    };
-    const activeColors = colorMap[props.requirementsMetBadgeColor??"error"] || {
-      badge: "border-gray-500 text-gray-500",
-      dot: "bg-gray-500"
-    };
-    const dotsClassname = `rounded w-[8px] h-[8px] mx-[3px] ${activeColors.dot}`;
-    const badgePerformanceClassname = `badge badge-outline text-xs ${activeColors.badge}`;
-    const performanceBadgeText = activeColors.text;
+    }
+  };
+  const activeColors = colorMap[props.requirementsMetBadgeColor ?? "error"] || {
+    badge: "border-gray-500 text-gray-500",
+    dot: "bg-gray-500"
+  };
+  const dotsClassname = `rounded w-[8px] h-[8px] mx-[3px] ${activeColors.dot}`;
+  const badgePerformanceClassname = `badge badge-outline text-xs ${activeColors.badge}`;
+  const performanceBadgeText = activeColors.text;
 
   return (
     <React.Fragment>
@@ -99,8 +99,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             <div className="card-actions justify-end gap-2 flex z-30 items-end">
               {props.showRequirementsBadge && (
                 <div className="tooltip" data-tip={performanceBadgeText}>
-                  <div
-                    className={badgePerformanceClassname}>
+                  <div className={badgePerformanceClassname}>
                     <div className="flex flex-row gap-2 mx-0">
                       {props.requirementsMetBadgeColor === "success" ? (
                         <React.Fragment>

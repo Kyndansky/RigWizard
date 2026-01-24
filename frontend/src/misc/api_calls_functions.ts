@@ -184,7 +184,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games: data["games"],
-      totalNumberOfGames: data["total_games"],
+      totalNumberOfGames: data["total_games"] || 0,
     };
     return result;
   } catch (error) {
@@ -201,7 +201,6 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
 
 export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
   try {
-    console.log(filters);
     const response = await apiGames.post(
       "getGames.php",
       {

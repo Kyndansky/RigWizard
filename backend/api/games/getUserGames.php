@@ -4,11 +4,20 @@ require_once "../../DBConnect.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
-if (!isset($_SESSION)) 
+if (!isset($_SESSION))
     session_start();
 // username is empty if it is not set in session
 $username = $_SESSION["username"] ?? '';
-
+if ($username == "") {
+    echo json_encode(
+        [
+            'status' => 'error',
+            'message' => 'User must be logged in to access library',
+            'games' => []
+        ]
+    );
+    exit;
+}
 // Set page number defaulting to 1
 $offset = isset($data['indexStart']) ? (int) $data['indexStart'] : 0;
 $numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames'] : 30;

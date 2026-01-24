@@ -1,6 +1,6 @@
-import { PcCase, LayoutGrid, Rows2 } from "lucide-react";
-import React, { useState, useEffect } from "react";
-import { BasePageLayout } from "../components/BasePageLayout";
+import { PcCase, LayoutGrid, Rows2, Search, Frown } from "lucide-react";
+import React, { useState, useEffect, type JSX } from "react";
+import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 import { ComponentsList } from "../components/ComponentsList";
 import { ComputerComponentModal } from "../components/ComputerConfigModal";
 import { GameList } from "../components/GameList";
@@ -26,16 +26,16 @@ interface MainPageProps {
 export function GameCollectionPage(props: MainPageProps) {
   const gamesPerPage = 20;
   const [games, setGames] = useState<Game[] | undefined>(undefined);
+  const [isLoadingGames, setIsLoadingGames] = useState<boolean>(true);
   const [tags, setTags] = useState<string[] | undefined>(undefined);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const { userComputer, isLoadingUserComputer, fetchUserComputer } =
     useUserComputer();
   const [includeAllFiltersChecked, setIncludeAllFiltersChecked] =
     useState<boolean>(true);
-  const { isLoading } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined,
   );
@@ -43,6 +43,7 @@ export function GameCollectionPage(props: MainPageProps) {
     useState<boolean>(false);
   const [layoutGrid, setLayoutGrid] = useState<boolean>(false);
   async function fetchGames(targetPage: number) {
+    setIsLoadingGames(true);
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
     const fetchedGamesResponse = await props.retrieveGamesFunction(
       indexStart,
@@ -53,6 +54,7 @@ export function GameCollectionPage(props: MainPageProps) {
     );
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
+
       setCurrentPageNumber(targetPage);
       const roundedPageNumber = Math.ceil(
         fetchedGamesResponse.totalNumberOfGames / gamesPerPage,
@@ -63,8 +65,10 @@ export function GameCollectionPage(props: MainPageProps) {
         setMaxPageNumber(1);
       }
     } else {
-      setErrorMessage(fetchedGamesResponse.message);
+      setGames([]);
+      showToastAlert("error", fetchedGamesResponse.message);
     }
+    setIsLoadingGames(false);
   }
 
   async function fetchTags() {
@@ -72,12 +76,13 @@ export function GameCollectionPage(props: MainPageProps) {
     if (fetchedTagsResponse.successful) {
       setTags(fetchedTagsResponse.tags);
     } else {
-      setErrorMessage(fetchedTagsResponse.message);
+      showToastAlert("error", fetchedTagsResponse.message);
     }
   }
   //todo: fix the fact that when changing tabs some api calls are still pending
   // and everything goes to shit because idk how to do stuff properly
   function resetAll() {
+    setIsLoadingGames(true);
     setSelectedTags([]);
     setIncludeAllFiltersChecked(true);
     setSearchText("");
@@ -115,6 +120,49 @@ export function GameCollectionPage(props: MainPageProps) {
       clearTimeout(handler);
     };
   }, [searchText]);
+
+  //returns what to show based on if the user is logged, has or doesn't have a config in the section for the user's pc configuration
+  function renderUserPcSectionContent(): JSX.Element {
+    if (isLoadingUserComputer) {
+      return <Loader />;
+    }
+    let warningDivText = "You haven't set a computer configuration yet: many features will not be available.";
+    if (!isAuthenticated) warningDivText = "You are not authenticated: you can't access this feature";
+    let buttonEditConfigText = (isAuthenticated ? "Edit" : "Add") + " configuration";
+    let buttonEditConfig: JSX.Element = (
+      <button
+        className="btn btn-soft"
+        onClick={function () { setIsPcConfigModalOpen(true); }}
+      >
+        <div className="flex flex-row gap-2">
+          <p>{buttonEditConfigText}</p><PcCase size={20} />
+        </div>
+      </button>
+    )
+    if (!userComputer) {
+      return (
+        <>
+          <div className="alert alert-warning">
+            {warningDivText}
+          </div>
+          {isAuthenticated && (
+            { buttonEditConfig }
+          )}
+
+        </>
+      );
+    }
+    return (
+      <>
+        <ComponentsList
+          pc={userComputer}
+          showGeneralEvaluation={true}
+          showRamBrand={true}
+        />
+        {buttonEditConfig}
+      </>
+    )
+  }
 
   if (isLoading) {
     return (
@@ -158,43 +206,7 @@ export function GameCollectionPage(props: MainPageProps) {
           >
             <h2 className="text-lg font-bold mb-4">Your PC</h2>
             <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
-              {isLoadingUserComputer ? (
-                // if the pc config hasn't been retrieved yet show loader
-                <Loader />
-              ) : !userComputer ? (
-                // if the config has been loaded but user hasn't added a pc show warning
-                <React.Fragment>
-                  <div className="alert alert-warning">
-                    You haven't set a computer configuration yet: many features
-                    will not be availabe.
-                  </div>
-                  <button
-                    className="btn btn-soft"
-                    onClick={() => {
-                      setIsPcConfigModalOpen(true);
-                    }}
-                  >
-                    Add configuration <PcCase size={20} />
-                  </button>
-                </React.Fragment>
-              ) : (
-                // show pc configuration and edit button
-                <React.Fragment>
-                  <ComponentsList
-                    pc={userComputer}
-                    showGeneralEvaluation={true}
-                    showRamBrand={true}
-                  />
-                  <button
-                    className="btn btn-soft"
-                    onClick={() => {
-                      setIsPcConfigModalOpen(true);
-                    }}
-                  >
-                    Edit configuration <PcCase size={20} />
-                  </button>
-                </React.Fragment>
-              )}
+              {renderUserPcSectionContent()}
             </div>
           </motion.div>
 
@@ -217,24 +229,9 @@ export function GameCollectionPage(props: MainPageProps) {
                 </label>
               </button>
             </div>
-            <div className="flex my-5 w-full">
+            <div className="flex my-4 w-full">
               <label className="input w-10 focus:outline-none focus:ring-0">
-                <svg
-                  className="h-[1em] opacity-50"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                >
-                  <g
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                    strokeWidth="2.5"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.3-4.3"></path>
-                  </g>
-                </svg>
+                <Search size={40} />
               </label>
               <input
                 type="search"
@@ -249,97 +246,87 @@ export function GameCollectionPage(props: MainPageProps) {
             </div>
 
             {/* showing error if there is any */}
-            {errorMessage !== "" ? (
-              <div role="alert" className="alert alert-error">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 shrink-0 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{errorMessage}</span>
-              </div>
-            ) : (
-              games && (
+            {isLoadingGames ? (
+              <Loader />
+            ) :
+              (games === undefined || games.length === 0) ? (
+                <div className="flex flex-row grow items-center">
+                  <div className="mx-auto flex items-center gap-2 alert"><p className="">no games found</p> <Frown size={23} /></div>
+                </div>
+              ) : (
                 <GameList
                   games={games}
                   layout={layoutGrid ? "grid" : "rows"}
                   userPc={userComputer}
                   showRequirementsMetBadge={true}
-                  showOwnedBadges={props.gamesCollection==="Shop"?true:false}
+                  showOwnedBadges={props.gamesCollection === "Shop" ? true : false}
                 />
-              )
-            )}
-
+              )}
             {/* section for changing page (to load more games) */}
-            <div className="flex items-center w-full mt-4">
-              <div className="join mx-auto">
-                {/* button for switching to first page */}
-                {currentPageNumber !== 1 && (
-                  <button
-                    className="join-item btn px-4"
-                    onClick={() => {
-                      if (currentPageNumber !== 1) {
-                        fetchGames(1);
-                      }
-                    }}
-                  >
-                    {"<<"}
-                  </button>
-                )}
-
-                {/* button for switching to previous page */}
-                {currentPageNumber > 1 && (
-                  <button
-                    className="join-item btn px-4"
-                    onClick={() => {
-                      fetchGames(currentPageNumber - 1);
-                    }}
-                  >
-                    {currentPageNumber - 1}
-                  </button>
-                )}
-                {/* current page button */}
-                <button className="join-item btn-active bg-primary px-4">
-                  {currentPageNumber}
-                </button>
-                {/* button for switching to next page */}
-                {maxPageNumber !== undefined &&
-                  currentPageNumber < maxPageNumber && (
+            {(games && games.length > 0) ? (
+              <div className="flex items-center w-full mt-4">
+                <div className="join mx-auto">
+                  {/* button for switching to first page */}
+                  {currentPageNumber !== 1 && (
                     <button
                       className="join-item btn px-4"
                       onClick={() => {
-                        fetchGames(currentPageNumber + 1);
+                        if (currentPageNumber !== 1) {
+                          fetchGames(1);
+                        }
                       }}
                     >
-                      {currentPageNumber + 1}
+                      {"<<"}
                     </button>
                   )}
-                {/* button for switching to last page number */}
-                {maxPageNumber && currentPageNumber !== maxPageNumber && (
-                  <button
-                    className="join-item btn"
-                    onClick={() => {
-                      fetchGames(maxPageNumber);
-                    }}
-                  >
-                    {">>"}
+
+                  {/* button for switching to previous page */}
+                  {currentPageNumber > 1 && (
+                    <button
+                      className="join-item btn px-4"
+                      onClick={() => {
+                        fetchGames(currentPageNumber - 1);
+                      }}
+                    >
+                      {currentPageNumber - 1}
+                    </button>
+                  )}
+                  {/* current page button */}
+                  <button className="join-item btn-active bg-primary px-4">
+                    {currentPageNumber}
                   </button>
-                )}
+                  {/* button for switching to next page */}
+                  {maxPageNumber !== undefined &&
+                    currentPageNumber < maxPageNumber && (
+                      <button
+                        className="join-item btn px-4"
+                        onClick={() => {
+                          fetchGames(currentPageNumber + 1);
+                        }}
+                      >
+                        {currentPageNumber + 1}
+                      </button>
+                    )}
+                  {/* button for switching to last page number */}
+                  {maxPageNumber && currentPageNumber !== maxPageNumber && (
+                    <button
+                      className="join-item btn"
+                      onClick={() => {
+                        fetchGames(maxPageNumber);
+                      }}
+                    >
+                      {">>"}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (null)}
+
           </main>
 
           {/*Filters sidebar*/}
           <motion.div className="col-span-12 lg:col-span-2 bg-base-200 p-4 overflow-y-auto h-full"
-          initial={{ x: 30, opacity: 0.5 }}
+            initial={{ x: 30, opacity: 0.5 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{
               type: "spring",
