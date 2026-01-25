@@ -3,17 +3,18 @@ import NavBar from "./NavBar";
 
 interface BasePageLayoutProps {
     hideOverFlow: boolean;
-    selectedTabId?:number;
+    selectedTabId?: number;
 }
 
 export function showToastAlert(alertType: "error" | "success", message: string) {
     const container = document.getElementById("toastContainer");
     const alert = document.createElement("div");
-    alert.className = "alert alert-" + alertType;
+    if (alertType === "success") alert.className = "alert alert-success";
+    else alert.className="alert alert-error";
+    
     alert.innerHTML = `<span>${message}</span>`;
     container?.appendChild(alert);
 
-    // Rimozione automatica dopo 3 secondi
     setTimeout(() => {
         alert.remove();
     }, 3000);
@@ -24,9 +25,9 @@ export function BasePageLayout(props: React.PropsWithChildren<BasePageLayoutProp
         <React.Fragment>
             {/*vertical container that contains navbar and page content */}
             <div className={"flex flex-col h-screen bg-base-300" + (props.hideOverFlow ? " overflow-hidden" : "")}>
-                <NavBar selectedTabId={props.selectedTabId}/>
+                <NavBar selectedTabId={props.selectedTabId} />
                 {props.children}
-                <div className="toast toast-bottom toast-end" id="toastContainer" />
+                <div className="toast toast-bottom toast-end z-[10]" id="toastContainer" />
             </div>
         </React.Fragment>
     )

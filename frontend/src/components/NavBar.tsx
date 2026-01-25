@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import { logout } from "../misc/api_calls_functions";
 import { CircleUserRound, Moon, SunMedium } from "lucide-react";
@@ -24,20 +24,24 @@ export const tabItems: TabItem[] = [
     },
 ]
 export function NavBar(props: NavBarProps) {
-
+    const navigate=useNavigate();
     const { isAuthenticated, setIsAuthenticated, username } =
         useAuth();
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
-            <div className="navbar bg-base-100 shadow-sm">
+            <div className="navbar bg-base-100 shadow-sm z-[1]">
                 <div className="navbar-start">
                     <Link to={"/"}><p className="btn btn-ghost text-xl">RigWizard</p></Link>
                 </div>
                 <div className="navbar-center">
                     <div role="tablist" className="tabs tabs-border">
                         {tabItems.map((tabItem) => (
-                            <a role="tab" className={"tab" + (props.selectedTabId === tabItem.id ? " tab-active" : "")}><Link to={tabItem.pathTo}>{tabItem.text}</Link></a>
+                            <a role="tab" className={"tab" + (props.selectedTabId === tabItem.id ? " tab-active" : "")} 
+                            key={tabItem.text}
+                            onClick={()=>{
+                                navigate(tabItem.pathTo);
+                            }}>{tabItem.text}</a>
                         ))}
                     </div>
                 </div>
@@ -58,7 +62,7 @@ export function NavBar(props: NavBarProps) {
                     </label>
                     {isAuthenticated ? (
                         //Profile info section
-                        <div className="dropdown dropdown-end">
+                        <div className="dropdown dropdown-end z-[100]">
                             <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
                                 <span>
                                     {username}
@@ -67,7 +71,7 @@ export function NavBar(props: NavBarProps) {
                             </div>
                             <ul
                                 tabIndex={-1}
-                                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                                className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow">
                                 <li>
                                     <Link to={'/profile'}>
                                         <p className="justify-between">

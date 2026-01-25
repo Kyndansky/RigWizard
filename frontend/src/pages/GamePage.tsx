@@ -24,7 +24,7 @@ export function GamePage() {
             return;
         }
         //parsing number because it must be a string (since it's a part of the url)
-        //and navigating to errorPage if id is invalid
+        //and navigating to 404 page if id is invalid
         let idNumber: number = parseInt(id, 10);
         if (isNaN(idNumber)) {
             navigate("/404")
@@ -33,7 +33,7 @@ export function GamePage() {
         //getting response, handling errors etc...
         const response = await getGameInfo(idNumber);
         if (!response.successful) {
-            navigate("/errorPage");
+            navigate("/404");
             return;
         }
 

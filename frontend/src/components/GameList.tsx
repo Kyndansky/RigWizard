@@ -13,8 +13,8 @@ interface GameListProps {
 }
 
 export function GameList(props: GameListProps) {
-  const gridLayoutClasses = "grid lg:grid-cols-4 md:grid-cols-2";
-  const rowsLayoutClasses = "flex flex-col";
+  const gridLayoutClasses = "grid lg:grid-cols-4 md:grid-cols-2 z-[1]";
+  const rowsLayoutClasses = "flex flex-col z-[1]";
   const gridLayoutCardClassname = "md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100";
   const rowsLayoutCardClassname = "w-full grow";
   return (
@@ -45,10 +45,10 @@ export function GameList(props: GameListProps) {
                 name={game.title}
                 description={game.description}
                 tags={game.tags}
-                imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
+                imageUrl={props.layout==="grid"?game.vertical_banner_URL:game.vertical_banner_URL}
                 backgroundColor="base-100"
                 hoverable={props.layout === "grid"}
-                imageHeight=""
+                imageHeight={props.layout==="rows"?"min-w-3/7 max-w-3/7":""}
                 cardHeight={props.layout === "grid" ? gridLayoutCardClassname : rowsLayoutCardClassname}
                 showTitle={true}
                 id={game.id_game}

@@ -1,19 +1,21 @@
-2.aggiungo  una tabella immagini con campo ID_game e URL_img
 <?php
-session_start();
+
 require_once "../../cors.php";
 require_once "../../DBConnect.php";
 
-$json_data = file_get_contents("php://input");
-$data = json_decode($json_data, true);
-// Get game ID and username from session
-$id_game = isset($data['id_game']) ? (int)$data['id_game'] : 0;
+$id_game = isset($_GET["gameId"]) ? (int) $_GET["gameId"] : 0;
+if (!isset($_SESSION)) {
+    session_start();
+}
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
-
-$response = [
-    'status' => 'error',
-    'message' => 'Operation failed'
-];
+if ($username === "") {
+    $response = [
+        'status' => 'error',
+        'message' => 'You must be authenticated to do this'
+    ];
+    echo json_encode($response);
+    exit;
+}
 // Get user ID from username
 if ($id_game > 0 && $username !== '') {
     $sql_user = "SELECT id FROM users WHERE username = '$username'";
@@ -31,10 +33,22 @@ if ($id_game > 0 && $username !== '') {
                 'status' => 'success',
                 'message' => 'Game added to library'
             ];
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Error while adding game to user library'
+            ];
+            echo json_encode($response);
+            exit;
         }
     }
 }
-
+$response = [
+    'status' => 'error',
+    'message' => 'Error while adding game to library'
+];
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
 ?>

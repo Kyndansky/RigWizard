@@ -1,4 +1,4 @@
-import { PcCase, LayoutGrid, Rows2, Search, Frown } from "lucide-react";
+import { PcCase, LayoutGrid, Rows2, Search, Frown, ShoppingCart, Gamepad2 } from "lucide-react";
 import React, { useState, useEffect, type JSX } from "react";
 import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 import { ComponentsList } from "../components/ComponentsList";
@@ -20,6 +20,7 @@ interface MainPageProps {
     filters: string[],
     searchString: string,
     includeAllFilters: boolean,
+    signal?: AbortSignal
   ) => Promise<GameCollectionResponse>;
 }
 
@@ -42,7 +43,8 @@ export function GameCollectionPage(props: MainPageProps) {
   const [isPcConfigModalOpen, setIsPcConfigModalOpen] =
     useState<boolean>(false);
   const [layoutGrid, setLayoutGrid] = useState<boolean>(false);
-  async function fetchGames(targetPage: number) {
+
+  async function fetchGames(targetPage: number, signal?: AbortSignal) {
     setIsLoadingGames(true);
     const indexStart = (targetPage - 1) * gamesPerPage + 1;
     const fetchedGamesResponse = await props.retrieveGamesFunction(
@@ -51,7 +53,9 @@ export function GameCollectionPage(props: MainPageProps) {
       selectedTags,
       searchText,
       includeAllFiltersChecked,
+      signal
     );
+    if (signal?.aborted) return;
     if (fetchedGamesResponse.successful) {
       setGames(fetchedGamesResponse.games);
 
@@ -79,49 +83,44 @@ export function GameCollectionPage(props: MainPageProps) {
       showToastAlert("error", fetchedTagsResponse.message);
     }
   }
-  //todo: fix the fact that when changing tabs some api calls are still pending
-  // and everything goes to shit because idk how to do stuff properly
-  function resetAll() {
-    setIsLoadingGames(true);
+  // filtering tags are fetched on page load
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  //when loading the page or when changing from library to shop games are fetched and all useState are reset
+  useEffect(() => {
+    const controller = new AbortController();
     setSelectedTags([]);
     setIncludeAllFiltersChecked(true);
     setSearchText("");
-    fetchGames(1);
-  }
-  useEffect(() => {
-    resetAll();
+    fetchGames(1, controller.signal);
+    return () => controller.abort();
   }, [props.gamesCollection]);
 
-  useEffect(() => {
-    fetchTags();
-    fetchGames(1);
-    fetchUserComputer();
-  }, []);
 
-  // when the checkbox to select all filters or not is checked, the games are re-fetched
+  //handles the change of 
   useEffect(() => {
-    if (tags?.length && tags?.length > 0) {
-      fetchGames(1);
-    }
-  }, [includeAllFiltersChecked]);
+    //if we are still resetting stuff
+    if (!tags) return;
 
-  //when the selectedTags change, the games are fetched
-  useEffect(() => {
-    fetchGames(1);
-  }, [selectedTags]);
+    const controller = new AbortController();
 
-  useEffect(() => {
+    // debounce is applied only if the user just searched something (to avoid too many unnecessary API calls)
+    const delay = searchText ? 400 : 0;
+
     const handler = setTimeout(() => {
-      fetchGames(1);
-    }, 400);
+      fetchGames(1, controller.signal);
+    }, delay);
 
-    //is executed every time searchtext changes before the timer expires
     return () => {
       clearTimeout(handler);
+      controller.abort();
     };
-  }, [searchText]);
+  }, [selectedTags, includeAllFiltersChecked, searchText]);
 
-  //returns what to show based on if the user is logged, has or doesn't have a config in the section for the user's pc configuration
+
+  //returns what to show based on if the user is logged, has or doesn't have a config (in the section for the user's pc configuration)
   function renderUserPcSectionContent(): JSX.Element {
     if (isLoadingUserComputer) {
       return <Loader />;
@@ -211,10 +210,22 @@ export function GameCollectionPage(props: MainPageProps) {
           </motion.div>
 
           <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">
-            <div className="flex flex-row items-center gap-5 justify-between">
+            <div className="flex flex-row items-center justify-between">
               <h1 className="text-xl font-bold">
-                {props.gameCollectionTitleText}
+                {/* title with icon */}
+                <div className="flex flex-row gap-2 items-center justfy-content-center">
+                  {props.gameCollectionTitleText}
+                  <div>
+                    {props.gamesCollection === "Shop" ? (
+                      <ShoppingCart size={23} />
+                    ) : (
+                      <Gamepad2 size={26} />
+                    )}
+                  </div>
+
+                </div>
               </h1>
+              {/* button to change layout */}
               <button className="btn btn-info btn-soft p-1 h-auto">
                 <label className="swap swap-rotate">
                   <input
@@ -229,7 +240,8 @@ export function GameCollectionPage(props: MainPageProps) {
                 </label>
               </button>
             </div>
-            <div className="flex my-4 w-full">
+            {/* search bar */}
+            <div className="flex my-3 mb-4 w-full">
               <label className="input w-10 focus:outline-none focus:ring-0">
                 <Search size={40} />
               </label>
@@ -245,7 +257,6 @@ export function GameCollectionPage(props: MainPageProps) {
               />
             </div>
 
-            {/* showing error if there is any */}
             {isLoadingGames ? (
               <Loader />
             ) :
@@ -262,7 +273,7 @@ export function GameCollectionPage(props: MainPageProps) {
                   showOwnedBadges={props.gamesCollection === "Shop" ? true : false}
                 />
               )}
-            {/* section for changing page (to load more games) */}
+            {/* section for buttons to load more games */}
             {(games && games.length > 0) ? (
               <div className="flex items-center w-full mt-4">
                 <div className="join mx-auto">
@@ -336,6 +347,8 @@ export function GameCollectionPage(props: MainPageProps) {
             }}
           >
             <h2 className="text-lg font-bold">Tag Filters</h2>
+            {/* when this checkbox is checked only games that have ALL of the filters are shown
+            if it isn't every game that has 1 or more of the selected filters is shown */}
             <div className="flex flex-row my-3 gap-2">
               <input
                 type="checkbox"
@@ -348,13 +361,14 @@ export function GameCollectionPage(props: MainPageProps) {
               <p>Include all filters</p>
             </div>
             <form>
-              {tags?.map((tag, index) => (
+              {tags?.map((tag) => (
                 <input
-                  key={index}
+                  key={tag}
                   className="btn m-1"
                   type="checkbox"
                   name="tags"
                   aria-label={tag}
+                  checked={selectedTags.includes(tag)}
                   onClick={() => {
                     //give a function to setSelectedTags, so that it knows that the value returned by that function is used to set the tags, as if a value was passed directly
                     //in this case we check if selectedTags contained the tag clicked: if it did, the tag gets removed, otherwise it gets added

@@ -161,7 +161,7 @@ export async function login(
   }
 }
 //fetches some games from the current user's library
-export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
+export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean, signal?: AbortSignal): Promise<GameCollectionResponse> {
   try {
     const response = await apiGames.post(
       "getUserGames.php",
@@ -173,6 +173,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
         includeAllFilters: includeAllFilters,
       },
       {
+        signal,
         headers: {
           "Content-Type": "application/json",
         },
@@ -187,8 +188,11 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
       totalNumberOfGames: data["total_games"] || 0,
     };
     return result;
-  } catch (error) {
-    console.log("error from php server:", error);
+  } catch (error: any) {
+    if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
+      console.log("error from php server:", error);
+    }
+
     const result: GameCollectionResponse = {
       successful: false,
       message: "server error",
@@ -199,7 +203,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
   }
 }
 
-export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
+export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean, signal?: AbortSignal): Promise<GameCollectionResponse> {
   try {
     const response = await apiGames.post(
       "getGames.php",
@@ -211,43 +215,7 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
         includeAllFilters: includeAllFilters,
       },
       {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.data;
-    const result: GameCollectionResponse = {
-      successful: data["status"] === "success" ? true : false,
-      message: data["message"],
-      games: data["games"],
-      totalNumberOfGames: data["total_games"],
-    };
-    return result;
-  } catch (error) {
-    console.log("error from php server:", error);
-    const result: GameCollectionResponse = {
-      successful: false,
-      message: "server error",
-      games: [],
-      totalNumberOfGames: 0,
-    };
-    return result;
-  }
-}
-
-export async function getWishlistGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean): Promise<GameCollectionResponse> {
-  try {
-    const response = await apiGames.post(
-      "getWishlistGames.php",
-      {
-        indexStart: indexStart,
-        numOfGames: numOfGames,
-        filters,
-        searchString,
-        includeAllFilters: includeAllFilters,
-      },
-      {
+        signal,
         headers: {
           "Content-Type": "application/json",
         },
@@ -259,11 +227,14 @@ export async function getWishlistGames(indexStart: number, numOfGames: number, f
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       games: data["games"],
-      totalNumberOfGames: data["total_games"],
+      totalNumberOfGames: data["total_games"] || 0,
     };
     return result;
-  } catch (error) {
-    console.log("error from php server:", error);
+  } catch (error: any) {
+    if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
+      console.log("error from php server:", error);
+    }
+
     const result: GameCollectionResponse = {
       successful: false,
       message: "server error",
@@ -273,8 +244,6 @@ export async function getWishlistGames(indexStart: number, numOfGames: number, f
     return result;
   }
 }
-
-
 //fetches all possible tags from the backend
 export async function getTags(): Promise<TagCollectionResponse> {
   try {

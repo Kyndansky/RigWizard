@@ -18,8 +18,8 @@ if ($username == "") {
     );
     exit;
 }
-// Set page number defaulting to 1
 $offset = isset($data['indexStart']) ? (int) $data['indexStart'] : 0;
+$offset = ($offset > 0) ? ($offset - 1) : 0; 
 $numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames'] : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
@@ -47,7 +47,7 @@ if (!empty($filters)) {
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql_games .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_games .= " AND (g.title LIKE '%$searchString%')";
 }
 
 // Avoid duplicates by grouping

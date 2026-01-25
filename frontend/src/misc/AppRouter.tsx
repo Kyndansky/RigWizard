@@ -7,7 +7,6 @@ import { AuthProvider } from "./AuthContextHandler";
 import { Profile } from "../pages/Profile";
 import GamePage from "../pages/GamePage";
 import { NotFound } from "../pages/NotFoundPage";
-import { ErrorPage } from "../pages/ErrorPage";
 import { UserComputerProvider } from "./UserComputerContextHandler";
 import { GameCollectionPage } from "../pages/GameCollectionPage";
 import { getLibraryGames, getShopGames } from "./api_calls_functions";
@@ -26,7 +25,6 @@ function AppRouter() {
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/games/:id" element={<GamePage />} />
                         <Route path="/404" element={<NotFound />} />
-                        <Route path="/errorPage" element={<ErrorPage />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </UserComputerProvider>
