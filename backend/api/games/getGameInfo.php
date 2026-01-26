@@ -24,9 +24,6 @@ if ($username) {
     }
 }
 
-
-
-
 // Query to get game info
 $sql_gameInfo = "SELECT 
                     g.id_game, 

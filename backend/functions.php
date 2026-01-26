@@ -54,3 +54,20 @@ function getPCComponents($dbConnection, $pcId)
     }
     return null;
 }
+//funzione che ritorna un array di immagini contenente le immagini di un gico dato il suo id cercando le immagini nella directory /games/imgs/id_game/
+function getGameImages($gameId)
+{
+    $images = [];
+    $dirPath = __DIR__ . "/../games/imgs/$gameId/";
+
+    if (is_dir($dirPath)) {
+        $files = scandir($dirPath);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                $images[] = "/backend/games/imgs/$gameId/" . $file;
+            }
+        }
+    }
+
+    return $images;
+}
