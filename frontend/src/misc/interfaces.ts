@@ -19,9 +19,6 @@ export interface GameInfoResponse extends RigWizardResponse {
   game?: Game;
   isOwned?:boolean;
 }
-export interface ImgsUrlsResponse extends RigWizardResponse{
-  imgsUrls:string[];
-}
 
 export interface ComputerInfoResponse extends RigWizardResponse{
   computer?:Computer;
@@ -49,7 +46,7 @@ export interface Game {
   pc_min_details:Computer;
   pc_rec_details:Computer;
   isOwned?:boolean;
-  imgsUrls:string[];
+  images:string[];
 }
 
 export interface Computer {
