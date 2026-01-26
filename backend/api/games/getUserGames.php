@@ -1,6 +1,7 @@
 <?php
 require_once "../../cors.php";
 require_once "../../DBConnect.php";
+require_once "../../functions.php";
 
 $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
@@ -132,6 +133,8 @@ if ($result_games) {
 
 // Attach tags to corresponding games
 foreach ($games_list as &$game) {
+    $game['pc_min_details'] = getPCComponents($dbConnection, $game['id_min_pc']);
+    $game['pc_rec_details'] = getPCComponents($dbConnection, $game['id_recommended_pc']);
     $game_tags = [];
     foreach ($tags_list as $tag) {
         if ($tag['id_game'] == $game['id_game']) {
@@ -140,6 +143,7 @@ foreach ($games_list as &$game) {
     }
     $game['tags'] = $game_tags;
 }
+unset($game);
 
 // Final response
 $response = [
