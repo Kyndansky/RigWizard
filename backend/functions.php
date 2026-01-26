@@ -1,4 +1,6 @@
 <?php
+require_once('globals.php');
+
 function getPCComponents($dbConnection, $pcId)
 {
     if (!$pcId)
@@ -22,52 +24,77 @@ function getPCComponents($dbConnection, $pcId)
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        
+
         return [
             "config_name" => $row['config_name'],
             "cpu" => [
                 "manufacturer" => $row['cpu_brand'],
                 "model" => $row['cpu_model'],
-                "cores" => (int)$row['cores'],
-                "frequency_ghz" => (float)$row['frequency_ghz'],
-                "score"=>(float)$row['cpu_score']
+                "cores" => (int) $row['cores'],
+                "frequency_ghz" => (float) $row['frequency_ghz'],
+                "score" => (float) $row['cpu_score']
             ],
             "gpu" => [
                 "manufacturer" => $row['gpu_brand'],
                 "model" => $row['gpu_model'],
-                "vram_gb" => (int)$row['vram_gb'],
-                "score"=>(float)$row['gpu_score']
+                "vram_gb" => (int) $row['vram_gb'],
+                "score" => (float) $row['gpu_score']
             ],
             "ram" => [
                 "brand" => $row['ram_brand'],
                 "model" => $row['ram_model'],
-                "quantity_gb" => (int)$row['quantity_gb'],
+                "quantity_gb" => (int) $row['quantity_gb'],
                 "type" => $row['memory_type'],
-                "score"=>(float)$row['ram_score']
+                "score" => (float) $row['ram_score']
             ],
             "motherboard" => [
                 "manufacturer" => $row['mobo_brand'],
                 "model" => $row['mobo_model'],
-                "score"=>(float)$row['mobo_score']
+                "score" => (float) $row['mobo_score']
             ]
         ];
     }
     return null;
 }
+
 //funzione che ritorna un array di immagini contenente le immagini di un gico dato il suo id cercando le immagini nella directory /games/imgs/id_game/
 function getGameImages($gameId)
 {
     $images = [];
-    $dirPath = __DIR__ . "/../games/imgs/$gameId/";
+    $dirPath = __DIR__ . "/games/imgs/$gameId/";
 
     if (is_dir($dirPath)) {
         $files = scandir($dirPath);
         foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                $images[] = "/backend/games/imgs/$gameId/" . $file;
+            if ($file !== '.' && $file !== '..' && strpos(strtolower($file), 'banner_horizontal') === false && strpos(strtolower($file), 'banner_vertical') === false) {
+                $images[] = PATH_IMG_HOSTING . "$gameId/" . $file;
             }
         }
     }
 
     return $images;
+}
+
+//returns the url of a game banner image given the game id and the orientation (horizontal or vertical)
+function getGameBannerImgUrl($gameId, $orientation): string
+{
+    $dirPath = __DIR__ . "/games/imgs/$gameId/";
+
+    if (is_dir($dirPath)) {
+        $files = scandir($dirPath);
+        foreach ($files as $file) {
+            if ($file !== '.' && $file !== '..') {
+                // Check for horizontal banner
+                if ($orientation === 'horizontal' && strpos(strtolower($file), 'banner_horizontal') !== false) {
+                    return PATH_IMG_HOSTING . "$gameId/" . $file;
+                }
+                // Check for vertical banner
+                if ($orientation === 'vertical' && strpos(strtolower($file), 'banner_vertical') !== false) {
+                    return PATH_IMG_HOSTING . "$gameId/" . $file;
+                }
+            }
+        }
+    }
+
+    return "";
 }

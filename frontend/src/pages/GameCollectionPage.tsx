@@ -145,7 +145,7 @@ export function GameCollectionPage(props: MainPageProps) {
             {warningDivText}
           </div>
           {isAuthenticated && (
-            { buttonEditConfig }
+            buttonEditConfig
           )}
 
         </>

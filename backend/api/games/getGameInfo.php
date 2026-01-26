@@ -33,8 +33,6 @@ $sql_gameInfo = "SELECT
                     g.price,
                     g.release_year,
                     g.publisher,
-                    g.vertical_banner_URL, 
-                    g.horizontal_banner_URL,
                     g.id_min_pc, 
                     g.id_recommended_pc
                  FROM games g
@@ -50,6 +48,7 @@ if ($result && $result->num_rows > 0) {
 
     // Recommended PC Details
     $gameInfo['pc_rec_details'] = getPCComponents($dbConnection, $gameInfo['id_recommended_pc']);
+
 
     // Fetch tags associated with the game
     $sql_tags = "SELECT t.id_tag, t.name 
@@ -70,7 +69,8 @@ if ($result && $result->num_rows > 0) {
 
     // Fetch gallery images for the game
     $gameInfo['images'] = getGameImages($gameId);
-
+    $gameInfo['horizontal_banner_URL'] = getGameBannerImgUrl($gameId, 'horizontal');
+    $gameInfo['vertical_banner_URL'] = getGameBannerImgUrl($gameId, 'vertical');
     $gameInfo['isOwned'] = $isOwned;
     $response = [
         "status" => "success",

@@ -45,7 +45,7 @@ export function GameList(props: GameListProps) {
                 name={game.title}
                 description={game.description}
                 tags={game.tags}
-                imageUrl={props.layout==="grid"?game.vertical_banner_URL:game.vertical_banner_URL}
+                imageUrl={props.layout==="grid"?game.vertical_banner_URL:game.horizontal_banner_URL}
                 backgroundColor="base-100"
                 hoverable={props.layout === "grid"}
                 imageHeight={props.layout==="rows"?"min-w-3/7 max-w-3/7":""}

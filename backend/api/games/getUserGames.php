@@ -20,7 +20,7 @@ if ($username == "") {
     exit;
 }
 $offset = isset($data['indexStart']) ? (int) $data['indexStart'] : 0;
-$offset = ($offset > 0) ? ($offset - 1) : 0; 
+$offset = ($offset > 0) ? ($offset - 1) : 0;
 $numOfGames = isset($data['numOfGames']) ? (int) $data['numOfGames'] : 30;
 $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
@@ -135,6 +135,8 @@ if ($result_games) {
 foreach ($games_list as &$game) {
     $game['pc_min_details'] = getPCComponents($dbConnection, $game['id_min_pc']);
     $game['pc_rec_details'] = getPCComponents($dbConnection, $game['id_recommended_pc']);
+     $game['horizontal_banner_URL'] = getGameBannerImgUrl($game['id_game'], 'horizontal');
+     $game['vertical_banner_URL'] = getGameBannerImgUrl($game['id_game'], 'vertical');
     $game_tags = [];
     foreach ($tags_list as $tag) {
         if ($tag['id_game'] == $game['id_game']) {

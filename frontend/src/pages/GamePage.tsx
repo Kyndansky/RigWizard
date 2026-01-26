@@ -94,7 +94,7 @@ export function GamePage() {
                                             <div className="w-9/10 flex flex-row items-stretch gap-4 mx-auto mt-3">
                                                 <div className="w-1/2 relative min-h-0">
                                                     <div className="absolute inset-0">
-                                                        <Carousel />
+                                                        <Carousel imgUrls={game.images}/>
                                                     </div>
                                                 </div>
                                                 <div className="w-1/2">
@@ -103,8 +103,7 @@ export function GamePage() {
                                                         description={game.description}
                                                         tags={game.tags}
                                                         imagePlacement=""
-                                                        //imageUrl={game.horizontal_banner_URL}
-                                                        imageUrl="https://i.postimg.cc/W38kRTh1/silksong-horizontal-banner.jpg"
+                                                        imageUrl={game.horizontal_banner_URL}
                                                         numOfTagsToShow={numTagsVisible}
                                                         backgroundColor="base-300"
                                                         hoverable={false}

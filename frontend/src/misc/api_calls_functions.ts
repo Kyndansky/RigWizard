@@ -289,7 +289,6 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
       message: data["message"],
       game: data["game"],
     };
-    console.log(result);
     return result;
   } catch (error) {
     console.log("error from php server:", error);

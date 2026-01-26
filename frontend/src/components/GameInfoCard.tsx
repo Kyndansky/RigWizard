@@ -77,7 +77,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
         >
           <figure className={props.imageHeight}>
             <img
-              src={props.imageUrl}
+              src={props.imageUrl && props.imageUrl !== "" ? props.imageUrl : "https://placehold.co/600x400?text=No+Image"}
               alt="game image"
               className="w-full h-full object-cover"
             />
