@@ -67,6 +67,10 @@ if ($result && $result->num_rows > 0) {
         }
     }
     $gameInfo['tags'] = $tags;
+
+    // Fetch gallery images for the game
+    $gameInfo['images'] = getGameImages($gameId);
+
     $gameInfo['isOwned'] = $isOwned;
     $response = [
         "status" => "success",
