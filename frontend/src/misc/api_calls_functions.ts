@@ -11,6 +11,7 @@ import {
   type GpuListResponse,
   type RamListResponse,
   type Computer,
+  type ImgsUrlsResponse as GameImgsUrlsResponse,
 } from "./interfaces";
 
 const apiAuth = axios.create({
@@ -284,17 +285,48 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
     });
 
     const data = await response.data;
-    const result: GameInfoResponse = {
+    let result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
       game: data["game"],
     };
+
     return result;
   } catch (error) {
     console.log("error from php server:", error);
     const result: GameInfoResponse = {
       successful: false,
       message: "server error",
+    };
+    return result;
+  }
+}
+
+export async function getGameImgsUrls(gameId:number):Promise<GameImgsUrlsResponse>{
+  try {
+    const response = await apiGames.get("getGameImgsUrls.php", {
+      params: {
+        gameId: gameId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.data;
+    let result: GameImgsUrlsResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"],
+      imgsUrls: data["imgUrls"],
+    };
+
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameImgsUrlsResponse = {
+      successful: false,
+      message: "server error",
+      imgsUrls:[]
     };
     return result;
   }
