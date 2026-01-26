@@ -10,12 +10,20 @@ if (!isset($_SESSION))
 
 $username = $_SESSION['username'] ?? null;
 // Query to check if the user owns the game
-$sql_isOwned = "SELECT ug.id_game 
-                FROM user_games ug
-                JOIN users u ON ug.id_user = u.id
-                WHERE u.username = '$username' AND ug.id_game = $gameId";
+$isOwned = false;
+if ($username) {
+    $sql_isOwned = "SELECT ug.id_game 
+                    FROM user_games ug
+                    JOIN users u ON ug.id_user = u.id
+                    WHERE u.username = '$username' AND ug.id_game = $gameId";
 
+    $resultOwned = $dbConnection->query($sql_isOwned);
+    if ($resultOwned && $resultOwned->num_rows > 0) {
+        $isOwned = true;
+    }
+}
 // Function to get PC components details
+
 function getPCComponents($dbConnection, $pcId)
 {
     if (!$pcId)
@@ -115,6 +123,7 @@ if ($result && $result->num_rows > 0) {
         }
     }
     $gameInfo['tags'] = $tags;
+    $gameInfo['isOwned'] = $isOwned;
     $response = [
         "status" => "success",
         "message" => "Game information retrieved successfully",
