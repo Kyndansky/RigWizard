@@ -99,26 +99,10 @@ CREATE TABLE `games` (
     `id_min_pc` INT(11),
     `id_recommended_pc` INT(11),
     `creator` VARCHAR(150),
-    `vertical_banner_URL` VARCHAR(250),
-    `horizontal_banner_URL` VARCHAR(255) DEFAULT '',
 
     PRIMARY KEY (`id_game`),
     FOREIGN KEY (`id_min_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (`id_recommended_pc`) REFERENCES `pc`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
-);
-
--- Reviews
-CREATE TABLE `reviews` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `id_game` INT(11) NOT NULL,
-    `id_user` INT(11) NOT NULL,
-    `score` TINYINT(1) CHECK (`score` BETWEEN 1 AND 10),
-    `comment` TEXT,
-    `review_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unique_review` (`id_game`, `id_user`),
-    FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`id_user`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Tags

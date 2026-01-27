@@ -253,14 +253,7 @@ INSERT IGNORE INTO `game_tags` (`id_game`, `id_tag`) VALUES
 INSERT IGNORE INTO `user_games` (`id_user`, `id_game`) VALUES
 (1, 1), (1, 3), (1, 2), (1, 4), (1, 5), (1, 6), (1, 7), 
 (1, 8), (1, 9), (1, 10), (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16);
-
--- REVIEWS
-INSERT IGNORE INTO `reviews` (`id_game`, `id_user`, `score`, `comment`) VALUES
-( 1, 1, 9, 'Assolutamente incredibile dopo le patch, grafica mozzafiato!'),
-( 2, 2, 10, 'Semplice e infinito. Un classico senza tempo.'),
-( 3, 1, 10, 'La migliore storia e il miglior open-world mai creati.');
 ";
-
 if ($dbConnection->multi_query($sql_script)) {
     $success_message = "SQL script executed successfully.";
     $error_occurred = false;
