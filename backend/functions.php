@@ -74,27 +74,3 @@ function getGameImages($gameId)
 
     return $images;
 }
-
-//returns the url of a game banner image given the game id and the orientation (horizontal or vertical)
-function getGameBannerImgUrl($gameId, $orientation): string
-{
-    $dirPath = __DIR__ . "/games/imgs/$gameId/";
-
-    if (is_dir($dirPath)) {
-        $files = scandir($dirPath);
-        foreach ($files as $file) {
-            if ($file !== '.' && $file !== '..') {
-                // Check for horizontal banner
-                if ($orientation === 'horizontal' && strpos(strtolower($file), 'banner_horizontal') !== false) {
-                    return PATH_IMG_HOSTING . "$gameId/" . $file;
-                }
-                // Check for vertical banner
-                if ($orientation === 'vertical' && strpos(strtolower($file), 'banner_vertical') !== false) {
-                    return PATH_IMG_HOSTING . "$gameId/" . $file;
-                }
-            }
-        }
-    }
-
-    return "";
-}

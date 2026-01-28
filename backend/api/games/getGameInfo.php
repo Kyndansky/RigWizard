@@ -69,8 +69,6 @@ if ($result && $result->num_rows > 0) {
 
     // Fetch gallery images for the game
     $gameInfo['images'] = getGameImages($gameId);
-    $gameInfo['horizontal_banner_URL'] = getGameBannerImgUrl($gameId, 'horizontal');
-    $gameInfo['vertical_banner_URL'] = getGameBannerImgUrl($gameId, 'vertical');
     $gameInfo['isOwned'] = $isOwned;
     $response = [
         "status" => "success",
