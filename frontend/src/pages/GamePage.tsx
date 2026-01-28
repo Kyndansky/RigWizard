@@ -125,36 +125,7 @@ export function GamePage() {
                                                     Show description
                                                 </div>
                                                 <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
-                                                    <h1 className="text-2xl text-primary mt-5">
-                                                        Example paragraph title
-                                                    </h1>
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                                    </p>
-                                                    <h1 className="text-2xl text-primary mt-5">
-                                                        Example paragraph title
-                                                    </h1>
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                                    </p>
-                                                    <h1 className="text-2xl text-primary mt-5">
-                                                        Example paragraph title
-                                                    </h1>
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                                    </p>
-                                                    <h1 className="text-2xl text-primary mt-5">
-                                                        Example paragraph title
-                                                    </h1>
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                                    </p>
-                                                    <h1 className="text-2xl text-primary mt-5">
-                                                        Example paragraph title
-                                                    </h1>
-                                                    <p>
-                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae maiores unde non. Eaque, sit consequuntur. Reiciendis, molestiae eveniet repellendus atque, praesentium molestias dolorem obcaecati, alias accusantium maxime pariatur earum nihil?
-                                                    </p>
+                                                    {game.detailed_description}
                                                 </div>
                                             </div>
                                             <div>

@@ -10,7 +10,7 @@ import {
   type MotherBoardListResponse,
   type GpuListResponse,
   type RamListResponse,
-  type Computer
+  type Computer,
 } from "./interfaces";
 
 const apiAuth = axios.create({
@@ -48,6 +48,7 @@ const apiRams = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_API_URL + "/ram/",
   withCredentials: true,
 });
+
 // Make a GET request to the backend API to check if the user is logged in
 // sends a getUserInfoRequest to the backend to get information about the user's authentication
 export async function getIsLoggedIn(): Promise<UserInfoResponse> {
@@ -103,7 +104,7 @@ export async function logout(): Promise<RigWizardResponse> {
 //sends a register request to the backend
 export async function register(
   username: string,
-  password: string
+  password: string,
 ): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
@@ -134,7 +135,7 @@ export async function register(
 //sends a login request to the backend
 export async function login(
   username: string,
-  password: string
+  password: string,
 ): Promise<UserInfoResponse> {
   try {
     const credentials = { username: username, password: password };
@@ -160,8 +161,15 @@ export async function login(
     return result;
   }
 }
-//fetches some games from the current user's library
-export async function getLibraryGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean, signal?: AbortSignal): Promise<GameCollectionResponse> {
+//returns games from a user's library (supports filtering by the title of the game or by game tags.)
+export async function getLibraryGames(
+  indexStart: number,
+  numOfGames: number,
+  filters: string[] = [],
+  searchString: string = "",
+  includeAllFilters: boolean,
+  signal?: AbortSignal,
+): Promise<GameCollectionResponse> {
   try {
     const response = await apiGames.post(
       "getUserGames.php",
@@ -177,7 +185,7 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const data = await response.data;
@@ -187,9 +195,16 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
       games: data["games"],
       totalNumberOfGames: data["total_games"] || 0,
     };
+    //we set the banner image for each game
+    if(result.games){
+      result.games.forEach(game => {
+        game.vertical_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_vertical.png"
+        game.horizontal_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_horizontal.png"
+      });
+    }
     return result;
   } catch (error: any) {
-    if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
+    if (error.name !== "CanceledError" && error.name !== "AbortError") {
       console.log("error from php server:", error);
     }
 
@@ -203,14 +218,22 @@ export async function getLibraryGames(indexStart: number, numOfGames: number, fi
   }
 }
 
-export async function getShopGames(indexStart: number, numOfGames: number, filters: string[] = [], searchString: string = "", includeAllFilters: boolean, signal?: AbortSignal): Promise<GameCollectionResponse> {
+//returns shop games (supports filtering by the title of the game or by game tags.)
+export async function getShopGames(
+  indexStart: number,
+  numOfGames: number,
+  tagFilters: string[] = [],
+  searchString: string = "",
+  includeAllFilters: boolean,
+  signal?: AbortSignal,
+): Promise<GameCollectionResponse> {
   try {
     const response = await apiGames.post(
       "getGames.php",
       {
         indexStart: indexStart,
         numOfGames: numOfGames,
-        filters,
+        filters: tagFilters,
         searchString,
         includeAllFilters: includeAllFilters,
       },
@@ -219,7 +242,7 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const data = await response.data;
@@ -229,9 +252,16 @@ export async function getShopGames(indexStart: number, numOfGames: number, filte
       games: data["games"],
       totalNumberOfGames: data["total_games"] || 0,
     };
+    //we set the banner image for each game
+    if(result.games){
+      result.games.forEach(game => {
+        game.vertical_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_vertical.png"
+        game.horizontal_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_horizontal.png"
+      });
+    }
     return result;
   } catch (error: any) {
-    if (error.name !== 'CanceledError' && error.name !== 'AbortError') {
+    if (error.name !== "CanceledError" && error.name !== "AbortError") {
       console.log("error from php server:", error);
     }
 
@@ -287,7 +317,12 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
     let result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      game: data["game"],
+      game: data["game"] ? 
+      { ...data["game"], 
+        horizontal_banner_URL: import.meta.env.VITE_BACKEND_IMGS_URL+gameId.toString()+"/banner_horizontal.png",
+        vertical_banner_URL:import.meta.env.VITE_BACKEND_IMGS_URL+gameId.toString()+"/banner_vertical.png"
+      }
+       : undefined
     };
     return result;
   } catch (error) {
@@ -301,7 +336,6 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
 }
 
 export async function getUserPc(): Promise<ComputerInfoResponse> {
-
   try {
     const response = await apiComputers.get("getUserPC.php", {
       headers: {
@@ -431,7 +465,7 @@ export async function getRams(): Promise<RamListResponse> {
 }
 
 export async function editPcConfiguration(
-  computer: Computer
+  computer: Computer,
 ): Promise<RigWizardResponse> {
   const id_ram: number = computer.ram.id;
   const id_cpu: number = computer.cpu.id;
@@ -464,7 +498,9 @@ export async function editPcConfiguration(
   }
 }
 
-export async function addGameToLibrary(gameId: number): Promise<RigWizardResponse> {
+export async function addGameToLibrary(
+  gameId: number,
+): Promise<RigWizardResponse> {
   try {
     const response = await apiGames.get("addGameToLibrary.php", {
       params: {
