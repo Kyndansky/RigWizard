@@ -18,22 +18,37 @@ if ($username === "") {
 }
 // Get user ID from username
 if ($id_game > 0 && $username !== '') {
-    $sql_user = "SELECT id FROM users WHERE username = '$username'";
-    $result_user = $dbConnection->query($sql_user);
+    $sql_user = "SELECT id FROM users WHERE username = ?";
+    // Prepare the statement
+    $stmt = $dbConnection->prepare($sql_user);
+    // Bind the parameter: "s" stands for string
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    // Get the result
+    $result_user = $stmt->get_result();
+
     // If user exists, add game to their library
     if ($result_user && $result_user->num_rows > 0) {
         $user_row = $result_user->fetch_assoc();
         $id_user = $user_row['id'];
+        
+        $stmt->close();
+
         // Insert game into user_games table
         $sql_add = "INSERT IGNORE INTO user_games (id_user, id_game, purchase_date) 
-                    VALUES ($id_user, $id_game, NOW())";
+                    VALUES (?, ?, NOW())";
+        
+        $stmt_add = $dbConnection->prepare($sql_add);
+        $stmt_add->bind_param("ii", $id_user, $id_game);
+
         // Execute query and set success response
-        if ($dbConnection->query($sql_add)) {
+        if ($stmt_add->execute()) {
             $response = [
                 'status' => 'success',
                 'message' => 'Game added to library'
             ];
             echo json_encode($response);
+            $stmt_add->close(); 
             exit;
         } else {
             $response = [
@@ -41,8 +56,12 @@ if ($id_game > 0 && $username !== '') {
                 'message' => 'Error while adding game to user library'
             ];
             echo json_encode($response);
+            $stmt_add->close(); 
             exit;
         }
+    } else {
+        // Close the statement if user not found
+        $stmt->close();
     }
 }
 $response = [

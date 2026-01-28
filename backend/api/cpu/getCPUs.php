@@ -1,8 +1,13 @@
 <?php
 require_once '../../cors.php';
 require_once "../../DBConnect.php";
+
 $sql = "SELECT * FROM cpu";
-$result = $dbConnection->query($sql);
+
+$stmt = $dbConnection->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+
 $cpus = [];
 
 if ($result && $result->num_rows > 0) {
@@ -29,5 +34,11 @@ if ($result && $result->num_rows > 0) {
         "cpus" => []
     ];
 }
+
+if (isset($stmt)) {
+    $stmt->close();
+}
+
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
+?>

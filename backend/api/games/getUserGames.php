@@ -26,6 +26,9 @@ $filters = isset($data['filters']) ? $data['filters'] : [];
 $searchString = isset($data['searchString']) ? $data['searchString'] : '';
 $multiple_filters = isset($data['includeAllFilters']) ? (bool) $data['includeAllFilters'] : false;
 
+$params_games = [];
+$types_games = "";
+
 $sql_games = "SELECT g.*
         FROM games g
         JOIN user_games ug ON g.id_game = ug.id_game
@@ -37,18 +40,29 @@ if (!empty($filters)) {
               LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-$sql_games .= " WHERE u.username = '$username'";
+// Sostituisco variabile con placeholder
+$sql_games .= " WHERE u.username = ?";
+$params_games[] = $username;
+$types_games .= "s";
 
 // Add filter condition
 if (!empty($filters)) {
     // Convert filters array to a comma-separated string for SQL IN clause
-    $lista_filtri = implode("','", $filters);
-    $sql_games .= " AND t.name IN ('$lista_filtri')";
+    // Generiamo placeholder dinamici
+    $placeholders = implode(',', array_fill(0, count($filters), '?'));
+    $sql_games .= " AND t.name IN ($placeholders)";
+    
+    foreach ($filters as $f) {
+        $params_games[] = $f;
+        $types_games .= "s";
+    }
 }
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql_games .= " AND (g.title LIKE '%$searchString%')";
+    $sql_games .= " AND (g.title LIKE ?)";
+    $params_games[] = "%" . $searchString . "%";
+    $types_games .= "s";
 }
 
 // Avoid duplicates by grouping
@@ -60,10 +74,17 @@ if (!empty($filters) && $multiple_filters) {
     $sql_games .= " HAVING COUNT(DISTINCT t.name) = $count_filters";
 }
 
-$sql_games .= " ORDER BY g.title ASC LIMIT $offset, $numOfGames";
+$sql_games .= " ORDER BY g.title ASC LIMIT ?, ?";
+$params_games[] = $offset;
+$params_games[] = $numOfGames;
+$types_games .= "ii";
 
 // Query to get total number of user games
 // I use a subquery to correctly count grouped games with HAVING
+
+$params_total = [];
+$types_total = "";
+
 $sql_total_base = "SELECT g.id_game
                     FROM games g
                     JOIN user_games ug ON g.id_game = ug.id_game
@@ -72,20 +93,32 @@ $sql_total_base = "SELECT g.id_game
 // If there are filters, join the tags tables
 if (!empty($filters)) {
     $sql_total_base .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-                          LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+                           LEFT JOIN tag t ON tg.id_tag = t.id_tag";
 }
 
-$sql_total_base .= " WHERE u.username = '$username'";
+$sql_total_base .= " WHERE u.username = ?";
+$params_total[] = $username;
+$types_total .= "s";
 
 // Add filter condition
 if (!empty($filters)) {
-    $lista_filtri = implode("','", $filters);
-    $sql_total_base .= " AND t.name IN ('$lista_filtri')";
+    $placeholders = implode(',', array_fill(0, count($filters), '?'));
+    $sql_total_base .= " AND t.name IN ($placeholders)";
+    
+    foreach ($filters as $f) {
+        $params_total[] = $f;
+        $types_total .= "s";
+    }
 }
 
 // Add search condition
 if (!empty($searchString)) {
-    $sql_total_base .= " AND (g.title LIKE '%$searchString%' OR g.description LIKE '%$searchString%')";
+    $sql_total_base .= " AND (g.title LIKE ? OR g.description LIKE ?)";
+    $searchWildcard = "%" . $searchString . "%";
+    
+    $params_total[] = $searchWildcard;
+    $params_total[] = $searchWildcard;
+    $types_total .= "ss";
 }
 
 $sql_total_base .= " GROUP BY g.id_game";
@@ -103,11 +136,30 @@ $sql_tags = "SELECT tg.id_game, t.name AS tag_name
              JOIN tag t ON tg.id_tag = t.id_tag
              JOIN user_games ug ON tg.id_game = ug.id_game
              JOIN users u ON ug.id_user = u.id
-             WHERE u.username = '$username'";
+             WHERE u.username = ?";
 
-$result_games = $dbConnection->query($sql_games);
-$result_total = $dbConnection->query($sql_totalGames);
-$result_tags = $dbConnection->query($sql_tags);
+$stmt_games = $dbConnection->prepare($sql_games);
+if (!empty($params_games)) {
+    $stmt_games->bind_param($types_games, ...$params_games);
+}
+$stmt_games->execute();
+$result_games = $stmt_games->get_result();
+$stmt_games->close();
+
+$stmt_total = $dbConnection->prepare($sql_totalGames);
+if (!empty($params_total)) {
+    $stmt_total->bind_param($types_total, ...$params_total);
+}
+$stmt_total->execute();
+$result_total = $stmt_total->get_result();
+$stmt_total->close();
+
+$stmt_tags = $dbConnection->prepare($sql_tags);
+$stmt_tags->bind_param("s", $username);
+$stmt_tags->execute();
+$result_tags = $stmt_tags->get_result();
+$stmt_tags->close();
+
 
 $tags_list = [];
 if ($result_tags) {
@@ -135,8 +187,6 @@ if ($result_games) {
 foreach ($games_list as &$game) {
     $game['pc_min_details'] = getPCComponents($dbConnection, $game['id_min_pc']);
     $game['pc_rec_details'] = getPCComponents($dbConnection, $game['id_recommended_pc']);
-     $game['horizontal_banner_URL'] = getGameBannerImgUrl($game['id_game'], 'horizontal');
-     $game['vertical_banner_URL'] = getGameBannerImgUrl($game['id_game'], 'vertical');
     $game_tags = [];
     foreach ($tags_list as $tag) {
         if ($tag['id_game'] == $game['id_game']) {

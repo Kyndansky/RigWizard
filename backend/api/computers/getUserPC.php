@@ -8,6 +8,7 @@ if (!isset($_SESSION)) {
 
 $username = $_SESSION["username"] ?? '';
 
+// Sostituito '$username' con il placeholder ?
 $sql = "SELECT 
             p.config_name,
             r.brand AS ram_brand, r.model_name AS ram_model, r.quantity_gb, r.frequency_mhz, r.memory_type as memory_type, r.score AS ram_score, r.id as ram_id,
@@ -20,9 +21,12 @@ $sql = "SELECT
         INNER JOIN cpu c ON p.id_cpu = c.id
         INNER JOIN gpu g ON p.id_gpu = g.id
         INNER JOIN motherboard m ON p.id_motherboard = m.id
-        WHERE u.username = '$username'";
+        WHERE u.username = ?";
 
-$result = $dbConnection->query($sql);
+$stmt = $dbConnection->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result && $result->num_rows > 0) {
     $row = $result->fetch_assoc();
@@ -69,12 +73,14 @@ if ($result && $result->num_rows > 0) {
         "message" => "User computer retrieved successfully",
         "computer" => $response_data
     ];
+    $stmt->close();
 } else {
     $response = [
         "status" => "success",
         "message" => "No computer found for this user",
         "computer" => null
     ];
+    if (isset($stmt)) $stmt->close();
 }
 
 echo json_encode($response, JSON_PRETTY_PRINT);

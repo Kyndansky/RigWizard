@@ -3,7 +3,7 @@ require_once '../../cors.php';
 require_once "../../DBConnect.php";
 require_once "../../functions.php";
 
-$gameId=$_GET['gameId'] ?? 0;
+$gameId = $_GET['gameId'] ?? 0;
 
 if (!isset($_SESSION))
     session_start();
@@ -13,15 +13,22 @@ $username = $_SESSION['username'] ?? null;
 // Query to check if the user owns the game
 $isOwned = false;
 if ($username) {
+    
     $sql_isOwned = "SELECT ug.id_game 
                     FROM user_games ug
                     JOIN users u ON ug.id_user = u.id
-                    WHERE u.username = '$username' AND ug.id_game = $gameId";
+                    WHERE u.username = ? AND ug.id_game = ?";
 
-    $resultOwned = $dbConnection->query($sql_isOwned);
+    $stmt_owned = $dbConnection->prepare($sql_isOwned);
+   
+    $stmt_owned->bind_param("si", $username, $gameId);
+    $stmt_owned->execute();
+    $resultOwned = $stmt_owned->get_result();
+    
     if ($resultOwned && $resultOwned->num_rows > 0) {
         $isOwned = true;
     }
+    $stmt_owned->close();
 }
 
 // Query to get game info
@@ -36,12 +43,17 @@ $sql_gameInfo = "SELECT
                     g.id_min_pc, 
                     g.id_recommended_pc
                  FROM games g
-                 WHERE g.id_game = $gameId";
+                 WHERE g.id_game = ?";
 
-$result = $dbConnection->query($sql_gameInfo);
+$stmt_info = $dbConnection->prepare($sql_gameInfo);
+
+$stmt_info->bind_param("i", $gameId);
+$stmt_info->execute();
+$result = $stmt_info->get_result();
 
 if ($result && $result->num_rows > 0) {
     $gameInfo = $result->fetch_assoc();
+    $stmt_info->close();
 
     // Minimum PC Details
     $gameInfo['pc_min_details'] = getPCComponents($dbConnection, $gameInfo['id_min_pc']);
@@ -54,9 +66,14 @@ if ($result && $result->num_rows > 0) {
     $sql_tags = "SELECT t.id_tag, t.name 
                  FROM game_tags gt
                  JOIN tag t ON gt.id_tag = t.id_tag
-                 WHERE gt.id_game = $gameId";
+                 WHERE gt.id_game = ?";
 
-    $result_tags = $dbConnection->query($sql_tags);
+    $stmt_tags = $dbConnection->prepare($sql_tags);
+    
+    $stmt_tags->bind_param("i", $gameId);
+    $stmt_tags->execute();
+    $result_tags = $stmt_tags->get_result();
+
     $tags = [];
     // Collect tags
     if ($result_tags) {
@@ -65,12 +82,12 @@ if ($result && $result->num_rows > 0) {
             $tags[] = $t['name'];
         }
     }
+    $stmt_tags->close();
+    
     $gameInfo['tags'] = $tags;
 
     // Fetch gallery images for the game
     $gameInfo['images'] = getGameImages($gameId);
-    $gameInfo['horizontal_banner_URL'] = getGameBannerImgUrl($gameId, 'horizontal');
-    $gameInfo['vertical_banner_URL'] = getGameBannerImgUrl($gameId, 'vertical');
     $gameInfo['isOwned'] = $isOwned;
     $response = [
         "status" => "success",
@@ -80,6 +97,10 @@ if ($result && $result->num_rows > 0) {
     echo json_encode($response);
 
 } else {
+    if(isset($stmt_info)){
+        $stmt_info->close();
+    }
+    
     $response = [
         "status" => "error",
         "message" => "Game not found",

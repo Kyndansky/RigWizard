@@ -1,8 +1,13 @@
 <?php
 require_once '../../cors.php';
 require_once "../../DBConnect.php";
+
 $sql = "SELECT * FROM gpu";
-$result = $dbConnection->query($sql);
+
+$stmt = $dbConnection->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+
 $gpus = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
@@ -12,7 +17,7 @@ if ($result && $result->num_rows > 0) {
         "model" => $row['model_name'],
         "vram_gb" => (int)$row['vram_gb'],
         "score" => (float)$row['score'] 
-       
+        
     ];
 }
     $response = [
@@ -27,5 +32,10 @@ if ($result && $result->num_rows > 0) {
         "gpus" => []
     ];
 }
+
+if (isset($stmt)) {
+    $stmt->close();
+}
+
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
