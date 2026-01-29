@@ -4,48 +4,55 @@ import { Navigate } from "react-router-dom";
 import { register } from "../misc/api_calls_functions";
 import { useAuth } from "../misc/AuthContextHandler";
 import Loader from "../components/Loader";
+import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 
 export function Register() {
     const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
     const [username, setUsername] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
-    const [errorMessage, setErrorMessage] = React.useState<string>("");
 
     async function handleRegister() {
         const registerResponse = await register(username, password);
-        if (registerResponse.successful===true) {
+        if (registerResponse.successful === true) {
             setIsAuthenticated(true);
             setUsername(registerResponse.username);
         }
         else {
-            setErrorMessage(registerResponse.message||"error");
+            showToastAlert("error", registerResponse.message);
         }
 
     }
 
+    //returns loading if the frontend still doesn't know (which means it hasn't received info from the backend yet)
+    //if the user is logged in.
     if (isLoading) {
-        return (
-            <Loader />
-        )
+        return <Loader />;
+    }
+
+    //if the user is authenticated redirects to the homepage
+    if (isAuthenticated === true) {
+        window.location.href = "/";
     }
 
     return (
         <React.Fragment>
-            {isAuthenticated ?
-                (<Navigate to={"/"} />) :
-                (<CredentialsCard
-                    cardtitle="Register"
-                    buttonText="Sign up"
-                    suggestionText="Already have an account?"
-                    suggestionLink="/login"
-                    suggestionLinkText="Login here"
-                    onbuttonclick={handleRegister}
-                    onUsernameChange={(e) => setUsername(e.target.value)}
-                    onPasswordChange={(e) => setPassword(e.target.value)}
-                    username={username}
-                    password={password}
-                    errorMessage={errorMessage}
-                />)}
+            <BasePageLayout hideOverFlow={true}>
+                {isAuthenticated ?
+                    (<Navigate to={"/"} />) :
+                    (<CredentialsCard
+                        cardtitle="Register"
+                        buttonText="Sign up"
+                        suggestionText="Already have an account?"
+                        suggestionLink="/login"
+                        suggestionLinkText="Login here"
+                        onbuttonclick={handleRegister}
+                        onUsernameChange={(e) => setUsername(e.target.value)}
+                        onPasswordChange={(e) => setPassword(e.target.value)}
+                        username={username}
+                        password={password}
+                    />)}
+            </BasePageLayout>
+
         </React.Fragment>
     )
 }

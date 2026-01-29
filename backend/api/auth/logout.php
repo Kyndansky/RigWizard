@@ -1,20 +1,18 @@
 <?php
 require_once("../../cors.php");
-if (!isset($_SESSION)) {
+if (!isset($_SESSION))
+    session_start();
+
+if (!isset($_SESSION["username"]) || $_SESSION["username"] === "") {
     echo json_encode([
-        "status" => "success",
-        "message" => "The user was not authenticated to begin with"
+        "status" => "error",
+        "message" => "The user was not authenticated"
     ]);
+    exit();
 }
-if (!isset($_SESSION["username"]) || !$_SESSION["username"] !== "") {
-    echo json_encode([
-        "status" => "success",
-        "message" => "The user was not authenticated to begin with"
-    ]);
-}
-session_start();
 session_destroy();
 echo json_encode([
     "status" => "success",
     "message" => "Logged out successfully"
 ]);
+exit();

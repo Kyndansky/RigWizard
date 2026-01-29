@@ -86,6 +86,7 @@ export function GameCollectionPage(props: MainPageProps) {
   // filtering tags are fetched on page load
   useEffect(() => {
     fetchTags();
+    fetchUserComputer();
   }, []);
 
   //when loading the page or when changing from library to shop games are fetched and all useState are reset
@@ -390,6 +391,7 @@ export function GameCollectionPage(props: MainPageProps) {
                 type="reset"
                 value="x"
                 onClick={() => {
+                  if(selectedTags.length===0) return;
                   setSelectedTags([]);
                 }}
               />

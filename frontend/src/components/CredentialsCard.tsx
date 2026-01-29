@@ -9,7 +9,6 @@ interface CredentialsCardProps {
   suggestionText?: string;
   suggestionLink?: string;
   suggestionLinkText?: string;
-    errorMessage:string;
   username?: string;
   password?: string;
   onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -57,14 +56,6 @@ export function CredentialsCard(props: CredentialsCardProps) {
             </p>
             
           ) : null}
-          {props.errorMessage !== "" ? (
-          <div className="toast toast-top toast-end">
-            <div className="alert alert-error">
-              <span>{props.errorMessage}</span>
-            </div>
-          </div>
-        ) : null}
-          
         </fieldset>
         
       </div>

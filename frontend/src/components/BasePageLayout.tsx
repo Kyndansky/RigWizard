@@ -31,17 +31,15 @@ export function BasePageLayout(
       {/*vertical container that contains navbar and page content */}
       <div
         className={
-          "flex flex-col h-screen bg-base-300" +
-          (props.hideOverFlow ? " overflow-hidden" : "")
+          "flex flex-col h-screen bg-base-300 overflow-y-hidden relative"
         }
       >
         <NavBar selectedTabId={props.selectedTabId} />
         {props.children}
         <div
-          className="toast toast-bottom toast-end z-[10]"
+          className="toast toast-bottom toast-end z-[100]"
           id="toastContainer"
         />
-        
       </div>
     </React.Fragment>
   );

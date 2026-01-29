@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../misc/AuthContextHandler";
 import { logout } from "../misc/api_calls_functions";
 import { CircleUserRound, Moon, SunMedium } from "lucide-react";
+import { motion } from "motion/react";
 interface NavBarProps {
     selectedTabId?: number;
 }
@@ -24,30 +25,45 @@ export const tabItems: TabItem[] = [
     },
 ]
 export function NavBar(props: NavBarProps) {
-    const navigate=useNavigate();
+    const location = useLocation();
+    const navigate = useNavigate();
     const { isAuthenticated, setIsAuthenticated, username } =
         useAuth();
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
-            <div className="navbar bg-base-100 shadow-sm z-[1]">
+            <div className="navbar bg-base-100/50 shadow-sm z-[1] backdrop-blur-md">
                 <div className="navbar-start">
-                    <Link to={"/"}><p className="btn btn-ghost text-xl">RigWizard</p></Link>
+                    <Link to={"/"}><button className="btn btn-ghost text-xl">
+                        <motion.h1
+                            className="relative bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent bg-[length:200%_auto]"
+                            animate={{
+                                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                            }}
+                            transition={{
+                                duration: 8,
+                                repeat: Infinity,
+                                ease: "linear",
+                            }}
+                        >
+                            RigWizard
+                        </motion.h1>
+                    </button></Link>
                 </div>
                 <div className="navbar-center">
                     <div role="tablist" className="tabs tabs-border">
                         {tabItems.map((tabItem) => (
-                            <a role="tab" className={"tab" + (props.selectedTabId === tabItem.id ? " tab-active" : "")} 
-                            key={tabItem.text}
-                            onClick={()=>{
-                                navigate(tabItem.pathTo);
-                            }}>{tabItem.text}</a>
+                            <a role="tab" className={"tab" + (props.selectedTabId === tabItem.id ? " tab-active" : "")}
+                                key={tabItem.text}
+                                onClick={() => {
+                                    navigate(tabItem.pathTo);
+                                }}>{tabItem.text}</a>
                         ))}
                     </div>
                 </div>
                 <div className="navbar-end gap-3 pr-5">
 
-                    
+
 
                     {/*Theme button section*/}
                     <label className="swap swap-rotate ">
@@ -55,10 +71,10 @@ export function NavBar(props: NavBarProps) {
                         <input type="checkbox" className="theme-controller" value={theme} onClick={() => { theme === "dark" ? setTheme("light") : setTheme("dark") }} />
 
                         {/* sun icon */}
-                        <SunMedium className="swap-off" size={30}/>
+                        <SunMedium className="swap-off" size={30} />
 
                         {/* moon icon */}
-                        <Moon className="swap-on" size={30}/>
+                        <Moon className="swap-on" size={30} />
                     </label>
                     {isAuthenticated ? (
                         //Profile info section
@@ -81,16 +97,18 @@ export function NavBar(props: NavBarProps) {
 
                                 </li>
                                 <li><a onClick={async () => {
-                                    const loggedOut = await logout();
-                                    if (loggedOut) {
+                                    const logoutResponse = await logout();
+                                    if (logoutResponse.successful) {
                                         setIsAuthenticated(false);
+                                        window.location.reload();
                                     }
+
                                 }}>Logout</a></li>
                             </ul>
                         </div>
                     ) :
                         (
-                            <Link to={"/login"}>
+                            <Link to={"/login"} state={{ from: location.pathname }}>
                                 <button className="btn btn-primary btn-soft">Login</button>
                             </Link>
                         )}
