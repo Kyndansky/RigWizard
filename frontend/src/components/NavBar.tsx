@@ -32,11 +32,11 @@ export function NavBar(props: NavBarProps) {
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
         <React.Fragment>
-            <div className="navbar bg-base-100/50 shadow-sm z-[1] backdrop-blur-md">
+            <div className="navbar bg-base-100/50 shadow-sm z-1 backdrop-blur-md">
                 <div className="navbar-start">
                     <Link to={"/"}><button className="btn btn-ghost text-xl">
                         <motion.h1
-                            className="relative bg-gradient-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent bg-[length:200%_auto]"
+                            className="relative bg-linear-to-r from-primary via-purple-600 to-secondary bg-clip-text text-transparent bg-size-[200%_auto]"
                             animate={{
                                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                             }}
@@ -78,7 +78,7 @@ export function NavBar(props: NavBarProps) {
                     </label>
                     {isAuthenticated ? (
                         //Profile info section
-                        <div className="dropdown dropdown-end z-[100]">
+                        <div className="dropdown dropdown-end z-100">
                             <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
                                 <span>
                                     {username}

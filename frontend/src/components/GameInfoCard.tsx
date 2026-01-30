@@ -1,6 +1,7 @@
 import React, { type PropsWithChildren } from "react";
 import { TagList } from "./TagList";
 import { motion } from "motion/react";
+import { Check } from "lucide-react";
 interface GameInfoCardProps {
   name: string;
   description: string;
@@ -9,7 +10,6 @@ interface GameInfoCardProps {
   imagePlacement: "card-side" | "" | "image-full";
   numOfTagsToShow: number;
   backgroundColor?: string;
-  hoverable: boolean;
   imageHeight: string;
   cardHeight: string;
   showTitle: boolean;
@@ -51,7 +51,6 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
   return (
     <React.Fragment>
       <motion.div
-        className={props.hoverable ? "hover-3d" : ""}
         style={{ willChange: "transform" }}
         layout="position"
         initial={props.animate ? { y: 100, opacity: 0 } : {}}
@@ -78,6 +77,9 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
           <figure className={props.imageHeight}>
             <img
               src={props.imageUrl && props.imageUrl !== "" ? props.imageUrl : "https://placehold.co/600x400?text=No+Image"}
+              onError={(e) => {
+                e.currentTarget.src = 'https://placehold.co/600x400?text=No+Image';
+              }}
               alt="game image"
               className="w-full h-full object-cover"
             />
@@ -85,10 +87,10 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
 
           <div className="card-body">
             <div className="flex flex-row space-between">
-              {props.showTitle && <h2 className="card-title">{props.name}</h2>}
-              <div className="tooltip ml-auto" data-tip="You own this game">
+              {props.showTitle && <h2 className="card-title flex-2">{props.name}</h2>}
+              <div className="tooltip ml-auto" data-tip="In your Library">
                 {props.showGameOwnedBadge && (
-                  <div className="badge badge-outline text-info border-info">Owned</div>
+                  <button className="badge badge-outline text-info border-info max-w-8 p-0.5"><Check className="p-0 m-0" size={20}/></button>
                 )}
               </div>
 
@@ -129,7 +131,6 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             </div>
           </div>
         </div>
-        {props.hoverable && <React.Fragment></React.Fragment>}
       </motion.div>
     </React.Fragment>
   );

@@ -191,7 +191,7 @@ export function GameCollectionPage(props: MainPageProps) {
             : 2
         }
       >
-        <div className="grid grid-cols-12 flex-grow h-full overflow-y-auto">
+        <div className="grid grid-cols-12 grow h-full overflow-y-auto">
           {/* Left sidebar that shows the pc components */}
           <motion.div
             initial={{ x: -30, opacity: 0.5 }}
@@ -205,7 +205,7 @@ export function GameCollectionPage(props: MainPageProps) {
             className="col-span-12 lg:col-span-2 bg-base-200 p-4 h-full max-h-screen overflow-y-auto sticky top-0"
           >
             <h2 className="text-lg font-bold mb-4">Your PC</h2>
-            <div className="flex flex-col items-center gap-4 mx-[0.5rem]">
+            <div className="flex flex-col items-center gap-4 mx-2">
               {renderUserPcSectionContent()}
             </div>
           </motion.div>
@@ -270,7 +270,7 @@ export function GameCollectionPage(props: MainPageProps) {
                   games={games}
                   layout={layoutGrid ? "grid" : "rows"}
                   userPc={userComputer}
-                  showRequirementsMetBadge={true}
+                  showRequirementsMetBadge={userComputer ? true : false}
                   showOwnedBadges={props.gamesCollection === "Shop" ? true : false}
                 />
               )}

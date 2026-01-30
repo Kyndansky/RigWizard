@@ -19,7 +19,7 @@ export function GameList(props: GameListProps) {
   const rowsLayoutCardClassname = "w-full grow";
   return (
     <React.Fragment>
-      <div className={(props.layout === "grid" ? gridLayoutClasses : rowsLayoutClasses) + " gap-5"}>
+      <div className={(props.layout === "grid" ? gridLayoutClasses : rowsLayoutClasses) + " gap-4"}>
         {props.games?.map((game, index) => {
           let numOfRequirementsMet: number = 0;
 
@@ -45,15 +45,14 @@ export function GameList(props: GameListProps) {
                 name={game.title}
                 description={game.description}
                 tags={game.tags}
-                imageUrl={props.layout==="grid"?game.vertical_banner_URL:game.horizontal_banner_URL}
+                imageUrl={props.layout === "grid" ? game.vertical_banner_URL : game.horizontal_banner_URL}
                 backgroundColor="base-100"
-                hoverable={props.layout === "grid"}
-                imageHeight={props.layout==="rows"?"min-w-3/7 max-w-3/7":""}
+                imageHeight={props.layout === "rows" ? "min-w-3/7 max-w-3/7" : ""}
                 cardHeight={props.layout === "grid" ? gridLayoutCardClassname : rowsLayoutCardClassname}
                 showTitle={true}
                 id={game.id_game}
                 animate={true}
-                showGameOwnedBadge={(props.showOwnedBadges && game.isOwned)??false}
+                showGameOwnedBadge={(props.showOwnedBadges && game.isOwned) ?? false}
                 showRequirementsBadge={props.showRequirementsMetBadge}
                 requirementsMetBadgeColor={requirementsBadgeColor}
               />

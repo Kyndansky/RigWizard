@@ -1,16 +1,14 @@
-import { motion } from "motion/react";
 import React from "react";
-import { MorphingPopover, MorphingPopoverTrigger, MorphingPopoverContent } from "./Popover";
 
 interface TagListProps {
     tags: string[];
     numVisible: number;
-    id:number;
+    id: number;
 }
 
 export function TagList(props: TagListProps) {
     const showPopover = props.tags.length > props.numVisible;
-    const visibleTags = showPopover ? props.tags.slice(0, props.numVisible ) : props.tags;
+    const visibleTags = showPopover ? props.tags.slice(0, props.numVisible) : props.tags;
     const hiddenTags = showPopover ? props.tags.slice(props.numVisible) : [];
     return (
         <React.Fragment>
@@ -18,31 +16,22 @@ export function TagList(props: TagListProps) {
             {visibleTags.map((tag) => (
                 <div key={tag} className="badge badge-outline border-secondary text-secondary text-xs">{tag}</div>
             ))}
-
-            {/* if the popover has to be shown, show it with all the extra tags inside */}
-            {showPopover && (
-                <MorphingPopover >
-                    <MorphingPopoverTrigger asChild>
-                        <button className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">
-                            <motion.span
-                                layoutId={String(props.id)}
-                                layout='position'
-                            >
-                                <div>
-                                    +{hiddenTags.length}
-                                </div>
-                            </motion.span>
-                        </button>
-                    </MorphingPopoverTrigger>
-                    <MorphingPopoverContent className='p-2 shadow-sm'>
-                        <div className="flex flex-col gap-2 p-2">
+            {/* if there are hidden tags, show the +N badge with popover containing the remaining tags */}
+            {hiddenTags.length > 0 && (
+                <div className="dropdown dropdown-top dropdown-center dropdown-hover group">
+                    <div className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">
+                        +{hiddenTags.length}
+                    </div>
+                    <ul className="dropdown-content z-100 invisible group-hover:visible mb-2">
+                        <div className="flex flex-col card card-sm bg-base-300/80 shadow-md gap-2 p-2 items-center w-auto rounded-lg">
                             {hiddenTags.map((tag) => (
                                 <div key={tag} className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">{tag}</div>
                             ))}
                         </div>
-                    </MorphingPopoverContent>
-                </MorphingPopover>
+                    </ul>
+                </div>
             )}
+
         </React.Fragment>
     )
 }

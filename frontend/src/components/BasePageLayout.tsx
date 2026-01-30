@@ -37,7 +37,7 @@ export function BasePageLayout(
         <NavBar selectedTabId={props.selectedTabId} />
         {props.children}
         <div
-          className="toast toast-bottom toast-end z-[100]"
+          className="toast toast-bottom toast-end z-100"
           id="toastContainer"
         />
       </div>
