@@ -23,7 +23,7 @@ export function TagList(props: TagListProps) {
                         +{hiddenTags.length}
                     </div>
                     <ul className="dropdown-content z-100 invisible group-hover:visible mb-2">
-                        <div className="flex flex-col card card-sm bg-base-300/80 shadow-md gap-2 p-2 items-center w-auto rounded-lg">
+                        <div className="flex flex-col card card-sm bg-base-300/65 shadow-md gap-2 p-2 items-center w-auto rounded-lg">
                             {hiddenTags.map((tag) => (
                                 <div key={tag} className="badge badge-outline border-secondary text-secondary text-xs max-w-[90px] h-auto p-1">{tag}</div>
                             ))}

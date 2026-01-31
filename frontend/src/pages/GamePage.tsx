@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { type Game } from "../misc/interfaces";
-import { addGameToLibrary, getGameInfo } from "../misc/api_calls_functions";
+import { addGameToLibrary, getGameInfo, removeGameFromLibrary } from "../misc/api_calls_functions";
 import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
@@ -72,19 +72,26 @@ export function GamePage() {
                                     <div className="card-body">
                                         <div className="flex flex-row">
                                             <h2 className="card-title text-3xl">{game.title}</h2>
-                                            <button className="btn btn-info btn-soft w-auto ml-auto"
-                                                disabled={game.isOwned}
+                                            <button className={!game.isOwned ? "btn btn-info btn-soft w-auto ml-auto" : "btn btn-error btn-soft w-auto ml-auto"}
                                                 onClick={async () => {
-                                                    const response = await addGameToLibrary(game.id_game);
-                                                    showToastAlert(response.successful ? "success" : "error", response.message);
-                                                    if (response.successful) {
-                                                        //copies all properties from game except isOwned, which is explicitly specified
-                                                        setGame({...game, isOwned: true});
+                                                    if (!game.isOwned) {
+                                                        const response = await addGameToLibrary(game.id_game);
+                                                        showToastAlert(response.successful ? "success" : "error", response.message);
+                                                        if (response.successful) {
+                                                            await fetchGameInfo();
+                                                        }
+                                                    }
+                                                    else {
+                                                        const response = await removeGameFromLibrary(game.id_game);
+                                                        showToastAlert(response.successful ? "success" : "error", response.message);
+                                                        if (response.successful) {
+                                                            await fetchGameInfo();
+                                                        }
                                                     }
                                                 }}
                                             >
                                                 {game.isOwned ? (
-                                                    <p>Game owned</p>
+                                                    <p>Remove from library</p>
                                                 ) : (
                                                     <p>Add to library</p>
                                                 )}
@@ -94,7 +101,7 @@ export function GamePage() {
                                             <div className="w-9/10 flex flex-row items-stretch gap-4 mx-auto mt-3">
                                                 <div className="w-1/2 relative min-h-0">
                                                     <div className="absolute inset-0">
-                                                        <Carousel imgUrls={game.images}/>
+                                                        <Carousel imgUrls={game.images} />
                                                     </div>
                                                 </div>
                                                 <div className="w-1/2">
@@ -106,7 +113,6 @@ export function GamePage() {
                                                         imageUrl={game.horizontal_banner_URL}
                                                         numOfTagsToShow={numTagsVisible}
                                                         backgroundColor="base-300"
-                                                        hoverable={false}
                                                         imageHeight="h-auto"
                                                         cardHeight=""
                                                         showTitle={false}

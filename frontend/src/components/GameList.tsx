@@ -13,7 +13,7 @@ interface GameListProps {
 }
 
 export function GameList(props: GameListProps) {
-  const gridLayoutClasses = "grid lg:grid-cols-4 md:grid-cols-2 z-[1]";
+  const gridLayoutClasses = "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 z-[1]";
   const rowsLayoutClasses = "flex flex-col z-[1]";
   const gridLayoutCardClassname = "md:max-h-40 sm:max-h-30 lg:min-h-85 xl:max-h-100";
   const rowsLayoutCardClassname = "w-full grow";

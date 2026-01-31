@@ -525,3 +525,31 @@ export async function addGameToLibrary(
     return result;
   }
 }
+
+export async function removeGameFromLibrary(
+  gameId: number,
+): Promise<RigWizardResponse> {
+  try {
+    const response = await apiGames.get("removeGameFromLibrary.php", {
+      params: {
+        gameId: gameId,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.data;
+    const result: GameInfoResponse = {
+      successful: data["status"] === "success" ? true : false,
+      message: data["message"] || "no message from backend",
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameInfoResponse = {
+      successful: false,
+      message: "server error",
+    };
+    return result;
+  }
+}

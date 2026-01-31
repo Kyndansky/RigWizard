@@ -210,7 +210,7 @@ export function GameCollectionPage(props: MainPageProps) {
             </div>
           </motion.div>
 
-          <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto h-full">
+          <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto overflow-x-hidden h-full">
             <div className="flex flex-row items-center justify-between">
               <h1 className="text-xl font-bold">
                 {/* title with icon */}
