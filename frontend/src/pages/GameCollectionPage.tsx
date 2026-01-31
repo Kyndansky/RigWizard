@@ -10,7 +10,7 @@ import type { Game, GameCollectionResponse } from "../misc/interfaces";
 import { useUserComputer } from "../misc/UserComputerContextHandler";
 import { motion } from "motion/react";
 import Loader from "../components/Loader";
-
+import { GameCardSkeleton } from "../components/GameCardSkeleton";
 interface MainPageProps {
   gamesCollection: "Library" | "Shop";
   gameCollectionTitleText: string;
@@ -25,18 +25,18 @@ interface MainPageProps {
 }
 
 export function GameCollectionPage(props: MainPageProps) {
-  const gamesPerPage = 20;
   const [games, setGames] = useState<Game[] | undefined>(undefined);
   const [isLoadingGames, setIsLoadingGames] = useState<boolean>(true);
   const [tags, setTags] = useState<string[] | undefined>(undefined);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [gamesPerPage, setGamesPerPage] = useState<number>(50);
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const { userComputer, isLoadingUserComputer, fetchUserComputer } =
     useUserComputer();
   const [includeAllFiltersChecked, setIncludeAllFiltersChecked] =
     useState<boolean>(true);
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [maxPageNumber, setMaxPageNumber] = useState<number | undefined>(
     undefined,
   );
@@ -118,13 +118,15 @@ export function GameCollectionPage(props: MainPageProps) {
       clearTimeout(handler);
       controller.abort();
     };
-  }, [selectedTags, includeAllFiltersChecked, searchText]);
+  }, [selectedTags, includeAllFiltersChecked, searchText, gamesPerPage]);
 
 
   //returns what to show based on if the user is logged, has or doesn't have a config (in the section for the user's pc configuration)
   function renderUserPcSectionContent(): JSX.Element {
     if (isLoadingUserComputer) {
-      return <Loader />;
+      return (
+        <Loader />
+      );
     }
     let warningDivText = "You haven't set a computer configuration yet: many features will not be available.";
     if (!isAuthenticated) warningDivText = "You are not authenticated: you can't access this feature";
@@ -164,23 +166,6 @@ export function GameCollectionPage(props: MainPageProps) {
     )
   }
 
-  if (isLoading) {
-    return (
-      <React.Fragment>
-        <BasePageLayout
-          hideOverFlow={true}
-          selectedTabId={
-            props.gamesCollection === "Library"
-              ? 1
-              : 2
-          }
-        >
-          <Loader />
-        </BasePageLayout>
-      </React.Fragment>
-    );
-  }
-
   return (
     <React.Fragment>
       <BasePageLayout
@@ -209,7 +194,7 @@ export function GameCollectionPage(props: MainPageProps) {
               {renderUserPcSectionContent()}
             </div>
           </motion.div>
-
+          {/* Main content area showing the games */}
           <main className="col-span-12 lg:col-span-8 bg-base-300 px-8 pt-4 pb-20 overflow-y-auto overflow-x-hidden h-full">
             <div className="flex flex-row items-center justify-between">
               <h1 className="text-xl font-bold">
@@ -223,7 +208,6 @@ export function GameCollectionPage(props: MainPageProps) {
                       <Gamepad2 size={26} />
                     )}
                   </div>
-
                 </div>
               </h1>
               {/* button to change layout */}
@@ -241,25 +225,62 @@ export function GameCollectionPage(props: MainPageProps) {
                 </label>
               </button>
             </div>
-            {/* search bar */}
-            <div className="flex my-3 mb-4 w-full">
-              <label className="input w-10 focus:outline-none focus:ring-0">
-                <Search size={40} />
-              </label>
-              <input
-                type="search"
-                className="input grow w-auto focus:outline-none focus:ring-0"
-                required
-                placeholder="Search game title here"
-                value={searchText}
-                onChange={(e) => {
-                  setSearchText(e.target.value);
-                }}
-              />
+            {/* row containing search bar and game per page selector */}
+            <div className="flex flex-row w-full my-5 gap-2 items-center">
+              {/* search bar */}
+              <div className="flex flex-row w-full">
+                <label className="input w-10 focus:outline-none focus:ring-0">
+                  <Search size={40} />
+                </label>
+                <input
+                  type="search"
+                  className="input grow w-auto focus:outline-none focus:ring-0"
+                  required
+                  placeholder={"Search game title here"}
+                  value={searchText}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                  }}
+                />
+              </div>
+              <fieldset className="fieldset min-w-20 relative">
+                <legend className="fieldset-legend absolute -top-6.5 left-1/4">Items</legend>
+                <select className="select focus:outline-none focus:ring-0"
+                  value={gamesPerPage} onChange={(e) => setGamesPerPage(Number(e.target.value))}>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </fieldset>
             </div>
 
+
             {isLoadingGames ? (
-              <Loader />
+              <div className="w-full">
+                {layoutGrid === true ? (
+                  <div className="flex flex-col gap-5">
+                    <div className="flex flex-row w-full gap-5">
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                    </div>
+                    <div className="flex flex-row w-full gap-5">
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                      <GameCardSkeleton withImage={false} />
+                    </div>
+                  </div>
+
+                ) : (
+                  <div className="flex flex-col gap-4 w-full">
+                    <GameCardSkeleton withImage={true} />
+                    <GameCardSkeleton withImage={true} />
+                    <GameCardSkeleton withImage={true} />
+                  </div>
+                )}
+              </div>
             ) :
               (games === undefined || games.length === 0) ? (
                 <div className="flex flex-row grow items-center">
@@ -273,7 +294,8 @@ export function GameCollectionPage(props: MainPageProps) {
                   showRequirementsMetBadge={userComputer ? true : false}
                   showOwnedBadges={props.gamesCollection === "Shop" ? true : false}
                 />
-              )}
+              )
+            }
             {/* section for buttons to load more games */}
             {(games && games.length > 0) ? (
               <div className="flex items-center w-full mt-4">
@@ -391,7 +413,7 @@ export function GameCollectionPage(props: MainPageProps) {
                 type="reset"
                 value="x"
                 onClick={() => {
-                  if(selectedTags.length===0) return;
+                  if (selectedTags.length === 0) return;
                   setSelectedTags([]);
                 }}
               />

@@ -2,6 +2,7 @@ import React from "react";
 import type { Computer, Game } from "../misc/interfaces";
 import { Link } from "react-router-dom";
 import { GameInfoCard } from "./GameInfoCard";
+import { motion } from "motion/react";
 
 interface GameListProps {
   games: Game[];
@@ -12,6 +13,28 @@ interface GameListProps {
 
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: -50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    type: "spring",
+    stiffness: 120,
+    damping: 20,
+    mass: 0.8,
+  },
+} as const;
+
 export function GameList(props: GameListProps) {
   const gridLayoutClasses = "grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 z-[1]";
   const rowsLayoutClasses = "flex flex-col z-[1]";
@@ -19,8 +42,12 @@ export function GameList(props: GameListProps) {
   const rowsLayoutCardClassname = "w-full grow";
   return (
     <React.Fragment>
-      <div className={(props.layout === "grid" ? gridLayoutClasses : rowsLayoutClasses) + " gap-4"}>
-        {props.games?.map((game, index) => {
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className={(props.layout === "grid" ? gridLayoutClasses : rowsLayoutClasses) + " gap-4"}>
+        {props.games?.map((game) => {
           let numOfRequirementsMet: number = 0;
 
           if (props.userPc && game.pc_min_details) {
@@ -38,28 +65,41 @@ export function GameList(props: GameListProps) {
           }
 
           return (
-            <Link key={index} to={"/games/" + game.id_game}>
-              <GameInfoCard
-                numOfTagsToShow={3}
-                imagePlacement={props.layout === "grid" ? "image-full" : "card-side"}
-                name={game.title}
-                description={game.description}
-                tags={game.tags}
-                imageUrl={props.layout === "grid" ? game.vertical_banner_URL : game.horizontal_banner_URL}
-                backgroundColor="base-100"
-                imageHeight={props.layout === "rows" ? "min-w-3/7 max-w-3/7" : ""}
-                cardHeight={props.layout === "grid" ? gridLayoutCardClassname : rowsLayoutCardClassname}
-                showTitle={true}
-                id={game.id_game}
-                animate={true}
-                showGameOwnedBadge={(props.showOwnedBadges && game.isOwned) ?? false}
-                showRequirementsBadge={props.showRequirementsMetBadge}
-                requirementsMetBadgeColor={requirementsBadgeColor}
-              />
-            </Link>
+            <motion.div style={{ willChange: "transform" }}
+              layout="position"
+              transition={{
+                layout: {
+                  type: "spring",
+                  stiffness: 150,
+                  damping: 19,
+                  mass: 0.9,
+                }
+              }}
+              variants={itemVariants}
+            >
+              <Link key={game.id_game} to={"/games/" + game.id_game}>
+                <GameInfoCard
+                  numOfTagsToShow={3}
+                  imagePlacement={props.layout === "grid" ? "image-full" : "card-side"}
+                  name={game.title}
+                  description={game.description}
+                  tags={game.tags}
+                  imageUrl={props.layout === "grid" ? game.vertical_banner_URL : game.horizontal_banner_URL}
+                  backgroundColor="base-100"
+                  imageHeight={props.layout === "rows" ? "min-w-3/7 max-w-3/7" : ""}
+                  cardHeight={props.layout === "grid" ? gridLayoutCardClassname : rowsLayoutCardClassname}
+                  showTitle={true}
+                  id={game.id_game}
+                  animate={true}
+                  showGameOwnedBadge={(props.showOwnedBadges && game.isOwned) ?? false}
+                  showRequirementsBadge={props.showRequirementsMetBadge}
+                  requirementsMetBadgeColor={requirementsBadgeColor}
+                />
+              </Link>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </React.Fragment>
   )
 }

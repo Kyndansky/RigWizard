@@ -1,6 +1,5 @@
 import React, { type PropsWithChildren } from "react";
 import { TagList } from "./TagList";
-import { motion } from "motion/react";
 import { Check } from "lucide-react";
 interface GameInfoCardProps {
   name: string;
@@ -48,19 +47,11 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
   const badgePerformanceClassname = `badge badge-outline text-xs ${activeColors.badge}`;
   const performanceBadgeText = activeColors.text;
 
+
   return (
     <React.Fragment>
-      <motion.div
-        style={{ willChange: "transform" }}
-        layout="position"
-        initial={props.animate ? { y: 100, opacity: 0 } : {}}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 120,
-          damping: 20,
-          mass: 0.8,
-        }}
+      <div
+        
       >
         <div
           className={
@@ -78,7 +69,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             <img
               src={props.imageUrl && props.imageUrl !== "" ? props.imageUrl : 'https://placehold.co/600x400/000000/FFF?text='+props.name}
               onError={(e) => {
-                e.currentTarget.src = 'https://placehold.co/600x400/000000/FFF?text='+props.name;
+                e.currentTarget.src = 'https://placehold.co/600x250/000000/FFF?text='+props.name;
               }}
               alt="game image"
               className="w-full object-cover"
@@ -131,7 +122,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </React.Fragment>
   );
 }
