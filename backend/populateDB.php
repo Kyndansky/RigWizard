@@ -1,31 +1,6 @@
 <?php
 include('DBConnect.php');
 
-// $hardwareJson = file_get_contents(__DIR__ . '/data/hardwareData.json');
-// $hardwareData = json_decode($hardwareJson, true);
-// $gamesJson = file_get_contents(__DIR__ . '/data/gamesData.json');
-// $gamesData = json_decode($gamesJson, true);
-// $tagMap = [];
-
-// function populateTagsTable($dbConnection, $tags)
-// {
-//     $tagMap = [];
-//     $tag = "";
-//     //second part of the query allows us to retrieve the id of an existing tag if it already exists, which we need to put in tagMap (which in turn is needed to link games to tags in game_tags table)
-//     $stmt = $dbConnection->prepare("INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id_tag=LAST_INSERT_ID(id_tag)");
-//     $stmt->bind_param("s", $tag);
-//     foreach ($tags as $tag) {
-//         $stmt->execute();
-//         $tagId = $dbConnection->insert_id;
-//         $tagMap[$tag] = $tagId;
-//     }
-//     return $tagMap;
-// }
-
-// $tagMap = populateTagsTable($dbConnection, $gamesData["tags"]);
-
-// exit();
-
 $sql_script = "
 USE `rigwizard`;
 
