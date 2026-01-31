@@ -37,7 +37,7 @@ $sql_games = "SELECT g.*
 // If there are filters, join the tags tables
 if (!empty($filters)) {
     $sql_games .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-              LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+              LEFT JOIN tags t ON tg.id_tag = t.id_tag";
 }
 
 // Sostituisco variabile con placeholder
@@ -93,7 +93,7 @@ $sql_total_base = "SELECT g.id_game
 // If there are filters, join the tags tables
 if (!empty($filters)) {
     $sql_total_base .= " LEFT JOIN game_tags tg ON g.id_game = tg.id_game
-                           LEFT JOIN tag t ON tg.id_tag = t.id_tag";
+                           LEFT JOIN tags t ON tg.id_tag = t.id_tag";
 }
 
 $sql_total_base .= " WHERE u.username = ?";
@@ -133,7 +133,7 @@ $sql_totalGames = "SELECT COUNT(*) AS total_games FROM ($sql_total_base) AS subq
 // query to get tags for user's games
 $sql_tags = "SELECT tg.id_game, t.name AS tag_name
              FROM game_tags tg
-             JOIN tag t ON tg.id_tag = t.id_tag
+             JOIN tags t ON tg.id_tag = t.id_tag
              JOIN user_games ug ON tg.id_game = ug.id_game
              JOIN users u ON ug.id_user = u.id
              WHERE u.username = ?";

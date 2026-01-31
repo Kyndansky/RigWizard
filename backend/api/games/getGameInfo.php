@@ -65,7 +65,7 @@ if ($result && $result->num_rows > 0) {
     // Fetch tags associated with the game
     $sql_tags = "SELECT t.id_tag, t.name 
                  FROM game_tags gt
-                 JOIN tag t ON gt.id_tag = t.id_tag
+                 JOIN tags t ON gt.id_tag = t.id_tag
                  WHERE gt.id_game = ?";
 
     $stmt_tags = $dbConnection->prepare($sql_tags);

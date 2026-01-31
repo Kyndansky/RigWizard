@@ -1,29 +1,30 @@
 <?php
-
-$hardwareJson = file_get_contents(__DIR__ . '/data/hardwareData.json');
-$hardwareData = json_decode($hardwareJson, true);
-$gamesJson = file_get_contents(__DIR__ . '/data/gamesData.json');
-$gamesData = json_decode($gamesJson, true);
-$tagMap = [];
 include('DBConnect.php');
 
-function populateTagsTable($dbConnection, $tags, $tagMap)
-{
-    $tagMap = [];
-    $tag = "";
-    //second part of the query allows us to retrieve the id of an existing tag if it already exists, which we need to put in tagMap (which in turn is needed to link games to tags in game_tags table)
-    $stmt = $dbConnection->prepare("INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id_tag=LAST_INSERT_ID(id_tag)");
-    $stmt->bind_param("s", $tag);
-    foreach ($tags as $tag) {
-        $stmt->execute();
-        $tagId = $dbConnection->insert_id;
-        $tagMap[$tag] = $tagId;
-    }
-    return $tagMap;
-}
-$tagMap = [];
-populateTagsTable($dbConnection, $gamesData["tags"], $tagMap);
-exit();
+// $hardwareJson = file_get_contents(__DIR__ . '/data/hardwareData.json');
+// $hardwareData = json_decode($hardwareJson, true);
+// $gamesJson = file_get_contents(__DIR__ . '/data/gamesData.json');
+// $gamesData = json_decode($gamesJson, true);
+// $tagMap = [];
+
+// function populateTagsTable($dbConnection, $tags)
+// {
+//     $tagMap = [];
+//     $tag = "";
+//     //second part of the query allows us to retrieve the id of an existing tag if it already exists, which we need to put in tagMap (which in turn is needed to link games to tags in game_tags table)
+//     $stmt = $dbConnection->prepare("INSERT INTO tags (name) VALUES (?) ON DUPLICATE KEY UPDATE id_tag=LAST_INSERT_ID(id_tag)");
+//     $stmt->bind_param("s", $tag);
+//     foreach ($tags as $tag) {
+//         $stmt->execute();
+//         $tagId = $dbConnection->insert_id;
+//         $tagMap[$tag] = $tagId;
+//     }
+//     return $tagMap;
+// }
+
+// $tagMap = populateTagsTable($dbConnection, $gamesData["tags"]);
+
+// exit();
 
 $sql_script = "
 USE `rigwizard`;
@@ -231,7 +232,7 @@ INSERT IGNORE INTO `games` (`title`, `release_year`, `publisher`, `price`, `desc
 ('Disco Elysium', 2019, 'ZA/UM', 39.99, 'RPG investigativo con un sistema di abilità unico.', 'Disco Elysium - The Final Cut è un rivoluzionario gioco di ruolo. Sei un detective con un sistema di abilità unico a tua disposizione e un intero quartiere cittadino da esplorare. Interroga personaggi indimenticabili, risolvi omicidi o accetta mazzette.', 3, 1, 'ZA/UM'),
 ('Apex Legends', 2019, 'Electronic Arts', 0.00, 'Battle royale a squadre con personaggi unici.', 'Domina con stile in Apex Legends, uno sparatutto Battle Royale gratuito in cui personaggi leggendari con abilità potenti si scontrano.', 5, 1, 'Respawn Entertainment');
 -- TAGS
-INSERT IGNORE INTO `tag` (`name`) VALUES 
+INSERT IGNORE INTO `tags` (`name`) VALUES 
 ('Adventure'), ('Platformer'), ('Survival'), ('Souls-like'), ('Dark Fantasy'), 
 ('Strategy'), ('Turn-Based'), ('Metroidvania'), ('Roguelike'), ('Building'), 
 ('Farming Sim'), ('First-Person'), ('Third-Person'), ('Atmospheric'), ('Story Rich'), 
