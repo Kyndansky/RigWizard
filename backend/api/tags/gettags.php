@@ -4,7 +4,7 @@ require_once "../../DBConnect.php";
 
 
 //  tag Name (for display), ordered alphabetically
-$sql_tags = "SELECT name FROM tag ORDER BY name ASC";
+$sql_tags = "SELECT name FROM tags ORDER BY name ASC";
 $result = $dbConnection->query($sql_tags);
 
 $tags = [];

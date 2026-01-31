@@ -106,7 +106,7 @@ CREATE TABLE `games` (
 );
 
 -- Tags
-CREATE TABLE `tag` (
+CREATE TABLE `tags` (
     `id_tag` INT(11) NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY (`id_tag`)
@@ -118,7 +118,7 @@ CREATE TABLE `game_tags` (
     `id_tag` INT(11) NOT NULL,
     PRIMARY KEY (`id_game`, `id_tag`),
     FOREIGN KEY (`id_game`) REFERENCES `games`(`id_game`) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (`id_tag`) REFERENCES `tag`(`id_tag`) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (`id_tag`) REFERENCES `tags`(`id_tag`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- User_Games 
