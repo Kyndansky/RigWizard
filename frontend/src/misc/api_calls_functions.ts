@@ -59,9 +59,9 @@ export async function getIsLoggedIn(): Promise<UserInfoResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: UserInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       username: data["username"],
     };
@@ -85,9 +85,9 @@ export async function logout(): Promise<RigWizardResponse> {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.data;
+    const data = response.data;
     const result: RigWizardResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
     };
     return result;
@@ -113,10 +113,10 @@ export async function register(
         "Content-Type": "application/json",
       },
     });
-    const data = await response.data;
+    const data = response.data;
 
     const result: UserInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       username: data["username"],
     };
@@ -144,9 +144,9 @@ export async function login(
         "Content-Type": "application/json",
       },
     });
-    const data = await response.data;
+    const data = response.data;
     const result: UserInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       username: data["username"],
     };
@@ -188,9 +188,9 @@ export async function getLibraryGames(
       },
     );
 
-    const data = await response.data;
+    const data = response.data;
     const result: GameCollectionResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       games: data["games"],
       totalNumberOfGames: data["total_games"] || 0,
@@ -209,8 +209,8 @@ export async function getLibraryGames(
     }
 
     const result: GameCollectionResponse = {
-      successful: false,
-      message: "server error",
+      successful: true,
+      message: "cancelled request",
       games: [],
       totalNumberOfGames: 0,
     };
@@ -245,9 +245,9 @@ export async function getShopGames(
       },
     );
 
-    const data = await response.data;
+    const data = response.data;
     const result: GameCollectionResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       games: data["games"],
       totalNumberOfGames: data["total_games"] || 0,
@@ -266,8 +266,8 @@ export async function getShopGames(
     }
 
     const result: GameCollectionResponse = {
-      successful: false,
-      message: "server error",
+      successful: true,
+      message: "cancelled request",
       games: [],
       totalNumberOfGames: 0,
     };
@@ -283,9 +283,9 @@ export async function getTags(): Promise<TagCollectionResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: TagCollectionResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       tags: data.tags || [],
     };
@@ -313,9 +313,9 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     let result: GameInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       game: data["game"] ?
         {
@@ -344,10 +344,10 @@ export async function getUserPc(): Promise<ComputerInfoResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
 
     const result: ComputerInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       computer: data["computer"],
     };
@@ -370,9 +370,9 @@ export async function getMotherboards(): Promise<MotherBoardListResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: MotherBoardListResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       motherboards: data.motherboards,
     };
@@ -395,9 +395,9 @@ export async function getCpus(): Promise<CpuListResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: CpuListResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       cpus: data.cpus,
     };
@@ -421,9 +421,9 @@ export async function getGpus(): Promise<GpuListResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: GpuListResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       gpus: data.gpus,
     };
@@ -447,9 +447,9 @@ export async function getRams(): Promise<RamListResponse> {
       },
     });
 
-    const data = await response.data;
+    const data = response.data;
     const result: RamListResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
       rams: data.rams,
     };
@@ -478,14 +478,17 @@ export async function editPcConfiguration(
       id_cpu,
       id_gpu,
       id_motherboard,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const data = await response.data;
+    const data = response.data;
     const result: RigWizardResponse = {
-      successful: data["status"] === "success" ? true : false,
+      successful: data["successful"],
       message: data["message"],
     };
     return result;
@@ -511,15 +514,15 @@ export async function addGameToLibrary(
         "Content-Type": "application/json",
       },
     });
-    const data = await response.data;
-    const result: GameInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
-      message: data["message"] || "no message from backend",
+    const data = response.data;
+    const result: RigWizardResponse = {
+      successful: data["successful"],
+      message: data["message"],
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GameInfoResponse = {
+    const result: RigWizardResponse = {
       successful: false,
       message: "server error",
     };
@@ -539,15 +542,15 @@ export async function removeGameFromLibrary(
         "Content-Type": "application/json",
       },
     });
-    const data = await response.data;
-    const result: GameInfoResponse = {
-      successful: data["status"] === "success" ? true : false,
+    const data = response.data;
+    const result: RigWizardResponse = {
+      successful: data["successful"],
       message: data["message"] || "no message from backend",
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GameInfoResponse = {
+    const result: RigWizardResponse = {
       successful: false,
       message: "server error",
     };
@@ -555,27 +558,27 @@ export async function removeGameFromLibrary(
   }
 }
 
-export async function changeUserPassword(oldPassword: string, newPassword:string): Promise<RigWizardResponse> {
+export async function changeUserPassword(oldPassword: string, newPassword: string): Promise<RigWizardResponse> {
   try {
     const response = await apiAuth.post("changePassword.php",
       {
-        current_password:oldPassword,
-        new_password:newPassword
+        current_password: oldPassword,
+        new_password: newPassword
       },
       {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.data;
-    const result: GameInfoResponse = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    const data = response.data;
+    const result: RigWizardResponse = {
       successful: data["successful"],
       message: data["message"] || "no message from backend",
     };
     return result;
   } catch (error) {
     console.log("error from php server:", error);
-    const result: GameInfoResponse = {
+    const result: RigWizardResponse = {
       successful: false,
       message: "server error",
     };

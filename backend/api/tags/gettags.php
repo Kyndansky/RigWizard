@@ -16,7 +16,7 @@ if ($result) {
     }
 }
 $response=[
-    'status' => 'success',
+    "successful" => true,
     'message' => 'Tags retrieved successfully',
     'tags'=>$tags
 ];

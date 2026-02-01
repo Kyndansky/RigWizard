@@ -10,7 +10,7 @@ if (!isset($_SESSION)) {
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 if ($username === "") {
     $response = [
-        'status' => 'error',
+        "successful"=>false,
         'message' => 'You must be authenticated to do this'
     ];
     echo json_encode($response);
@@ -44,7 +44,7 @@ if ($id_game > 0 && $username !== '') {
         // Execute query and set success response
         if ($stmt_add->execute()) {
             $response = [
-                'status' => 'success',
+                "successful" => true,
                 'message' => 'Game added to library'
             ];
             echo json_encode($response);
@@ -52,7 +52,7 @@ if ($id_game > 0 && $username !== '') {
             exit;
         } else {
             $response = [
-                'status' => 'error',
+                "successful"=>false,
                 'message' => 'Error while adding game to user library'
             ];
             echo json_encode($response);
@@ -65,7 +65,7 @@ if ($id_game > 0 && $username !== '') {
     }
 }
 $response = [
-    'status' => 'error',
+    "successful"=>false,
     'message' => 'Error while adding game to library'
 ];
 echo json_encode($response, JSON_PRETTY_PRINT);

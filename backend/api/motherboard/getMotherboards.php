@@ -16,13 +16,13 @@ if ($result && $result->num_rows > 0) {
         ];
     }
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "Motherboards retrieved successfully",
         "motherboards" => $motherboards
     ];
 } else {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "No motherboards found",
         "motherboards" => []
     ];

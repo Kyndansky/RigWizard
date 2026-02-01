@@ -6,7 +6,7 @@ require_once "../../DBConnect.php";
 $id_game = isset($_GET["gameId"]) ? (int) $_GET["gameId"] : 0;
 if ($id_game === 0) {
     $response = [
-        'status' => 'error',
+        "successful" => false,
         'message' => 'Invalid game ID'
     ];
     echo json_encode($response);
@@ -18,7 +18,7 @@ if (!isset($_SESSION))
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 if ($username === "") {
     $response = [
-        'status' => 'error',
+        "successful" => false,
         'message' => 'You must be authenticated to do this'
     ];
     echo json_encode($response);
@@ -44,7 +44,7 @@ if ($result_user && $result_user->num_rows > 0) {
 
     if ($stmt_remove->execute()) {
         $response = [
-            'status' => 'success',
+            "successful" => true,
             'message' => 'Game removed from library'
         ];
         echo json_encode($response);
@@ -52,7 +52,7 @@ if ($result_user && $result_user->num_rows > 0) {
         exit;
     } else {
         $response = [
-            'status' => 'error',
+            "successful" => false,
             'message' => 'Error while removing game from user library'
         ];
         echo json_encode($response);
@@ -64,7 +64,7 @@ if ($result_user && $result_user->num_rows > 0) {
 }
 
 $response = [
-    'status' => 'error',
+    "successful" => false,
     'message' => 'Error while removing game from library'
 ];
 echo json_encode($response, JSON_PRETTY_PRINT);

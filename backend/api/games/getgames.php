@@ -188,7 +188,7 @@ unset($game);
 
 // Final response
 $response = [
-    'status' => 'success',
+    "successful" => true,
     'message' => 'Games retrieved successfully',
     'games' => $games_list,
     'total_games' => $total_games,

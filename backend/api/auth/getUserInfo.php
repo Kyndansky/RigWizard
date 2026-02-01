@@ -5,15 +5,15 @@ if (!isset($_SESSION))
 
 if (isset($_SESSION['username'])) {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "User is logged in",
         "username" => $_SESSION['username']
     ];
 } else {
     $response = [
-        "status" => "error",
+        "successful" => false,
         "message" => "User is not logged in",
-        "username"=>""
+        "username" => ""
     ];
 }
 echo json_encode($response);

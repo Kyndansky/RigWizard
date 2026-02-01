@@ -27,7 +27,7 @@ export const tabItems: TabItem[] = [
 export function NavBar(props: NavBarProps) {
     const location = useLocation();
     const navigate = useNavigate();
-    const { isAuthenticated, setIsAuthenticated, username } =
+    const { isAuthenticated, setIsAuthenticated, username, setUsername, isLoadingAuthState } =
         useAuth();
     const [theme, setTheme] = useState<"light" | "dark">("dark");
     return (
@@ -76,7 +76,7 @@ export function NavBar(props: NavBarProps) {
                         {/* moon icon */}
                         <Moon className="swap-on" size={30} />
                     </label>
-                    {isAuthenticated ? (
+                    {isAuthenticated === true && username !== "" && !isLoadingAuthState ? (
                         //Profile info section
                         <div className="dropdown dropdown-end z-100">
                             <div tabIndex={0} role="button" className="btn btn-ghost flex items-center gap-2">
@@ -100,6 +100,7 @@ export function NavBar(props: NavBarProps) {
                                     const logoutResponse = await logout();
                                     if (logoutResponse.successful) {
                                         setIsAuthenticated(false);
+                                        setUsername("");
                                         window.location.reload();
                                     }
 

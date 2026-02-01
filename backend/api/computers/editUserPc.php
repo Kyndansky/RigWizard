@@ -10,7 +10,7 @@ $username = $_SESSION["username"] ?? '';
 // Check if user is logged in
 if (empty($username)) {
     echo json_encode([
-        "status" => "error",
+        "successful" => false,
         "message" => "User not logged in"
     ]);
     exit;
@@ -26,7 +26,7 @@ $id_gpu = $data['id_gpu'] ?? null;
 $config_default_name = "config";
 // Validate input
 if (!$id_ram || !$id_motherboard || !$id_cpu || !$id_gpu) {
-    echo json_encode(["status" => "error", "message" => "Missing components IDs"]);
+    echo json_encode(["successful" => false, "message" => "Missing components IDs"]);
     exit;
 }
 // Check if user already has a PC configuration
@@ -54,12 +54,12 @@ if ($existing_pc_id) {
 
     if ($stmt_update->execute()) {
         $response = [
-            "status" => "success",
+            "successful" => true,
             "message" => "Successfully updated pc configuration"
         ];
     } else {
         $response = [
-            "status" => "error",
+            "successful" => false,
             "message" => "Error while updating pc configuration: " . $dbConnection->error
         ];
     }
@@ -67,13 +67,13 @@ if ($existing_pc_id) {
 } else {
     $sql = "INSERT INTO pc (config_name, id_ram, id_motherboard, id_cpu, id_gpu) 
             VALUES (?, ?, ?, ?, ?)";
-    
+
     $stmt_insert = $dbConnection->prepare($sql);
     $stmt_insert->bind_param("siiii", $config_default_name, $id_ram, $id_motherboard, $id_cpu, $id_gpu);
-    
+
     if ($stmt_insert->execute()) {
         $new_pc_id = $dbConnection->insert_id;
-        $stmt_insert->close(); 
+        $stmt_insert->close();
 
         $updateUser = "UPDATE users SET id_main_pc = ? WHERE username = ?";
         $stmt_link = $dbConnection->prepare($updateUser);
@@ -82,12 +82,12 @@ if ($existing_pc_id) {
         $stmt_link->close();
 
         $response = [
-            "status" => "success",
+            "successful" => true,
             "message" => "Pc created successfully"
         ];
     } else {
         $response = [
-            "status" => "error",
+            "successful" => false,
             "message" => "Error during creation of pc configuration: " . $dbConnection->error
         ];
         $stmt_insert->close();

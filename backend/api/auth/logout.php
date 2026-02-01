@@ -5,14 +5,14 @@ if (!isset($_SESSION))
 
 if (!isset($_SESSION["username"]) || $_SESSION["username"] === "") {
     echo json_encode([
-        "status" => "error",
+        "successful" => false,
         "message" => "The user was not authenticated"
     ]);
     exit();
 }
 session_destroy();
 echo json_encode([
-    "status" => "success",
+    "successful" => true,
     "message" => "Logged out successfully"
 ]);
 exit();

@@ -69,14 +69,14 @@ if ($result && $result->num_rows > 0) {
     ];
 
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "User computer retrieved successfully",
         "computer" => $response_data
     ];
     $stmt->close();
 } else {
     $response = [
-        "status" => "success",
+        "successful" => false,
         "message" => "No computer found for this user",
         "computer" => null
     ];

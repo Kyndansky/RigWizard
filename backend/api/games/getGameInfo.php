@@ -90,7 +90,7 @@ if ($result && $result->num_rows > 0) {
     $gameInfo['images'] = getGameImages($gameId);
     $gameInfo['isOwned'] = $isOwned;
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "Game information retrieved successfully",
         "game" => $gameInfo
     ];
@@ -102,7 +102,7 @@ if ($result && $result->num_rows > 0) {
     }
     
     $response = [
-        "status" => "error",
+        "successful" => false,
         "message" => "Game not found",
     ];
     echo json_encode($response);

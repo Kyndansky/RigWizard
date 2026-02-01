@@ -21,13 +21,13 @@ if ($result && $result->num_rows > 0) {
     ];
 }
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "GPUs retrieved successfully",
         "gpus" => $gpus
     ];
 } else {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "No GPUs found",
         "gpus" => []
     ];

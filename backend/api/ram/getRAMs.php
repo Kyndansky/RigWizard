@@ -17,13 +17,13 @@ if ($result && $result->num_rows > 0) {
         ];
     }
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "Rams retrieved successfully",
         "rams" => $rams
     ];
 } else {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "No rams found",
         "rams" => []
     ];

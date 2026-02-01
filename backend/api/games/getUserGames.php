@@ -12,7 +12,7 @@ $username = $_SESSION["username"] ?? '';
 if ($username == "") {
     echo json_encode(
         [
-            'status' => 'error',
+            "successful" => false,
             'message' => 'User must be logged in to access library',
             'games' => []
         ]
@@ -199,7 +199,7 @@ unset($game);
 
 // Final response
 $response = [
-    'status' => 'success',
+    "successful" => true,
     'message' => 'User games retrieved successfully',
     'games' => $games_list,
     'total_games' => $total_games,

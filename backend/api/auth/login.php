@@ -12,7 +12,7 @@ $input_password = $password;
 
 if (!isset($username) || !isset($password)) {
     $response = [
-        "status" => "error",
+        "successful" => false,
         "message" => "Username and password are required"
     ];
     echo json_encode($response);
@@ -29,7 +29,7 @@ $result = $stmt->get_result();
 //checks if the user exists
 if ($result->num_rows < 1) {
     $response = [
-        "status" => "error",
+        "successful" => false,
         "message" => "User does not exist"
     ];
     echo json_encode($response);
@@ -42,7 +42,7 @@ $stmt->close();
 
 if (password_verify($input_password, $dbPass) === false) {
     $response = [
-        "status" => "error",
+        "successful" => false,
         "message" => "Incorrect password",
 
     ];
@@ -50,7 +50,7 @@ if (password_verify($input_password, $dbPass) === false) {
     exit();
 } else {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "Login successful",
         "username" => $username
     ];
@@ -61,6 +61,4 @@ if (!isset($_SESSION))
     session_start();
 
 $_SESSION['username'] = $username;
-
-//sends the response back to the client
 echo json_encode($response);

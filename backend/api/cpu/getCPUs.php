@@ -23,13 +23,13 @@ if ($result && $result->num_rows > 0) {
         ];
     }
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "CPUs retrieved successfully",
         "cpus" => $cpus
     ];
 } else {
     $response = [
-        "status" => "success",
+        "successful" => true,
         "message" => "No CPUs found", 
         "cpus" => []
     ];

@@ -7,7 +7,7 @@ $json_data = file_get_contents('php://input');
 $data = json_decode($json_data, true);
 if (!is_array($data)) {
     $response = [
-        "status" => "error",
+        "succesful" => false,
         "message" => "Username and password are required",
         "username" => ""
     ];
@@ -23,7 +23,7 @@ $input_password = $password;
 
 if (!$username || !$password) {
     $response = [
-        "status" => "error",
+        "succesful" => false,
         "message" => "Username and password are required",
         "username" => ""
     ];
@@ -43,7 +43,7 @@ $userCount = $row[0];
 
 if ($userCount > 0) {
     $response = [
-        "status" => "error",
+        "succesful" => false,
         "message" => "User already exists",
         "username" => "",
     ];
@@ -56,15 +56,15 @@ $stmt = $dbConnection->prepare("INSERT INTO users (username, password_hash) VALU
 $hashed_password = password_hash($input_password, PASSWORD_BCRYPT);
 $stmt->bind_param("ss", $username, $hashed_password);
 $stmt->execute();
-$response=[
-    "status" => "success",
-        "message" => "User registered successfully",
-        "username" => $username,
+$response = [
+    "successful" => true,
+    "message" => "User registered successfully",
+    "username" => $username,
 ];
-if(!isset($_SESSION)){
+if (!isset($_SESSION)) {
     session_start();
 }
-$_SESSION["username"]=$username;
+$_SESSION["username"] = $username;
 echo json_encode($response);
 $stmt->close();
 $dbConnection->close();
