@@ -3,7 +3,7 @@ import { getIsLoggedIn } from "./api_calls_functions";
 
 export interface AuthInfo{
     isAuthenticated:boolean;
-    isLoading:boolean;
+    isLoadingAuthState:boolean;
     setIsAuthenticated:(isAuthenticated:boolean)=>void;
     username?:string
 }
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthInfo | undefined>(undefined);
 //(it contains info like if the user is logged in etc..)
 export function AuthProvider({children}:{children:ReactNode}){
     const [isAuthenticated,setIsAuthenticated]=useState(false);
-    const [isLoading,setIsLoading]=useState(true);
+    const [isLoadingAuthState,setIsLoadingAuthState]=useState(true);
     const [username,setUsername]=useState<string>("");
 
     useEffect(()=>{
@@ -25,11 +25,11 @@ export function AuthProvider({children}:{children:ReactNode}){
             const response=await getIsLoggedIn();
             setIsAuthenticated(response.successful);
             setUsername(response.username);
-            setIsLoading(false);
+            setIsLoadingAuthState(false);
         })();
     },[]);
 
-    const contextValue={isAuthenticated,isLoading,setIsAuthenticated,username};
+    const contextValue={isAuthenticated,isLoadingAuthState: isLoadingAuthState,setIsAuthenticated,username};
 
     return(
         <AuthContext value={contextValue}>

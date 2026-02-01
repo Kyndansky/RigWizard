@@ -36,7 +36,7 @@ export function Register() {
 
     return (
         <React.Fragment>
-            <BasePageLayout hideOverFlow={true}>
+            <BasePageLayout >
                 {isAuthenticated ?
                     (<Navigate to={"/"} />) :
                     (<CredentialsCard

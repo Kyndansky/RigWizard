@@ -2,7 +2,6 @@ import React from "react";
 import NavBar from "./NavBar";
 
 interface BasePageLayoutProps {
-  hideOverFlow: boolean;
   selectedTabId?: number;
 }
 

@@ -8,7 +8,7 @@ import { Navigate } from "react-router-dom";
 
 export function Login() {
   //states regarding authentication taken from the AuthContextHandler
-  const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, isLoadingAuthState, setIsAuthenticated } = useAuth();
 
   //local states
   const [username, setUsername] = useState<string>("");
@@ -28,7 +28,7 @@ export function Login() {
 
   //returns loading if the frontend still doesn't know (which means it hasn't received info from the backend yet)
   //if the user is logged in.
-  if (isLoading) {
+  if (isLoadingAuthState) {
     return <Loader />;
   }
 
@@ -40,7 +40,7 @@ export function Login() {
   //if the user is not authenticated displays the actual login page
   return (
     <React.Fragment>
-      <BasePageLayout hideOverFlow={true}>
+      <BasePageLayout>
       {isAuthenticated ? (<Navigate to={"/"} />) : (
         <CredentialsCard
           cardtitle="Login"

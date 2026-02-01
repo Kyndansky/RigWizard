@@ -90,7 +90,6 @@ export function GameList(props: GameListProps) {
                   cardHeight={props.layout === "grid" ? gridLayoutCardClassname : rowsLayoutCardClassname}
                   showTitle={true}
                   id={game.id_game}
-                  animate={true}
                   showGameOwnedBadge={(props.showOwnedBadges && game.isOwned) ?? false}
                   showRequirementsBadge={props.showRequirementsMetBadge}
                   requirementsMetBadgeColor={requirementsBadgeColor}

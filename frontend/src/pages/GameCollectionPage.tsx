@@ -169,7 +169,6 @@ export function GameCollectionPage(props: MainPageProps) {
   return (
     <React.Fragment>
       <BasePageLayout
-        hideOverFlow={true}
         selectedTabId={
           props.gamesCollection === "Library"
             ? 1

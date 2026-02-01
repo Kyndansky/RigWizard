@@ -56,13 +56,13 @@ export function GamePage() {
 
     if (isLoading) {
         return (
-            <BasePageLayout hideOverFlow={false}>
+            <BasePageLayout>
                 <Loader />
             </BasePageLayout>
         );
     }
     return (
-        <BasePageLayout hideOverFlow={true}>
+        <BasePageLayout>
             {game &&
                 (
                     <React.Fragment>
@@ -117,7 +117,6 @@ export function GamePage() {
                                                         cardHeight=""
                                                         showTitle={false}
                                                         id={game.id_game}
-                                                        animate={false}
                                                         showRequirementsBadge={false}
                                                         showGameOwnedBadge={false}
                                                     />
@@ -127,7 +126,7 @@ export function GamePage() {
                                             {/* example of extended description which will be removed later */}
                                             <div className="collapse collapse-arrow mt-3 w-full mx-auto">
                                                 <input type="checkbox" className="peer" defaultChecked={true} />
-                                                <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-300 w-fit">
+                                                <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-300">
                                                     Show description
                                                 </div>
                                                 <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-300">
@@ -144,7 +143,7 @@ export function GamePage() {
                                 {/* pc requirements */}
                                 <div className="collapse collapse-arrow mt-5 w-full mx-auto mb-5">
                                     <input type="checkbox" className="peer" defaultChecked={true} />
-                                    <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-100 w-fit">
+                                    <div className="collapse-title bg-base-200 w-full peer-checked:bg-base-100">
                                         Requirements
                                     </div>
                                     <div className="collapse-content bg-base-200 w-full peer-checked:bg-base-100">

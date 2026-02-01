@@ -196,10 +196,10 @@ export async function getLibraryGames(
       totalNumberOfGames: data["total_games"] || 0,
     };
     //we set the banner image for each game
-    if(result.games){
+    if (result.games) {
       result.games.forEach(game => {
-        game.vertical_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_vertical.png"
-        game.horizontal_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_horizontal.png"
+        game.vertical_banner_URL = import.meta.env.VITE_BACKEND_IMGS_URL + game.id_game.toString() + "/banner_vertical.png"
+        game.horizontal_banner_URL = import.meta.env.VITE_BACKEND_IMGS_URL + game.id_game.toString() + "/banner_horizontal.png"
       });
     }
     return result;
@@ -253,10 +253,10 @@ export async function getShopGames(
       totalNumberOfGames: data["total_games"] || 0,
     };
     //we set the banner image for each game
-    if(result.games){
+    if (result.games) {
       result.games.forEach(game => {
-        game.vertical_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_vertical.png"
-        game.horizontal_banner_URL=import.meta.env.VITE_BACKEND_IMGS_URL+game.id_game.toString()+"/banner_horizontal.png"
+        game.vertical_banner_URL = import.meta.env.VITE_BACKEND_IMGS_URL + game.id_game.toString() + "/banner_vertical.png"
+        game.horizontal_banner_URL = import.meta.env.VITE_BACKEND_IMGS_URL + game.id_game.toString() + "/banner_horizontal.png"
       });
     }
     return result;
@@ -317,12 +317,13 @@ export async function getGameInfo(gameId: number): Promise<GameInfoResponse> {
     let result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
       message: data["message"],
-      game: data["game"] ? 
-      { ...data["game"], 
-        horizontal_banner_URL: import.meta.env.VITE_BACKEND_IMGS_URL+gameId.toString()+"/banner_horizontal.png",
-        vertical_banner_URL:import.meta.env.VITE_BACKEND_IMGS_URL+gameId.toString()+"/banner_vertical.png"
-      }
-       : undefined
+      game: data["game"] ?
+        {
+          ...data["game"],
+          horizontal_banner_URL: import.meta.env.VITE_BACKEND_IMGS_URL + gameId.toString() + "/banner_horizontal.png",
+          vertical_banner_URL: import.meta.env.VITE_BACKEND_IMGS_URL + gameId.toString() + "/banner_vertical.png"
+        }
+        : undefined
     };
     return result;
   } catch (error) {
@@ -541,6 +542,34 @@ export async function removeGameFromLibrary(
     const data = await response.data;
     const result: GameInfoResponse = {
       successful: data["status"] === "success" ? true : false,
+      message: data["message"] || "no message from backend",
+    };
+    return result;
+  } catch (error) {
+    console.log("error from php server:", error);
+    const result: GameInfoResponse = {
+      successful: false,
+      message: "server error",
+    };
+    return result;
+  }
+}
+
+export async function changeUserPassword(oldPassword: string, newPassword:string): Promise<RigWizardResponse> {
+  try {
+    const response = await apiAuth.post("changePassword.php",
+      {
+        current_password:oldPassword,
+        new_password:newPassword
+      },
+      {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.data;
+    const result: GameInfoResponse = {
+      successful: data["successful"],
       message: data["message"] || "no message from backend",
     };
     return result;

@@ -11,7 +11,7 @@ function App() {
   const secondaryTextClassname = "text-secondary text-5xl";
   return (
     <React.Fragment>
-      <BasePageLayout hideOverFlow={true} >
+      <BasePageLayout>
         <motion.div
           className="absolute bottom-125 left-15 h-[600px] w-[600px] rounded-full bg-primary/25 blur-[200px]"
           initial={{ opacity: 0 }}

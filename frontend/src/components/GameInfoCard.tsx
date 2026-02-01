@@ -13,7 +13,6 @@ interface GameInfoCardProps {
   cardHeight: string;
   showTitle: boolean;
   id: number;
-  animate: boolean;
   showGameOwnedBadge: boolean;
   showRequirementsBadge: boolean;
   requirementsMetBadgeColor?: "warning" | "success" | "error";
@@ -51,7 +50,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
   return (
     <React.Fragment>
       <div
-        
+
       >
         <div
           className={
@@ -67,9 +66,9 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
         >
           <figure className={props.imageHeight}>
             <img
-              src={props.imageUrl && props.imageUrl !== "" ? props.imageUrl : 'https://placehold.co/600x400/000000/FFF?text='+props.name}
+              src={props.imageUrl && props.imageUrl !== "" ? props.imageUrl : 'https://placehold.co/600x400/000000/FFF?text=' + props.name}
               onError={(e) => {
-                e.currentTarget.src = 'https://placehold.co/600x250/000000/FFF?text='+props.name;
+                e.currentTarget.src = 'https://placehold.co/600x250/000000/FFF?text=' + props.name;
               }}
               alt="game image"
               className="w-full object-cover"
@@ -81,7 +80,7 @@ export function GameInfoCard(props: PropsWithChildren<GameInfoCardProps>) {
               {props.showTitle && <h2 className="card-title flex-2">{props.name}</h2>}
               <div className="tooltip ml-auto" data-tip="In your Library">
                 {props.showGameOwnedBadge && (
-                  <button className="badge badge-outline text-info border-info max-w-8 p-0.5"><Check className="p-0 m-0" size={20}/></button>
+                  <button className="badge badge-outline text-info border-info max-w-8 p-0.5"><Check className="p-0 m-0" size={20} /></button>
                 )}
               </div>
 
