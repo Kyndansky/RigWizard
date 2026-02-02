@@ -7,7 +7,7 @@ import Loader from "../components/Loader";
 import { BasePageLayout, showToastAlert } from "../components/BasePageLayout";
 
 export function Register() {
-    const { isAuthenticated, isLoading, setIsAuthenticated } = useAuth();
+    const { isAuthenticated, isLoadingAuthState, setIsAuthenticated } = useAuth();
     const [username, setUsername] = React.useState<string>("");
     const [password, setPassword] = React.useState<string>("");
 
@@ -25,7 +25,7 @@ export function Register() {
 
     //returns loading if the frontend still doesn't know (which means it hasn't received info from the backend yet)
     //if the user is logged in.
-    if (isLoading) {
+    if (isLoadingAuthState) {
         return <Loader />;
     }
 

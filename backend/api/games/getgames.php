@@ -31,11 +31,8 @@ if (!empty($filters)) {
 $sql_games .= " WHERE 1=1";
 // Apply filters if any
 if (!empty($filters)) {
-    // Costruiamo placeholder dinamici (?, ?, ?)
     $placeholders = implode(',', array_fill(0, count($filters), '?'));
     $sql_games .= " AND t.name IN ($placeholders)";
-    
-    // Aggiungiamo i tipi e i parametri
     $types_games .= str_repeat('s', count($filters));
     foreach ($filters as $filter) {
         $params_games[] = $filter;
@@ -52,22 +49,17 @@ $sql_games .= " GROUP BY g.id_game";
 // Ensure all filters are matched if multiple_filters is true
 if (!empty($filters) && $multiple_filters) {
     $count_filters = count($filters);
-
     $sql_games .= " HAVING COUNT(DISTINCT t.name) = $count_filters";
 }
 
 $sql_games .= " ORDER BY g.title ASC LIMIT ?, ?";
-
 $types_games .= "ii";
 $params_games[] = $offset;
 $params_games[] = $numOfGames;
 
 // Query to get total number of games
-
 $params_total = [];
 $types_total = "";
-
-
 $sql_total_base = "SELECT g.id_game FROM games g";
 
 if (!empty($filters)) {
@@ -80,7 +72,6 @@ $sql_total_base .= " WHERE 1=1";
 if (!empty($filters)) {
     $placeholders = implode(',', array_fill(0, count($filters), '?'));
     $sql_total_base .= " AND t.name IN ($placeholders)";
-    
     $types_total .= str_repeat('s', count($filters));
     foreach ($filters as $filter) {
         $params_total[] = $filter;
@@ -102,11 +93,6 @@ if (!empty($filters) && $multiple_filters) {
 
 $sql_totalGames = "SELECT COUNT(*) AS total_games FROM ($sql_total_base) AS subquery";
 
-// Query to get tags for games
-$sql_tags = "SELECT tg.id_game, t.name AS tag_name
-             FROM game_tags tg
-             JOIN tags t ON tg.id_tag = t.id_tag";
-
 $stmt_games = $dbConnection->prepare($sql_games);
 if (!empty($params_games)) {
     $stmt_games->bind_param($types_games, ...$params_games);
@@ -115,32 +101,29 @@ $stmt_games->execute();
 $result_games = $stmt_games->get_result();
 $stmt_games->close();
 
-
+$stmt_total = $dbConnection->prepare($sql_totalGames);
 if (!empty($params_total)) {
-    $stmt_total = $dbConnection->prepare($sql_totalGames);
     $stmt_total->bind_param($types_total, ...$params_total);
-    $stmt_total->execute();
-    $result_total = $stmt_total->get_result();
-    $stmt_total->close();
-} else {
-    $result_total = $dbConnection->query($sql_totalGames);
 }
+$stmt_total->execute();
+$result_total = $stmt_total->get_result();
+$stmt_total->close();
 
+// Tags query
+$sql_tags = "SELECT tg.id_game, t.name AS tag_name
+             FROM game_tags tg
+             JOIN tags t ON tg.id_tag = t.id_tag";
 $result_tags = $dbConnection->query($sql_tags);
 
-// Fetch user's owned games
 $user_owned_ids = [];
 if ($username !== '') {
-    // Query to get user's owned games
     $sql_owned = "SELECT ug.id_game FROM user_games ug 
                   JOIN users u ON ug.id_user = u.id 
-                  WHERE u.username = ?"; 
-    
+                  WHERE u.username = ?";
     $stmt_owned = $dbConnection->prepare($sql_owned);
     $stmt_owned->bind_param("s", $username);
     $stmt_owned->execute();
     $result_owned = $stmt_owned->get_result();
-    
     if ($result_owned) {
         while ($row_owned = $result_owned->fetch_assoc()) {
             $user_owned_ids[] = (int) $row_owned['id_game'];
@@ -156,14 +139,12 @@ if ($result_tags) {
     }
 }
 
-// Fetch total games count
 $total_games = 0;
 if ($result_total) {
     $row = $result_total->fetch_assoc();
     $total_games = (int) ($row['total_games'] ?? 0);
 }
 
-// Fetch games list
 $games_list = [];
 if ($result_games) {
     while ($row = $result_games->fetch_assoc()) {
@@ -171,7 +152,6 @@ if ($result_games) {
     }
 }
 
-// Attach tags to corresponding games
 foreach ($games_list as &$game) {
     $game['isOwned'] = in_array((int) $game['id_game'], $user_owned_ids);
     $game['pc_min_details'] = getPCComponents($dbConnection, $game['id_min_pc']);
@@ -186,13 +166,13 @@ foreach ($games_list as &$game) {
 }
 unset($game);
 
-// Final response
 $response = [
     "successful" => true,
     'message' => 'Games retrieved successfully',
     'games' => $games_list,
     'total_games' => $total_games,
 ];
+
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
 ?>
