@@ -2,19 +2,23 @@
 require_once "../../cors.php";
 require_once "../../DBConnect.php";
 
-
-//  tag Name (for display), ordered alphabetically
+// SQL query to fetch tags ordered alphabetically
 $sql_tags = "SELECT name FROM tags ORDER BY name ASC";
-$result = $dbConnection->query($sql_tags);
+
+$stmt = $dbConnection->prepare($sql_tags);
+$stmt->execute();
+$result = $stmt->get_result();
 
 $tags = [];
-
+// Fetch tags data
 if ($result) {
     while($row = $result->fetch_assoc()) {
-        // Estrai solo la stringa dalla colonna 'name'
         $tags[] = $row['name'];
     }
 }
+
+$stmt->close();
+
 $response=[
     "successful" => true,
     'message' => 'Tags retrieved successfully',

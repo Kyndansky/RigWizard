@@ -1,9 +1,15 @@
 <?php
 require_once '../../cors.php';
 require_once "../../DBConnect.php";
+
 $sql = "SELECT * FROM ram";
-$result = $dbConnection->query($sql);
+// Prepare and execute the SQL statement
+$stmt = $dbConnection->prepare($sql);
+$stmt->execute();
+$result = $stmt->get_result();
+
 $rams = [];
+// Fetch rams data
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $rams[] = [
@@ -28,5 +34,11 @@ if ($result && $result->num_rows > 0) {
         "rams" => []
     ];
 }
+
+if (isset($stmt)) {
+    $stmt->close();
+}
+
 echo json_encode($response, JSON_PRETTY_PRINT);
 $dbConnection->close();
+?>

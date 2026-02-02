@@ -3,13 +3,13 @@ require_once '../../cors.php';
 require_once "../../DBConnect.php";
 
 $sql = "SELECT * FROM cpu";
-
+// Prepare and execute the SQL statement
 $stmt = $dbConnection->prepare($sql);
 $stmt->execute();
 $result = $stmt->get_result();
 
 $cpus = [];
-
+// Fetch cpus data
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $cpus[] = [
