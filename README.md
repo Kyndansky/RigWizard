@@ -3,7 +3,9 @@
 ## Introduction
 **RigWizard** is a website inspired by steam which allows users to browse games and compare the game requirements to their computer configuration: with this tool finding game compatible with one's computer becomes **simple**
 and less frustrating.
-https://github.com/user-attachments/assets/8a5e77b0-5db3-43d8-96fe-84f97f96242f
+
+<video src="https://github.com/user-attachments/assets/8a5e77b0-5db3-43d8-96fe-84f97f96242f" controls="controls" style="max-width: 100%;">
+</video>
 
 ## Setup
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
