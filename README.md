@@ -23,5 +23,10 @@ To start working on the project:
 2. Move inside the frontend folder: `cd frontend`
 3. run `npm install` to install all dependencies
 4. run `npm run dev` to start react server and therefore see on-save changes (localhost:5173 in browser)
+
+If you want to use Docker (which is sigma crazy good) you can alternatively:
+1. run `sudo docker build . -t "rigwizardfrontend"`
+2. run `sudo docker run -p 5173:5173 rigwizardfrontend`
+   where "rigwizardfrontend" is the name of the docker image (can be any name really, but lowercase)
 > [!NOTE]  
-> Don't forget to start MySQL and Apache servers on xampp. without this requests to the backend will not work
+> Don't forget to start MySQL and Apache servers on xampp. without this requests to the backend will not work. When using docker xampp is still needed and should work normally, just put the backend folder inside htdocs/RigWizard
